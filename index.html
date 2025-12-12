@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEURO-FRIED: CHRONO SINGULARITY</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Courier+Prime:wght@700&family=VT323&display=swap');
+
+        :root {
+            /* Default Cyberpunk Palette */
+            --bg-color: #050505;
+            --primary: #b026ff;     /* Purple */
+            --secondary: #00f3ff;   /* Cyan */
+            --accent: #39ff14;      /* Green */
+            --danger: #ff003c;      /* Red */
+            --warning: #fff200;     /* Yellow */
+            
+            --font-main: 'Courier Prime', monospace;
+            --font-pixel: 'VT323', monospace;
+            
+            --scanline-color: rgba(0, 0, 0, 0.5);
+        }
+
+        /* --- ERA THEMES (Swapped dynamically via JS) --- */
+        body.theme-90s {
+            --primary: #ff71ce; /* Vapor Pink */
+            --secondary: #01cdfe; /* Vapor Blue */
+            --accent: #05ffa1; /* Vapor Green */
+            --bg-color: #1a0b2e;
+        }
+        body.theme-00s {
+            --primary: #00ff00; /* Matrix Green */
+            --secondary: #003b00; /* Dark Green */
+            --accent: #ccffcc; /* Light Green */
+            --bg-color: #000000;
+        }
+        body.theme-10s {
+            --primary: #ffffff; /* Minimal White */
+            --secondary: #888888; /* Grey */
+            --accent: #3498db; /* Flat Blue */
+            --bg-color: #2c3e50;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: white;
+            font-family: var(--font-main);
+            height: 100vh;
+            overflow: hidden;
+            user-select: none;
+            transition: background-color 0.5s, color 0.5s;
+        }
+
+        /* --- CANVAS BACKGROUND --- */
+        #chrono-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0; /* Behind everything */
+            opacity: 0.6;
+        }
+
+        /* --- CRT OVERLAY --- */
+        .scanlines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                to bottom,
+                rgba(255,255,255,0),
+                rgba(255,255,255,0) 50%,
+                rgba(0,0,0,0.2) 50%,
+                rgba(0,0,0,0.2)
+            );
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 900;
+        }
+
+        /* --- HUD --- */
+        .hud-element {
+            position: absolute;
+            z-index: 100;
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            padding: 10px;
+            border: 1px solid transparent;
+        }
+
+        #hud-top-left { top: 20px; left: 20px; color: var(--primary); }
+        #hud-top-right { 
+            top: 20px; right: 20px; 
+            color: var(--warning); 
+            border: 1px solid var(--warning); 
+            box-shadow: 0 0 5px var(--warning);
+        }
+        #hud-bottom-right { 
+            bottom: 20px; right: 20px; 
+            color: var(--secondary); 
+            font-weight: bold; 
+            animation: pulseRank 2s infinite; 
+        }
+
+        @keyframes pulseRank {
+            0% { text-shadow: 0 0 5px var(--secondary); }
+            50% { text-shadow: 0 0 20px var(--secondary); transform: scale(1.05); }
+            100% { text-shadow: 0 0 5px var(--secondary); }
+        }
+
+        /* --- SCREENS --- */
+        .screen {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: transparent;
+            z-index: 10;
+            transition: opacity 0.4s ease-in-out;
+        }
+
+        .hidden {
+            opacity: 0;
+            pointer-events: none;
+            display: none !important;
+        }
+
+        /* --- LANDING PAGE --- */
+        h1.glitch-title {
+            font-size: 6rem;
+            font-weight: 900;
+            color: white;
+            position: relative;
+            margin-bottom: 20px;
+            text-align: center;
+            text-shadow: 4px 4px 0px var(--primary), -4px -4px 0px var(--danger);
+            animation: glitchMain 3s infinite alternate;
+        }
+
+        .subtitle {
+            font-family: var(--font-pixel);
+            font-size: 2rem;
+            color: var(--accent);
+            letter-spacing: 5px;
+            margin-bottom: 60px;
+        }
+
+        @keyframes glitchMain {
+            0% { transform: skew(0deg); text-shadow: 4px 4px 0px var(--primary), -4px -4px 0px var(--danger); }
+            20% { transform: skew(-2deg); }
+            40% { transform: skew(2deg); text-shadow: -4px 4px 0px var(--primary), 4px -4px 0px var(--danger); }
+            100% { transform: skew(0deg); }
+        }
+
+        .lock-in-btn {
+            background: rgba(0,0,0,0.7);
+            border: 3px solid var(--primary);
+            color: white;
+            padding: 20px 50px;
+            font-family: var(--font-main);
+            font-size: 1.8rem;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: 0.2s;
+            box-shadow: 0 0 20px rgba(176, 38, 255, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .lock-in-btn:hover {
+            background: var(--primary);
+            color: black;
+            box-shadow: 0 0 50px var(--primary);
+            transform: scale(1.05);
+        }
+
+        /* --- GAME UI --- */
+        #timer-wrapper {
+            width: 70%;
+            height: 20px;
+            border: 2px solid #333;
+            margin-bottom: 40px;
+            border-radius: 4px;
+            padding: 2px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.5);
+            position: relative;
+        }
+
+        #timer-bar {
+            width: 100%;
+            height: 100%;
+            background: var(--accent);
+            box-shadow: 0 0 10px var(--accent);
+            transition: width 0.05s linear;
+        }
+
+        .anomaly-glitch {
+            animation: barGlitch 0.2s infinite;
+            filter: invert(1);
+        }
+        
+        @keyframes barGlitch {
+            0% { opacity: 1; }
+            50% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        .era-display {
+            font-family: var(--font-pixel);
+            color: var(--secondary);
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px var(--secondary);
+        }
+
+        .question-box {
+            font-size: 2.2rem;
+            text-align: center;
+            max-width: 900px;
+            margin-bottom: 50px;
+            line-height: 1.4;
+            color: #eee;
+            background: rgba(0,0,0,0.6);
+            padding: 20px;
+            border-left: 5px solid var(--secondary);
+            backdrop-filter: blur(5px);
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+            width: 90%;
+            max-width: 1200px;
+        }
+
+        .option-btn {
+            background: rgba(10,10,10, 0.9);
+            border: 2px solid #444;
+            color: white;
+            padding: 30px 10px;
+            font-family: var(--font-pixel);
+            font-size: 1.8rem;
+            cursor: pointer;
+            transition: all 0.15s;
+            text-transform: uppercase;
+            position: relative;
+        }
+
+        .option-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+        }
+        
+        .option-btn:active { transform: scale(0.95); }
+
+        /* --- TRANSITION OVERLAY --- */
+        #era-transition {
+            background: black;
+            z-index: 200;
+        }
+        #year-counter {
+            font-size: 8rem;
+            font-family: var(--font-pixel);
+            color: var(--secondary);
+            text-shadow: 0 0 30px var(--secondary);
+        }
+
+        /* --- VISUAL FX --- */
+        .shake-screen { animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both; }
+        
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-5px, 0, 0); }
+            20%, 80% { transform: translate3d(10px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-10px, 0, 0); }
+            40%, 60% { transform: translate3d(10px, 0, 0); }
+        }
+
+        .rewind-active { animation: rewindAnim 1.5s cubic-bezier(0.25, 1, 0.5, 1); }
+        
+        @keyframes rewindAnim {
+            0% { filter: invert(0); transform: scale(1); }
+            10% { filter: invert(1); transform: scale(1.1) rotate(-3deg); }
+            50% { filter: invert(0.8) hue-rotate(180deg); transform: scale(1.05) rotate(3deg); }
+            100% { filter: invert(0); transform: scale(1) rotate(0deg); }
+        }
+
+        .correct-flash { animation: flashGreen 0.4s ease-out; }
+        @keyframes flashGreen {
+            0% { background-color: var(--accent); }
+            100% { background-color: transparent; }
+        }
+
+        .wrong-flash { animation: flashRed 0.4s ease-out; }
+        @keyframes flashRed {
+            0% { background-color: var(--danger); }
+            100% { background-color: transparent; }
+        }
+
+        /* --- GAME OVER --- */
+        .game-over-title {
+            font-size: 5rem;
+            color: var(--danger);
+            margin-bottom: 20px;
+            font-family: var(--font-pixel);
+            text-shadow: 5px 5px 0 #000;
+        }
+    </style>
+</head>
+<body id="main-body">
+
+    <canvas id="chrono-canvas"></canvas>
+    
+    <div class="scanlines"></div>
+
+    <div id="hud-top-left" class="hud-element">AURA: <span id="score-val" style="color:var(--accent)">0</span></div>
+    <div id="hud-top-right" class="hud-element">REWIND: <span id="rewind-val">READY</span></div>
+    <div id="hud-bottom-right" class="hud-element">NOVICE</div>
+
+    <div id="landing-page" class="screen">
+        <h1 class="glitch-title">NEURO-FRIED</h1>
+        <div class="subtitle">CHRONO SINGULARITY</div>
+        <button class="lock-in-btn" id="start-btn">INITIALIZE PROTOCOL</button>
+        <p style="margin-top: 30px; font-size: 1rem; color: #888; font-family: var(--font-pixel);">[ PRESS ENTER TO START ]</p>
+    </div>
+
+    <div id="era-transition" class="screen hidden">
+        <div style="color:white; font-size: 1.5rem; margin-bottom:20px;">WARPING TO...</div>
+        <div id="year-counter">1990</div>
+    </div>
+
+    <div id="game-ui" class="screen hidden">
+        <div id="timer-wrapper"><div id="timer-bar"></div></div>
+        <div class="era-display" id="era-display">ERA: 1999</div>
+        <div class="question-box" id="question-text">Loading Data...</div>
+        <div class="options-grid" id="options-area"></div>
+    </div>
+
+    <div id="game-over" class="screen hidden">
+        <div class="game-over-title">TIMELINE COLLAPSED</div>
+        <div style="font-size: 2rem; margin-bottom: 30px; text-align: center;">
+            <p>You survived <span id="final-rounds" style="color:var(--secondary)">0</span> eras.</p>
+            <p>Final Aura: <span id="final-score" style="color:var(--accent)">0</span></p>
+        </div>
+        <button class="lock-in-btn" id="retry-btn">RESET TIMELINE</button>
+    </div>
+
+    <script>
+        /**
+         * ------------------------------------------------------------------
+         * DATA LAYER: The Time Capsule
+         * ------------------------------------------------------------------
+         */
+        const QUESTIONS_DB = [
+            // --- THE 90s (Vaporwave Era) ---
+            { era: 1990, text: "This software made 'Surfing the Web' possible for normal people.", correct: "WorldWideWeb / Nexus", wrongs: ["Chrome", "Internet Explorer"] },
+            { era: 1993, text: "The FPS game that defined the genre (and caused moral panic).", correct: "DOOM", wrongs: ["Call of Duty", "Halo"] },
+            { era: 1995, text: "Windows 95 launched with a guide featuring characters from this sitcom.", correct: "Friends", wrongs: ["Seinfeld", "Full House"] },
+            { era: 1996, text: "The first sheep ever cloned. Hello, Dolly.", correct: "Dolly", wrongs: ["Molly", "Polly"] },
+            { era: 1997, text: "James Cameron's movie that dominated the world.", correct: "Titanic", wrongs: ["Avatar", "Terminator 2"] },
+            { era: 1998, text: "Google was founded in a...", correct: "Garage", wrongs: ["Basement", "Skyscraper"] },
+            { era: 1999, text: "The file sharing service that terrified the music industry.", correct: "Napster", wrongs: ["Spotify", "Limewire"] },
+            
+            // --- THE 00s (Digital Revolution) ---
+            { era: 2000, text: "The indestructible brick phone everyone owned.", correct: "Nokia 3310", wrongs: ["Motorola Razr", "Blackberry"] },
+            { era: 2001, text: "Apple launched this device, putting '1000 songs in your pocket'.", correct: "iPod", wrongs: ["Zune", "Walkman"] },
+            { era: 2003, text: "The social network where Tom was everyone's first friend.", correct: "MySpace", wrongs: ["Facebook", "Friendster"] },
+            { era: 2004, text: "The launch of 'The Facebook'. Access was limited to...", correct: "Harvard Students", wrongs: ["Everyone", "US Citizens"] },
+            { era: 2005, text: "The first video ever uploaded to YouTube.", correct: "Me at the zoo", wrongs: ["Charlie Bit Me", "Evolution of Dance"] },
+            { era: 2007, text: "Steve Jobs introduced three devices in one.", correct: "iPhone", wrongs: ["iPad", "MacBook"] },
+            { era: 2009, text: "The blocky sandbox game created by Notch.", correct: "Minecraft", wrongs: ["Roblox", "Terraria"] },
+
+            // --- THE 10s (The Mobile/Social Era) ---
+            { era: 2010, text: "The app that made photo filters famous (originally Burbank).", correct: "Instagram", wrongs: ["Snapchat", "Vine"] },
+            { era: 2012, text: "First YouTube video to hit 1 Billion views.", correct: "Gangnam Style", wrongs: ["Baby Shark", "Despacito"] },
+            { era: 2013, text: "The 6-second video app that defined a generation's humor.", correct: "Vine", wrongs: ["TikTok", "Musical.ly"] },
+            { era: 2016, text: "Everyone went outside to catch them all.", correct: "Pokemon GO", wrongs: ["Ingress", "Digimon"] },
+            { era: 2017, text: "The fidget toy that spun into every classroom.", correct: "Fidget Spinner", wrongs: ["Pop-it", "Slime"] },
+            { era: 2019, text: "The first image of this cosmic phenomenon was captured.", correct: "Black Hole", wrongs: ["Supernova", "Alien"] },
+
+            // --- THE 20s (The Modern Glitch) ---
+            { era: 2020, text: "The video conferencing tool that became a verb.", correct: "Zoom", wrongs: ["Skype", "Teams"] },
+            { era: 2021, text: "Digital art sold for millions as NFTs. What does NFT stand for?", correct: "Non-Fungible Token", wrongs: ["New Fund Tech", "No Fun Today"] },
+            { era: 2022, text: "Elon Musk bought this platform for $44 Billion.", correct: "Twitter", wrongs: ["Facebook", "Tumblr"] },
+            { era: 2023, text: "The AI Chatbot that changed homework forever.", correct: "ChatGPT", wrongs: ["Siri", "Alexa"] },
+            { era: 2024, text: "Slang: To have charisma or charm.", correct: "Rizz", wrongs: ["Drip", "Cap"] },
+            { era: 2025, text: "The theme of this Game Jam.", correct: "The Changing of Time", wrongs: ["Space Travel", "Retro Future"] }
+        ];
+
+        /**
+         * ------------------------------------------------------------------
+         * AUDIO SYSTEM: Procedural Synth
+         * ------------------------------------------------------------------
+         */
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        
+        const SOUNDS = {
+            win: (time) => {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(500, time);
+                osc.frequency.exponentialRampToValueAtTime(1000, time + 0.1);
+                gain.gain.setValueAtTime(0.2, time);
+                gain.gain.exponentialRampToValueAtTime(0.01, time + 0.3);
+                osc.connect(gain); gain.connect(audioCtx.destination);
+                osc.start(time); osc.stop(time + 0.3);
+            },
+            lose: (time) => {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(150, time);
+                osc.frequency.linearRampToValueAtTime(50, time + 0.5);
+                gain.gain.setValueAtTime(0.2, time);
+                gain.gain.linearRampToValueAtTime(0.01, time + 0.5);
+                osc.connect(gain); gain.connect(audioCtx.destination);
+                osc.start(time); osc.stop(time + 0.5);
+            },
+            rewind: (time) => {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(100, time);
+                osc.frequency.linearRampToValueAtTime(1200, time + 1.2);
+                gain.gain.setValueAtTime(0.3, time);
+                gain.gain.linearRampToValueAtTime(0.01, time + 1.2);
+                osc.connect(gain); gain.connect(audioCtx.destination);
+                osc.start(time); osc.stop(time + 1.2);
+            }
+        };
+
+        // Background Pulse (Heartbeat of Time)
+        let bgInterval;
+        function startHeartbeat(tempo) {
+            if(bgInterval) clearInterval(bgInterval);
+            let beat = 0;
+            bgInterval = setInterval(() => {
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                const t = audioCtx.currentTime;
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain); gain.connect(audioCtx.destination);
+                
+                // High tick on 1, Low on others
+                if (beat % 4 === 0) {
+                    osc.frequency.value = 800;
+                    gain.gain.value = 0.05;
+                } else {
+                    osc.frequency.value = 400;
+                    gain.gain.value = 0.02;
+                }
+                
+                osc.start(t); osc.stop(t + 0.05);
+                beat++;
+            }, tempo);
+        }
+
+        /**
+         * ------------------------------------------------------------------
+         * VISUAL SYSTEM: Canvas Time Tunnel
+         * ------------------------------------------------------------------
+         */
+        const canvas = document.getElementById('chrono-canvas');
+        const ctx = canvas.getContext('2d');
+        let stars = [];
+        let warpSpeed = 2;
+        let isReversed = false;
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class Star {
+            constructor() {
+                this.reset();
+            }
+            reset() {
+                this.x = (Math.random() - 0.5) * canvas.width * 2;
+                this.y = (Math.random() - 0.5) * canvas.height * 2;
+                this.z = Math.random() * canvas.width;
+                this.pz = this.z;
+            }
+            update() {
+                if (!isReversed) {
+                    this.z -= warpSpeed;
+                    if (this.z < 1) {
+                        this.reset();
+                        this.z = canvas.width;
+                        this.pz = this.z;
+                    }
+                } else {
+                    this.z += warpSpeed * 3; // Fast rewind
+                    if (this.z > canvas.width) {
+                        this.z = 1;
+                        this.pz = 1;
+                    }
+                }
+            }
+            draw() {
+                let sx = (this.x / this.z) * canvas.width + canvas.width / 2;
+                let sy = (this.y / this.z) * canvas.height + canvas.height / 2;
+                
+                // Previous position for trail effect
+                let px = (this.x / this.pz) * canvas.width + canvas.width / 2;
+                let py = (this.y / this.pz) * canvas.height + canvas.height / 2;
+                
+                this.pz = this.z;
+
+                let r = (1 - this.z / canvas.width) * 4;
+                
+                ctx.beginPath();
+                ctx.moveTo(px, py);
+                ctx.lineTo(sx, sy);
+                ctx.lineWidth = r;
+                // Color based on theme
+                let hue = document.body.classList.contains('theme-90s') ? 300 :
+                          document.body.classList.contains('theme-00s') ? 120 : 180;
+                
+                ctx.strokeStyle = `hsl(${hue}, 100%, 70%)`;
+                ctx.stroke();
+            }
+        }
+
+        // Initialize Stars
+        for(let i=0; i<400; i++) stars.push(new Star());
+
+        function animateCanvas() {
+            // Trail effect
+            ctx.fillStyle = "rgba(0, 0, 0, 0.2)";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            stars.forEach(s => {
+                s.update();
+                s.draw();
+            });
+            requestAnimationFrame(animateCanvas);
+        }
+        animateCanvas();
+
+        /**
+         * ------------------------------------------------------------------
+         * GAME LOGIC
+         * ------------------------------------------------------------------
+         */
+        
+        // DOM Elements
+        const screens = {
+            landing: document.getElementById('landing-page'),
+            transition: document.getElementById('era-transition'),
+            game: document.getElementById('game-ui'),
+            over: document.getElementById('game-over')
+        };
+        
+        const els = {
+            score: document.getElementById('score-val'),
+            rewind: document.getElementById('rewind-val'),
+            timer: document.getElementById('timer-bar'),
+            question: document.getElementById('question-text'),
+            options: document.getElementById('options-area'),
+            era: document.getElementById('era-display'),
+            rank: document.getElementById('hud-bottom-right'),
+            yearCounter: document.getElementById('year-counter'),
+            mainBody: document.getElementById('main-body')
+        };
+
+        // State
+        let gameState = {
+            active: false,
+            score: 0,
+            rounds: 0,
+            hasRewind: true,
+            maxTime: 4000,
+            currentTime: 4000,
+            currentQ: null,
+            timerId: null
+        };
+
+        // --- Helper Functions ---
+        function switchScreen(screenName) {
+            Object.values(screens).forEach(s => s.classList.add('hidden'));
+            screens[screenName].classList.remove('hidden');
+        }
+
+        function setTheme(year) {
+            els.mainBody.className = ""; // Reset
+            if (year < 2000) els.mainBody.classList.add('theme-90s');
+            else if (year < 2010) els.mainBody.classList.add('theme-00s');
+            else if (year < 2020) els.mainBody.classList.add('theme-10s');
+        }
+
+        // --- Core Loop ---
+
+        function initGame() {
+            gameState.score = 0;
+            gameState.rounds = 0;
+            gameState.hasRewind = true;
+            gameState.maxTime = 5000;
+            gameState.active = true;
+
+            // Reset UI
+            els.score.innerText = "0";
+            els.rank.innerText = "NOVICE";
+            els.rewind.innerText = "READY";
+            els.rewind.style.color = "var(--warning)";
+            els.rewind.style.border = "1px solid var(--warning)";
+            
+            // Audio Start
+            startHeartbeat(500);
+            warpSpeed = 2;
+
+            nextRound();
+        }
+
+        function nextRound() {
+            gameState.rounds++;
+            
+            // 1. Difficulty Scaling
+            gameState.maxTime = Math.max(1500, gameState.maxTime * 0.95);
+            gameState.currentTime = gameState.maxTime;
+            
+            // Speed up heartbeat
+            let tempo = Math.max(100, 500 - (gameState.rounds * 30));
+            startHeartbeat(tempo);
+            warpSpeed = 2 + (gameState.rounds * 0.5);
+
+            // 2. Select Question
+            const q = QUESTIONS_DB[Math.floor(Math.random() * QUESTIONS_DB.length)];
+            gameState.currentQ = q;
+
+            // 3. Era Transition Effect
+            performTransition(q.era, () => {
+                displayQuestion(q);
+            });
+        }
+
+        function performTransition(targetYear, callback) {
+            switchScreen('transition');
+            setTheme(targetYear);
+            
+            // Rolling numbers animation
+            let current = parseInt(els.yearCounter.innerText);
+            let step = targetYear > current ? 1 : -1;
+            let countSpeed = 20;
+
+            const interval = setInterval(() => {
+                if (Math.abs(targetYear - current) > 10) current += (step * 3); // speed up
+                else current += step;
+
+                els.yearCounter.innerText = current;
+
+                if ((step > 0 && current >= targetYear) || (step < 0 && current <= targetYear)) {
+                    clearInterval(interval);
+                    els.yearCounter.innerText = targetYear;
+                    setTimeout(() => {
+                        switchScreen('game');
+                        callback();
+                    }, 500);
+                }
+            }, countSpeed);
+        }
+
+        function displayQuestion(q) {
+            els.era.innerText = `ERA: ${q.era}`;
+            els.question.innerText = q.text;
+            els.question.style.color = "#eee"; // reset warning color
+            
+            // Options
+            els.options.innerHTML = '';
+            let choices = [q.correct, ...q.wrongs];
+            choices.sort(() => Math.random() - 0.5);
+
+            choices.forEach(choice => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerText = choice;
+                btn.onclick = () => handleAnswer(choice, q.correct);
+                els.options.appendChild(btn);
+            });
+
+            startTimer();
+        }
+
+        function startTimer() {
+            if (gameState.timerId) clearInterval(gameState.timerId);
+            
+            // "Time Anomaly": Randomly make timer glitch (5% chance)
+            const isGlitch = Math.random() < 0.05;
+            if (isGlitch) els.timer.classList.add('anomaly-glitch');
+            else els.timer.classList.remove('anomaly-glitch');
+
+            gameState.timerId = setInterval(() => {
+                gameState.currentTime -= 20;
+                
+                // Render Bar
+                const pct = (gameState.currentTime / gameState.maxTime) * 100;
+                els.timer.style.width = pct + "%";
+                
+                // Color urgency
+                els.timer.style.backgroundColor = pct < 30 ? "var(--danger)" : "var(--accent)";
+
+                if (gameState.currentTime <= 0) {
+                    clearInterval(gameState.timerId);
+                    handleFail();
+                }
+            }, 20);
+        }
+
+        function handleAnswer(selected, correct) {
+            if (!gameState.active || gameState.currentTime <= 0) return;
+            
+            clearInterval(gameState.timerId);
+
+            if (selected === correct) {
+                // SUCCESS
+                SOUNDS.win(audioCtx.currentTime);
+                gameState.score += 100 + Math.floor(gameState.currentTime / 10);
+                els.score.innerText = gameState.score;
+                updateRank();
+                
+                // Visual Flash
+                els.mainBody.classList.add('correct-flash');
+                setTimeout(() => els.mainBody.classList.remove('correct-flash'), 400);
+
+                setTimeout(nextRound, 500);
+            } else {
+                // FAIL
+                handleFail();
+            }
+        }
+
+        function handleFail() {
+            if (gameState.hasRewind) {
+                triggerRewind();
+            } else {
+                gameOver();
+            }
+        }
+
+        function triggerRewind() {
+            // THEME MECHANIC: Rewind
+            gameState.hasRewind = false;
+            
+            // Visuals
+            els.rewind.innerText = "BROKEN";
+            els.rewind.style.color = "var(--danger)";
+            els.rewind.style.borderColor = "var(--danger)";
+            els.mainBody.classList.add('rewind-active');
+            
+            // Audio
+            SOUNDS.rewind(audioCtx.currentTime);
+            
+            // Canvas Reverse
+            isReversed = true;
+
+            // Narrative
+            els.question.innerHTML = "<span style='color:var(--warning)'>⚠ TIMELINE PARADOX.<br>INITIATING REWIND PROTOCOL...</span>";
+
+            setTimeout(() => {
+                els.mainBody.classList.remove('rewind-active');
+                isReversed = false;
+                
+                // Restore logic
+                gameState.currentTime = gameState.maxTime;
+                els.question.innerText = gameState.currentQ.text;
+                els.question.style.color = "#eee";
+                startTimer();
+            }, 1500);
+        }
+
+        function updateRank() {
+            const s = gameState.score;
+            let r = "NOVICE";
+            if (s > 1000) r = "TIME TRAVELER";
+            if (s > 2500) r = "CHRONO LORD";
+            if (s > 5000) r = "SINGULARITY";
+            els.rank.innerText = r;
+        }
+
+        function gameOver() {
+            gameState.active = false;
+            SOUNDS.lose(audioCtx.currentTime);
+            
+            els.mainBody.classList.add('shake-screen');
+            els.mainBody.classList.add('wrong-flash');
+            
+            setTimeout(() => {
+                switchScreen('over');
+                document.getElementById('final-rounds').innerText = gameState.rounds;
+                document.getElementById('final-score').innerText = gameState.score;
+                clearInterval(bgInterval); // Stop heartbeat
+                els.mainBody.classList.remove('shake-screen', 'wrong-flash');
+            }, 1000);
+        }
+
+        // --- Inputs ---
+        document.getElementById('start-btn').addEventListener('click', initGame);
+        document.getElementById('retry-btn').addEventListener('click', initGame);
+        
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                if (!gameState.active) initGame();
+            }
+        });
+
+    </script>
+</body>
+</html>
