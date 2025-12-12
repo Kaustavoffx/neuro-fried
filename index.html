@@ -9,7 +9,7 @@
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@900&display=swap');
 
         :root {
-            /* Palette */
+            /* Core Palette */
             --bg-color: #050505;
             --primary: #b026ff;
             --secondary: #00f3ff;
@@ -22,10 +22,11 @@
             --font-display: 'Orbitron', sans-serif;
         }
 
-        /* --- THEMES --- */
-        body.theme-90s { --primary: #ff71ce; --secondary: #01cdfe; --accent: #fffb96; --bg-color: #1a0b2e; }
-        body.theme-00s { --primary: #00ff00; --secondary: #003b00; --accent: #ccffcc; --bg-color: #001100; }
-        body.theme-10s { --primary: #ffffff; --secondary: #333333; --accent: #3498db; --bg-color: #202020; }
+        /* --- DYNAMIC THEMES (Changes with Era) --- */
+        body.theme-1990 { --primary: #ff71ce; --secondary: #01cdfe; --bg-color: #1a0b2e; } /* Vaporwave */
+        body.theme-2000 { --primary: #00ff00; --secondary: #003300; --bg-color: #001100; } /* Matrix */
+        body.theme-2010 { --primary: #ffffff; --secondary: #888888; --bg-color: #202020; } /* Minimal */
+        body.theme-2020 { --primary: #ff0055; --secondary: #00ccff; --bg-color: #050505; } /* Cyberpunk */
 
         body {
             margin: 0;
@@ -36,39 +37,35 @@
             height: 100vh;
             overflow: hidden;
             user-select: none;
-            transition: background-color 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            transition: background-color 1s ease;
         }
 
-        /* --- NOISE TEXTURE --- */
+        /* --- VISUALS: NOISE & WARP --- */
         .noise-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
             pointer-events: none;
-            z-index: 950;
+            z-index: 50;
             opacity: 0.4;
         }
 
-        /* --- CANVAS --- */
         #chrono-canvas {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             z-index: 0;
-            opacity: 0.5;
         }
 
-        /* --- SCANLINES --- */
         .scanlines {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle, rgba(0,0,0,0) 60%, rgba(0,0,0,0.8) 100%),
-                        linear-gradient(to bottom, rgba(255,255,255,0) 50%, rgba(0,0,0,0.1) 50%);
-            background-size: 100% 100%, 100% 4px;
+            background: linear-gradient(to bottom, rgba(255,255,255,0) 50%, rgba(0,0,0,0.1) 50%);
+            background-size: 100% 4px;
             pointer-events: none;
-            z-index: 900;
+            z-index: 60;
         }
 
-        /* --- HUD --- */
+        /* --- HUD (The Brutalist Asymmetry You Liked) --- */
         .hud-element {
             position: absolute;
             z-index: 100;
@@ -111,13 +108,12 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            z-index: 10;
-            transition: opacity 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+            z-index: 80;
+            transition: opacity 0.5s;
         }
-
         .hidden { opacity: 0; pointer-events: none; display: none !important; }
 
-        /* --- LANDING --- */
+        /* --- LANDING PAGE (Restored Vibe + New Features) --- */
         h1.glitch-title {
             font-family: var(--font-display);
             font-size: 7vw;
@@ -130,24 +126,34 @@
             animation: textFloat 4s ease-in-out infinite;
         }
 
-        @keyframes textFloat {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
+        @keyframes textFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
 
         .subtitle {
             font-family: var(--font-main);
             color: var(--accent);
             letter-spacing: 3px;
             margin-top: 10px;
-            margin-bottom: 60px;
+            margin-bottom: 30px;
             background: rgba(0,0,0,0.5);
             padding: 5px 15px;
             transform: skewX(-10deg);
         }
 
-        /* --- BUTTONS --- */
-        .lock-in-btn, .option-btn {
+        .mission-log {
+            font-family: var(--font-pixel);
+            color: #ccc;
+            background: rgba(255,255,255,0.05);
+            padding: 15px 30px;
+            border: 1px solid #333;
+            margin-bottom: 40px;
+            text-align: center;
+            line-height: 1.5;
+            font-size: 1.2rem;
+            max-width: 500px;
+        }
+
+        /* --- TECH PLATES (The Buttons You Liked) --- */
+        .tech-btn {
             position: relative;
             background: rgba(255, 255, 255, 0.05);
             color: white;
@@ -162,7 +168,7 @@
             box-shadow: inset 0 0 0 2px rgba(255,255,255,0.1);
         }
 
-        .lock-in-btn::after, .option-btn::after {
+        .tech-btn::after {
             content: '';
             position: absolute;
             bottom: 0; right: 0;
@@ -172,14 +178,14 @@
             transition: 0.3s;
         }
 
-        .lock-in-btn:hover, .option-btn:hover {
+        .tech-btn:hover {
             background: rgba(255, 255, 255, 0.15);
             color: var(--accent);
             transform: translate(-2px, -2px);
             box-shadow: inset 0 0 0 2px var(--accent);
             text-shadow: 0 0 8px var(--accent);
         }
-        .lock-in-btn:hover::after, .option-btn:hover::after { width: 100%; height: 100%; background: var(--accent); opacity: 0.1; }
+        .tech-btn:hover::after { width: 100%; height: 100%; background: var(--accent); opacity: 0.1; }
 
         /* --- GAME UI --- */
         #timer-wrapper {
@@ -191,12 +197,7 @@
             border: 1px solid #444;
             overflow: hidden;
         }
-
-        #timer-bar {
-            width: 100%; height: 100%;
-            background: var(--accent);
-            box-shadow: 0 0 15px var(--accent);
-        }
+        #timer-bar { width: 100%; height: 100%; background: var(--accent); box-shadow: 0 0 15px var(--accent); }
 
         .question-box {
             font-size: 2rem;
@@ -206,7 +207,7 @@
             line-height: 1.3;
             color: #eee;
             padding: 30px;
-            background: rgba(0,0,0,0.4);
+            background: rgba(0,0,0,0.6);
             border-top: 2px solid var(--secondary);
             border-bottom: 2px solid var(--secondary);
             background: linear-gradient(90deg, rgba(0,243,255,0) 0%, rgba(0,243,255,0.05) 50%, rgba(0,243,255,0) 100%);
@@ -230,85 +231,57 @@
             min-height: 100px;
         }
 
-        /* --- TRANSITIONS --- */
-        #year-counter {
-            font-size: 10rem;
-            font-family: var(--font-display);
-            color: transparent;
-            -webkit-text-stroke: 2px var(--secondary);
-            text-shadow: 0 0 20px var(--secondary);
+        /* --- FX --- */
+        .rewind-fx { animation: rewindAnim 1s ease-in-out; }
+        @keyframes rewindAnim {
+            0% { filter: invert(0); transform: scale(1); }
+            50% { filter: invert(1) hue-rotate(180deg); transform: scale(1.1) rotate(-5deg); }
+            100% { filter: invert(0); transform: scale(1); }
         }
-
-        /* --- FX (TIME INSTABILITY) --- */
-        .time-critical {
-            animation: chromaticAberration 0.2s infinite;
-        }
-        @keyframes chromaticAberration {
-            0% { text-shadow: 2px 0 var(--danger), -2px 0 var(--secondary); transform: translate(1px, 0); }
-            50% { text-shadow: -2px 0 var(--danger), 2px 0 var(--secondary); transform: translate(-1px, 0); }
-            100% { text-shadow: 2px 0 var(--danger), -2px 0 var(--secondary); transform: translate(0, 1px); }
-        }
-
-        .shake-screen { animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both; }
-        @keyframes shake {
-            10%, 90% { transform: translate3d(-5px, 0, 0); }
-            20%, 80% { transform: translate3d(10px, 0, 0); }
-            30%, 50%, 70% { transform: translate3d(-10px, 0, 0); }
-            40%, 60% { transform: translate3d(10px, 0, 0); }
-        }
-
-        .rewind-active { animation: rewindEffect 1.5s ease-in-out; }
-        @keyframes rewindEffect {
-            0% { filter: invert(0) blur(0px); transform: scale(1); }
-            20% { filter: invert(1) blur(4px) hue-rotate(90deg); transform: scale(1.1) rotate(-3deg); }
-            80% { filter: invert(0.8) blur(2px) hue-rotate(-90deg); transform: scale(1.05) rotate(3deg); }
-            100% { filter: invert(0) blur(0px); transform: scale(1); }
-        }
-
-        .correct-flash { animation: flashG 0.3s; }
-        @keyframes flashG { 0% { background: rgba(57, 255, 20, 0.2); } 100% { background: transparent; } }
-        
-        .wrong-flash { animation: flashR 0.3s; }
-        @keyframes flashR { 0% { background: rgba(255, 0, 60, 0.3); } 100% { background: transparent; } }
 
         @media (max-width: 800px) {
             .options-grid { grid-template-columns: 1fr; }
             h1.glitch-title { font-size: 15vw; }
         }
-
     </style>
 </head>
-<body id="main-body">
+<body>
 
     <canvas id="chrono-canvas"></canvas>
-    <div class="noise-overlay"></div> <div class="scanlines"></div>
+    <div class="noise-overlay"></div>
+    <div class="scanlines"></div>
 
     <div id="hud-top-left" class="hud-element">
         <span style="font-size:0.8rem; opacity:0.7">SCORE_DB://</span><br>
         <span id="score-val" style="color:var(--accent); font-size:1.4rem;">0</span>
     </div>
-    
     <div id="hud-top-right" class="hud-element">
-        <span style="font-size:0.8rem; opacity:0.7">STATUS://</span><br>
+        <span style="font-size:0.8rem; opacity:0.7">REWIND STATUS://</span><br>
         <span id="rewind-val">ONLINE</span>
     </div>
-    
     <div id="hud-bottom-right" class="hud-element">NOVICE</div>
 
     <div id="landing-page" class="screen">
         <h1 class="glitch-title">NEURO<br>FRIED</h1>
-        <div class="subtitle">/// CHRONO_SINGULARITY_VER_2.5 ///</div>
-        <button class="lock-in-btn" id="start-btn">INITIALIZE SYSTEM</button>
-        <p style="margin-top: 30px; font-family: var(--font-pixel); opacity: 0.5;">[ PRESS ENTER TO CONNECT ]</p>
+        <div class="subtitle">/// CHRONO_SINGULARITY_VER_3.0 ///</div>
+        
+        <div class="mission-log">
+            [MISSION PROTOCOL]<br>
+            > ANSWER TRIVIA TO STABILIZE TIMELINE<br>
+            > TIME ACCELERATES EVERY ROUND<br>
+            > [1] REWIND AVAILABLE PER SESSION
+        </div>
+
+        <button class="tech-btn" id="start-btn">INITIALIZE SYSTEM</button>
     </div>
 
     <div id="era-transition" class="screen hidden">
-        <div style="font-family: var(--font-pixel); letter-spacing: 2px;">TIME WARP SEQUENCE INITIATED</div>
-        <div id="year-counter">1990</div>
+        <div style="font-family: var(--font-pixel); letter-spacing: 5px; font-size: 2rem;">WARPING TO ERA...</div>
+        <h1 id="year-counter" style="font-family: var(--font-display); font-size: 8rem; margin: 20px 0; color: var(--secondary);">1990</h1>
     </div>
 
     <div id="game-ui" class="screen hidden">
-        <div class="era-display" id="era-display" style="opacity: 0.8; letter-spacing: 5px;">YEAR: 1999</div>
+        <div class="era-display" id="era-display" style="opacity: 0.8; letter-spacing: 5px; margin-bottom: 10px;">YEAR: 1990</div>
         <div id="timer-wrapper"><div id="timer-bar"></div></div>
         
         <div class="question-box">
@@ -322,241 +295,164 @@
     <div id="game-over" class="screen hidden">
         <h1 class="glitch-title" style="font-size: 4rem; color: var(--danger); text-shadow: none;">FATAL<br>ERROR</h1>
         <div style="font-size: 1.5rem; margin-bottom: 30px; text-align: center; font-family: var(--font-main);">
-            <p>TIMELINE SEVERED AT ERA <span id="final-rounds" style="color:var(--secondary)">0</span></p>
-            <p>TOTAL AURA: <span id="final-score" style="color:var(--accent)">0</span></p>
+            <p>TIMELINE SEVERED.</p>
+            <p>FINAL AURA: <span id="final-score" style="color:var(--accent)">0</span></p>
         </div>
-        <button class="lock-in-btn" id="retry-btn">REBOOT SYSTEM</button>
+        <button class="tech-btn" id="retry-btn">REBOOT SYSTEM</button>
     </div>
 
     <script>
-        // --- DATA ---
-        const QUESTIONS_DB = [
-            { era: 1990, text: "Software that made 'Surfing the Web' possible.", correct: "WorldWideWeb", wrongs: ["Chrome", "Explorer"] },
-            { era: 1993, text: "FPS game that caused moral panic.", correct: "DOOM", wrongs: ["Call of Duty", "Halo"] },
-            { era: 1995, text: "Windows 95 guide sitcom.", correct: "Friends", wrongs: ["Seinfeld", "Office"] },
-            { era: 1996, text: "First cloned sheep.", correct: "Dolly", wrongs: ["Molly", "Polly"] },
-            { era: 1997, text: "James Cameron's world dominator.", correct: "Titanic", wrongs: ["Avatar", "Terminator"] },
-            { era: 1998, text: "Google was founded in a...", correct: "Garage", wrongs: ["Basement", "Office"] },
-            { era: 1999, text: "Scary file sharing service.", correct: "Napster", wrongs: ["Spotify", "Limewire"] },
-            { era: 2000, text: "Indestructible brick phone.", correct: "Nokia 3310", wrongs: ["Razr", "Blackberry"] },
-            { era: 2001, text: "1000 songs in your pocket.", correct: "iPod", wrongs: ["Zune", "Walkman"] },
-            { era: 2003, text: "Tom was your first friend.", correct: "MySpace", wrongs: ["Facebook", "Twitter"] },
-            { era: 2005, text: "First YouTube video.", correct: "Me at the zoo", wrongs: ["Charlie Bit Me", "Cats"] },
-            { era: 2007, text: "3 Devices in 1.", correct: "iPhone", wrongs: ["iPad", "Android"] },
-            { era: 2009, text: "Blocky sandbox game.", correct: "Minecraft", wrongs: ["Roblox", "Terraria"] },
-            { era: 2010, text: "Filters (originally Burbank).", correct: "Instagram", wrongs: ["Snapchat", "Vine"] },
-            { era: 2012, text: "1 Billion YouTube views.", correct: "Gangnam Style", wrongs: ["Baby Shark", "Justin B"] },
-            { era: 2013, text: "6-second video app.", correct: "Vine", wrongs: ["TikTok", "Shorts"] },
-            { era: 2016, text: "Catch them all outside.", correct: "Pokemon GO", wrongs: ["Digimon", "Ingress"] },
-            { era: 2020, text: "Zoom fatigue.", correct: "Zoom", wrongs: ["Skype", "Teams"] },
-            { era: 2023, text: "AI Chatbot revolution.", correct: "ChatGPT", wrongs: ["Siri", "Alexa"] },
-            { era: 2024, text: "Gen Z Charisma.", correct: "Rizz", wrongs: ["Drip", "Swag"] }
-        ];
-
-        // --- AUDIO ---
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        const SOUNDS = {
-            win: (t) => {
-                const o = audioCtx.createOscillator(); const g = audioCtx.createGain();
-                o.type='sine'; o.frequency.setValueAtTime(600,t); o.frequency.exponentialRampToValueAtTime(1200,t+0.1);
-                g.gain.setValueAtTime(0.1,t); g.gain.exponentialRampToValueAtTime(0.01,t+0.3);
-                o.connect(g); g.connect(audioCtx.destination); o.start(t); o.stop(t+0.3);
+        // --- 1. PROCEDURAL MUSIC ENGINE ---
+        const AudioEngine = {
+            ctx: null, isPlaying: false, notes: [110, 130.81, 146.83, 164.81, 196.00], noteIndex: 0, tempo: 200, interval: null,
+            init() { this.ctx = new (window.AudioContext || window.webkitAudioContext)(); },
+            playNote(freq, type, dur, vol) {
+                if(!this.ctx) return; const o=this.ctx.createOscillator(); const g=this.ctx.createGain();
+                o.type=type; o.frequency.setValueAtTime(freq, this.ctx.currentTime);
+                g.gain.setValueAtTime(0, this.ctx.currentTime); g.gain.linearRampToValueAtTime(vol, this.ctx.currentTime+0.01); g.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime+dur);
+                o.connect(g); g.connect(this.ctx.destination); o.start(); o.stop(this.ctx.currentTime+dur);
             },
-            lose: (t) => {
-                const o = audioCtx.createOscillator(); const g = audioCtx.createGain();
-                o.type='sawtooth'; o.frequency.setValueAtTime(100,t); o.frequency.linearRampToValueAtTime(50,t+0.5);
-                g.gain.setValueAtTime(0.2,t); g.gain.linearRampToValueAtTime(0.01,t+0.5);
-                o.connect(g); g.connect(audioCtx.destination); o.start(t); o.stop(t+0.5);
+            start() {
+                if(this.isPlaying) return; this.isPlaying=true; if(this.ctx.state==='suspended')this.ctx.resume();
+                this.interval=setInterval(()=>{ 
+                    const f=this.notes[this.noteIndex%this.notes.length]; 
+                    this.playNote(f,'triangle',0.3,0.1); this.playNote(f*0.5,'sine',0.5,0.2); 
+                    this.noteIndex++; 
+                }, this.tempo);
             },
-            rewind: (t) => {
-                const o = audioCtx.createOscillator(); const g = audioCtx.createGain();
-                o.type='square'; o.frequency.setValueAtTime(200,t); o.frequency.linearRampToValueAtTime(800,t+0.8);
-                g.gain.setValueAtTime(0.1,t); g.gain.linearRampToValueAtTime(0,t+0.8);
-                o.connect(g); g.connect(audioCtx.destination); o.start(t); o.stop(t+0.8);
+            stop(){ clearInterval(this.interval); this.isPlaying=false; },
+            speedUp(val){ this.tempo = Math.max(80, 200-(val*10)); this.stop(); this.start(); },
+            sfx(type) {
+                if(!this.ctx) return;
+                if(type==='win'){ this.playNote(880,'sine',0.1,0.1); setTimeout(()=>this.playNote(1760,'sine',0.2,0.1),100); }
+                if(type==='lose'){ this.playNote(100,'sawtooth',0.5,0.2); }
+                if(type==='rewind'){
+                    const o=this.ctx.createOscillator(); const g=this.ctx.createGain();
+                    o.frequency.setValueAtTime(200,this.ctx.currentTime); o.frequency.linearRampToValueAtTime(1000,this.ctx.currentTime+0.5);
+                    g.gain.setValueAtTime(0.2,this.ctx.currentTime); g.gain.linearRampToValueAtTime(0,this.ctx.currentTime+0.5);
+                    o.connect(g); g.connect(this.ctx.destination); o.start(); o.stop(this.ctx.currentTime+0.5);
+                }
             }
         };
 
-        // --- VISUALS (TIME DILATION) ---
+        // --- 2. VISUALS: WARP FIELD (Particles Coming Towards You) ---
         const canvas = document.getElementById('chrono-canvas');
         const ctx = canvas.getContext('2d');
-        let stars = []; let warpSpeed = 2; let isReversed = false;
+        let stars = []; let speed = 2; let reverse = false;
 
         function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
         window.addEventListener('resize', resize); resize();
 
         class Star {
-            constructor() { this.reset(); }
-            reset() { this.x = (Math.random()-0.5)*canvas.width*2; this.y = (Math.random()-0.5)*canvas.height*2; this.z = Math.random()*canvas.width; }
+            constructor() { this.x=(Math.random()-0.5)*canvas.width*2; this.y=(Math.random()-0.5)*canvas.height*2; this.z=Math.random()*canvas.width; }
             update() {
-                if(!isReversed) { 
-                    this.z -= warpSpeed; 
-                    if(this.z<1) { this.reset(); this.z = canvas.width; } 
-                }
-                else { 
-                    this.z += warpSpeed*4; 
-                    if(this.z>canvas.width) { this.z = 1; } 
-                }
+                if(!reverse){ this.z-=speed; if(this.z<=0){ this.z=canvas.width; this.x=(Math.random()-0.5)*canvas.width*2; this.y=(Math.random()-0.5)*canvas.height*2; } }
+                else { this.z+=speed*5; if(this.z>canvas.width)this.z=1; }
             }
             draw() {
-                let sx = (this.x/this.z)*canvas.width + canvas.width/2;
-                let sy = (this.y/this.z)*canvas.height + canvas.height/2;
-                // THEME: "Speed it up" - Stars stretch longer as warpSpeed increases
-                let len = warpSpeed * 2; 
-                let r = (1 - this.z/canvas.width)*3;
-                
-                ctx.strokeStyle = "white"; 
-                ctx.lineWidth = r;
-                ctx.beginPath(); 
-                ctx.moveTo(sx, sy);
-                // Draw trails based on movement to simulate speed
-                ctx.lineTo(sx + (this.x/this.z)*len, sy + (this.y/this.z)*len);
-                ctx.stroke();
+                let sx=(this.x/this.z)*canvas.width+canvas.width/2; let sy=(this.y/this.z)*canvas.height+canvas.height/2;
+                let size=(1-this.z/canvas.width)*3; 
+                ctx.fillStyle="white"; ctx.beginPath(); ctx.arc(sx, sy, size, 0, Math.PI*2); ctx.fill();
             }
         }
-        for(let i=0; i<300; i++) stars.push(new Star());
-
+        for(let i=0; i<400; i++) stars.push(new Star());
         function animate() {
-            // Trail effect (Motion Blur)
-            ctx.fillStyle = "rgba(5, 5, 5, 0.4)"; 
-            ctx.fillRect(0,0,canvas.width,canvas.height);
-            stars.forEach(s => { s.update(); s.draw(); });
-            requestAnimationFrame(animate);
+            ctx.fillStyle="rgba(0,0,0,0.3)"; ctx.fillRect(0,0,canvas.width,canvas.height);
+            stars.forEach(s=>{s.update(); s.draw();}); requestAnimationFrame(animate);
         }
         animate();
 
-        // --- GAMEPLAY ---
-        const els = {
-            main: document.getElementById('main-body'),
-            landing: document.getElementById('landing-page'),
-            game: document.getElementById('game-ui'),
-            over: document.getElementById('game-over'),
-            transition: document.getElementById('era-transition'),
-            score: document.getElementById('score-val'),
-            rewind: document.getElementById('rewind-val'),
-            timer: document.getElementById('timer-bar'),
-            qBox: document.querySelector('.question-box'),
-            qText: document.getElementById('question-text'),
-            opts: document.getElementById('options-area'),
-            era: document.getElementById('era-display')
-        };
+        // --- 3. LOGIC ---
+        const DB = [
+            {y:1990, q:"Before Google, we 'Surfed the Web' with...", a:"WorldWideWeb", w:["Chrome","Explorer"]},
+            {y:1993, q:"This FPS game caused a global moral panic.", a:"DOOM", w:["Call of Duty","Halo"]},
+            {y:1995, q:"Windows 95's video guide starred...", a:"Friends Cast", w:["Seinfeld","Bill Gates"]},
+            {y:1998, q:"Google was founded in a...", a:"Garage", w:["Basement","Skyscraper"]},
+            {y:2000, q:"The indestructible mobile phone.", a:"Nokia 3310", w:["iPhone","Blackberry"]},
+            {y:2004, q:"Facebook was originally only for...", a:"Harvard", w:["Everyone","USA"]},
+            {y:2007, q:"Steve Jobs released 3 devices in one.", a:"iPhone", w:["iPad","MacBook"]},
+            {y:2010, q:"This app made photo filters famous.", a:"Instagram", w:["Snapchat","Vine"]},
+            {y:2012, q:"First video to hit 1 Billion views.", a:"Gangnam Style", w:["Baby Shark","Despacito"]},
+            {y:2016, q:"Everyone went outside to catch...", a:"Pokemon", w:["Ghosts","Dates"]},
+            {y:2020, q:"The app that defined the lockdown.", a:"Zoom", w:["Skype","Teams"]},
+            {y:2023, q:"The AI that writes essays for you.", a:"ChatGPT", w:["Siri","Alexa"]}
+        ];
 
-        let state = { active: false, score: 0, rounds: 0, hasRewind: true, maxTime: 4000, curTime: 4000, q: null, timer: null };
+        const els = { main:document.body, land:document.getElementById('landing-page'), trans:document.getElementById('era-transition'), game:document.getElementById('game-ui'), over:document.getElementById('game-over'), score:document.getElementById('score-val'), rewind:document.getElementById('rewind-val'), timer:document.getElementById('timer-bar'), qTxt:document.getElementById('question-text'), opts:document.getElementById('options-area'), era:document.getElementById('era-display'), yc:document.getElementById('year-counter') };
+        
+        let state = { score:0, round:0, hasRewind:true, maxTime:4000, curTime:0, timer:null };
 
         function init() {
-            state.score=0; state.rounds=0; state.hasRewind=true; state.maxTime=5000; state.active=true;
+            AudioEngine.init(); AudioEngine.start();
+            state = { score:0, round:0, hasRewind:true, maxTime:5000, curTime:0, timer:null };
             els.score.innerText="0"; els.rewind.innerText="ONLINE"; els.rewind.style.color="var(--secondary)";
-            els.landing.classList.add('hidden'); els.over.classList.add('hidden');
-            warpSpeed=2; nextRound();
+            els.land.classList.add('hidden'); els.over.classList.add('hidden');
+            speed=2; nextRound();
         }
 
         function nextRound() {
-            state.rounds++;
-            // THEME: "Speed it up" - Time gets faster, warp gets faster
-            state.maxTime = Math.max(1500, state.maxTime * 0.95);
-            state.curTime = state.maxTime;
-            warpSpeed += 0.8; 
-
-            state.q = QUESTIONS_DB[Math.floor(Math.random()*QUESTIONS_DB.length)];
+            if(state.round>=DB.length){ state.round=0; state.maxTime*=0.8; }
+            let d = DB[state.round];
             
-            els.game.classList.add('hidden');
-            els.transition.classList.remove('hidden');
-            document.getElementById('year-counter').innerText = state.q.era;
-            
-            els.main.className = "";
-            if(state.q.era < 2000) els.main.classList.add('theme-90s');
-            else if(state.q.era < 2010) els.main.classList.add('theme-00s');
-            else els.main.classList.add('theme-10s');
+            // Visuals
+            els.game.classList.add('hidden'); els.trans.classList.remove('hidden');
+            els.yc.innerText = d.y;
+            els.main.className=""; 
+            if(d.y>=1990)els.main.classList.add('theme-1990');
+            if(d.y>=2000)els.main.classList.add('theme-2000');
+            if(d.y>=2010)els.main.classList.add('theme-2010');
+            if(d.y>=2020)els.main.classList.add('theme-2020');
 
-            setTimeout(() => {
-                els.transition.classList.add('hidden');
-                els.game.classList.remove('hidden');
-                showQ();
+            setTimeout(()=>{
+                els.trans.classList.add('hidden'); els.game.classList.remove('hidden');
+                els.era.innerText="ERA: "+d.y; els.qTxt.innerText=d.q; els.qTxt.style.color="#eee";
+                els.opts.innerHTML="";
+                let op = [d.a, ...d.w].sort(()=>Math.random()-0.5);
+                op.forEach(o=>{
+                    let b=document.createElement('button'); b.className="tech-btn option-btn"; b.innerText=o;
+                    b.onclick=()=>check(o,d.a); els.opts.appendChild(b);
+                });
+                startTimer();
             }, 1200);
         }
 
-        function showQ() {
-            els.era.innerText = `YEAR: ${state.q.era}`;
-            els.qText.innerText = state.q.text;
-            els.qText.style.color = "#eee";
-            els.opts.innerHTML = "";
-            els.qBox.classList.remove('time-critical'); // Reset glitch effect
-            
-            let choices = [state.q.correct, ...state.q.wrongs].sort(()=>Math.random()-0.5);
-            choices.forEach(c => {
-                let btn = document.createElement('button');
-                btn.className = "option-btn";
-                btn.innerText = c;
-                btn.onclick = () => check(c);
-                els.opts.appendChild(btn);
-            });
-            startTimer();
-        }
-
-        function startTimer() {
+        function startTimer(){
             if(state.timer) clearInterval(state.timer);
-            state.timer = setInterval(() => {
-                state.curTime -= 20;
-                let pct = (state.curTime/state.maxTime)*100;
-                els.timer.style.width = pct + "%";
-                
-                // THEME: "Fall apart" - When time is low, UI glitches
-                if(pct < 30) {
-                    els.timer.style.backgroundColor = "var(--danger)";
-                    els.qBox.classList.add('time-critical');
-                } else {
-                    els.timer.style.backgroundColor = "var(--accent)";
-                }
-
-                if(state.curTime <= 0) { clearInterval(state.timer); fail(); }
-            }, 20);
+            state.curTime=state.maxTime;
+            speed = 2+(state.round*0.5); AudioEngine.speedUp(state.round);
+            state.timer=setInterval(()=>{
+                state.curTime-=20; els.timer.style.width=(state.curTime/state.maxTime)*100+"%";
+                if(state.curTime<=0){ clearInterval(state.timer); fail(); }
+            },20);
         }
 
-        function check(ans) {
-            if(!state.active) return;
+        function check(ans, cor){
+            if(ans===cor){
+                clearInterval(state.timer); AudioEngine.sfx('win');
+                state.score+=100+Math.ceil(state.curTime/10); els.score.innerText=state.score;
+                state.round++; nextRound();
+            } else fail();
+        }
+
+        function fail(){
             clearInterval(state.timer);
-            if(ans === state.q.correct) {
-                SOUNDS.win(audioCtx.currentTime);
-                state.score += 100 + Math.floor(state.curTime/10);
-                els.score.innerText = state.score;
-                els.main.classList.add('correct-flash');
-                setTimeout(()=>els.main.classList.remove('correct-flash'),300);
-                setTimeout(nextRound, 500);
+            if(state.hasRewind){
+                state.hasRewind=false; els.rewind.innerText="OFFLINE"; els.rewind.style.color="var(--danger)";
+                AudioEngine.sfx('rewind'); reverse=true; document.body.classList.add('rewind-fx');
+                els.qTxt.innerHTML="<span style='color:var(--warning)'>⚠ PARADOX DETECTED. REWINDING...</span>";
+                setTimeout(()=>{
+                    reverse=false; document.body.classList.remove('rewind-fx');
+                    state.maxTime+=1000; startTimer(); els.qTxt.innerText=DB[state.round].q;
+                }, 1000);
             } else {
-                fail();
+                AudioEngine.sfx('lose'); AudioEngine.stop();
+                els.game.classList.add('hidden'); els.over.classList.remove('hidden');
+                document.getElementById('final-score').innerText=state.score;
             }
         }
 
-        function fail() {
-            if(state.hasRewind) {
-                // THEME: "Rewind/Loop"
-                state.hasRewind = false;
-                els.rewind.innerText = "OFFLINE";
-                els.rewind.style.color = "var(--danger)";
-                SOUNDS.rewind(audioCtx.currentTime);
-                isReversed = true;
-                els.main.classList.add('rewind-active');
-                els.qText.innerHTML = "<span style='color:var(--warning)'>⚠ PARADOX DETECTED. REWINDING TIMELINE...</span>";
-                setTimeout(() => {
-                    isReversed = false;
-                    els.main.classList.remove('rewind-active');
-                    state.curTime = state.maxTime;
-                    els.qText.innerText = state.q.text;
-                    startTimer();
-                }, 1500);
-            } else {
-                state.active = false;
-                SOUNDS.lose(audioCtx.currentTime);
-                els.game.classList.add('hidden');
-                els.over.classList.remove('hidden');
-                document.getElementById('final-score').innerText = state.score;
-                document.getElementById('final-rounds').innerText = state.rounds;
-            }
-        }
-
-        document.getElementById('start-btn').onclick = init;
-        document.getElementById('retry-btn').onclick = init;
-        window.onkeydown = (e) => { if(e.key==="Enter" && !state.active) init(); };
-
+        document.getElementById('start-btn').onclick=init;
+        document.getElementById('retry-btn').onclick=init;
     </script>
 </body>
 </html>
