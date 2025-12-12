@@ -6,41 +6,26 @@
     <title>NEURO-FRIED: CHRONO SINGULARITY</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Courier+Prime:wght@700&family=VT323&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@900&display=swap');
 
         :root {
-            /* Default Cyberpunk Palette */
+            /* Palette */
             --bg-color: #050505;
-            --primary: #b026ff;     /* Purple */
-            --secondary: #00f3ff;   /* Cyan */
-            --accent: #39ff14;      /* Green */
-            --danger: #ff003c;      /* Red */
-            --warning: #fff200;     /* Yellow */
+            --primary: #b026ff;
+            --secondary: #00f3ff;
+            --accent: #39ff14;
+            --danger: #ff003c;
+            --warning: #fff200;
             
             --font-main: 'Courier Prime', monospace;
             --font-pixel: 'VT323', monospace;
-            
-            --scanline-color: rgba(0, 0, 0, 0.5);
+            --font-display: 'Orbitron', sans-serif;
         }
 
-        /* --- ERA THEMES (Swapped dynamically via JS) --- */
-        body.theme-90s {
-            --primary: #ff71ce; /* Vapor Pink */
-            --secondary: #01cdfe; /* Vapor Blue */
-            --accent: #05ffa1; /* Vapor Green */
-            --bg-color: #1a0b2e;
-        }
-        body.theme-00s {
-            --primary: #00ff00; /* Matrix Green */
-            --secondary: #003b00; /* Dark Green */
-            --accent: #ccffcc; /* Light Green */
-            --bg-color: #000000;
-        }
-        body.theme-10s {
-            --primary: #ffffff; /* Minimal White */
-            --secondary: #888888; /* Grey */
-            --accent: #3498db; /* Flat Blue */
-            --bg-color: #2c3e50;
-        }
+        /* --- THEMES --- */
+        body.theme-90s { --primary: #ff71ce; --secondary: #01cdfe; --accent: #fffb96; --bg-color: #1a0b2e; }
+        body.theme-00s { --primary: #00ff00; --secondary: #003b00; --accent: #ccffcc; --bg-color: #001100; }
+        body.theme-10s { --primary: #ffffff; --secondary: #333333; --accent: #3498db; --bg-color: #202020; }
 
         body {
             margin: 0;
@@ -51,35 +36,34 @@
             height: 100vh;
             overflow: hidden;
             user-select: none;
-            transition: background-color 0.5s, color 0.5s;
+            transition: background-color 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
 
-        /* --- CANVAS BACKGROUND --- */
+        /* --- NOISE TEXTURE --- */
+        .noise-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 950;
+            opacity: 0.4;
+        }
+
+        /* --- CANVAS --- */
         #chrono-canvas {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0; /* Behind everything */
-            opacity: 0.6;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 0;
+            opacity: 0.5;
         }
 
-        /* --- CRT OVERLAY --- */
+        /* --- SCANLINES --- */
         .scanlines {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(
-                to bottom,
-                rgba(255,255,255,0),
-                rgba(255,255,255,0) 50%,
-                rgba(0,0,0,0.2) 50%,
-                rgba(0,0,0,0.2)
-            );
-            background-size: 100% 4px;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle, rgba(0,0,0,0) 60%, rgba(0,0,0,0.8) 100%),
+                        linear-gradient(to bottom, rgba(255,255,255,0) 50%, rgba(0,0,0,0.1) 50%);
+            background-size: 100% 100%, 100% 4px;
             pointer-events: none;
             z-index: 900;
         }
@@ -88,197 +72,184 @@
         .hud-element {
             position: absolute;
             z-index: 100;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             text-transform: uppercase;
-            padding: 10px;
-            border: 1px solid transparent;
+            padding: 8px 12px;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(4px);
+            clip-path: polygon(0 0, 100% 0, 100% 70%, 90% 100%, 0 100%);
+            border-left: 3px solid var(--secondary);
         }
 
-        #hud-top-left { top: 20px; left: 20px; color: var(--primary); }
+        #hud-top-left { top: 25px; left: 25px; transform: rotate(-1deg); }
         #hud-top-right { 
-            top: 20px; right: 20px; 
-            color: var(--warning); 
-            border: 1px solid var(--warning); 
-            box-shadow: 0 0 5px var(--warning);
+            top: 25px; right: 25px; 
+            border-left: none; 
+            border-right: 3px solid var(--warning);
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 10% 100%, 0 70%);
+            color: var(--warning);
+            transform: rotate(1deg);
         }
         #hud-bottom-right { 
-            bottom: 20px; right: 20px; 
-            color: var(--secondary); 
+            bottom: 25px; right: 25px; 
             font-weight: bold; 
-            animation: pulseRank 2s infinite; 
-        }
-
-        @keyframes pulseRank {
-            0% { text-shadow: 0 0 5px var(--secondary); }
-            50% { text-shadow: 0 0 20px var(--secondary); transform: scale(1.05); }
-            100% { text-shadow: 0 0 5px var(--secondary); }
+            color: var(--primary);
+            background: transparent;
+            clip-path: none;
+            border: none;
+            font-size: 2rem;
+            font-family: var(--font-pixel);
+            letter-spacing: 5px;
+            opacity: 0.7;
         }
 
         /* --- SCREENS --- */
         .screen {
             position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
+            width: 100%; height: 100%;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            background: transparent;
             z-index: 10;
-            transition: opacity 0.4s ease-in-out;
+            transition: opacity 0.5s cubic-bezier(0.19, 1, 0.22, 1);
         }
 
-        .hidden {
-            opacity: 0;
-            pointer-events: none;
-            display: none !important;
-        }
+        .hidden { opacity: 0; pointer-events: none; display: none !important; }
 
-        /* --- LANDING PAGE --- */
+        /* --- LANDING --- */
         h1.glitch-title {
-            font-size: 6rem;
-            font-weight: 900;
+            font-family: var(--font-display);
+            font-size: 7vw;
             color: white;
-            position: relative;
-            margin-bottom: 20px;
+            margin: 0;
+            line-height: 0.9;
+            text-transform: uppercase;
             text-align: center;
-            text-shadow: 4px 4px 0px var(--primary), -4px -4px 0px var(--danger);
-            animation: glitchMain 3s infinite alternate;
+            text-shadow: 5px 5px 0px rgba(176, 38, 255, 0.3);
+            animation: textFloat 4s ease-in-out infinite;
+        }
+
+        @keyframes textFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
         }
 
         .subtitle {
-            font-family: var(--font-pixel);
-            font-size: 2rem;
-            color: var(--accent);
-            letter-spacing: 5px;
-            margin-bottom: 60px;
-        }
-
-        @keyframes glitchMain {
-            0% { transform: skew(0deg); text-shadow: 4px 4px 0px var(--primary), -4px -4px 0px var(--danger); }
-            20% { transform: skew(-2deg); }
-            40% { transform: skew(2deg); text-shadow: -4px 4px 0px var(--primary), 4px -4px 0px var(--danger); }
-            100% { transform: skew(0deg); }
-        }
-
-        .lock-in-btn {
-            background: rgba(0,0,0,0.7);
-            border: 3px solid var(--primary);
-            color: white;
-            padding: 20px 50px;
             font-family: var(--font-main);
-            font-size: 1.8rem;
-            text-transform: uppercase;
-            cursor: pointer;
-            transition: 0.2s;
-            box-shadow: 0 0 20px rgba(176, 38, 255, 0.3);
-            position: relative;
-            overflow: hidden;
+            color: var(--accent);
+            letter-spacing: 3px;
+            margin-top: 10px;
+            margin-bottom: 60px;
+            background: rgba(0,0,0,0.5);
+            padding: 5px 15px;
+            transform: skewX(-10deg);
         }
 
-        .lock-in-btn:hover {
-            background: var(--primary);
-            color: black;
-            box-shadow: 0 0 50px var(--primary);
-            transform: scale(1.05);
+        /* --- BUTTONS --- */
+        .lock-in-btn, .option-btn {
+            position: relative;
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+            border: none;
+            padding: 25px 40px;
+            font-family: var(--font-pixel);
+            font-size: 1.6rem;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: all 0.2s;
+            clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px);
+            box-shadow: inset 0 0 0 2px rgba(255,255,255,0.1);
         }
+
+        .lock-in-btn::after, .option-btn::after {
+            content: '';
+            position: absolute;
+            bottom: 0; right: 0;
+            width: 30px; height: 30px;
+            background: linear-gradient(135deg, transparent 50%, var(--primary) 50%);
+            z-index: -1;
+            transition: 0.3s;
+        }
+
+        .lock-in-btn:hover, .option-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+            color: var(--accent);
+            transform: translate(-2px, -2px);
+            box-shadow: inset 0 0 0 2px var(--accent);
+            text-shadow: 0 0 8px var(--accent);
+        }
+        .lock-in-btn:hover::after, .option-btn:hover::after { width: 100%; height: 100%; background: var(--accent); opacity: 0.1; }
 
         /* --- GAME UI --- */
         #timer-wrapper {
-            width: 70%;
-            height: 20px;
-            border: 2px solid #333;
-            margin-bottom: 40px;
-            border-radius: 4px;
-            padding: 2px;
-            box-shadow: 0 0 15px rgba(0,0,0,0.5);
-            position: relative;
+            width: 60%;
+            height: 12px;
+            background: #111;
+            margin-bottom: 30px;
+            transform: skewX(-20deg);
+            border: 1px solid #444;
+            overflow: hidden;
         }
 
         #timer-bar {
-            width: 100%;
-            height: 100%;
+            width: 100%; height: 100%;
             background: var(--accent);
-            box-shadow: 0 0 10px var(--accent);
-            transition: width 0.05s linear;
-        }
-
-        .anomaly-glitch {
-            animation: barGlitch 0.2s infinite;
-            filter: invert(1);
-        }
-        
-        @keyframes barGlitch {
-            0% { opacity: 1; }
-            50% { opacity: 0; }
-            100% { opacity: 1; }
-        }
-
-        .era-display {
-            font-family: var(--font-pixel);
-            color: var(--secondary);
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            text-shadow: 0 0 10px var(--secondary);
+            box-shadow: 0 0 15px var(--accent);
         }
 
         .question-box {
-            font-size: 2.2rem;
+            font-size: 2rem;
             text-align: center;
-            max-width: 900px;
-            margin-bottom: 50px;
-            line-height: 1.4;
+            max-width: 800px;
+            margin-bottom: 40px;
+            line-height: 1.3;
             color: #eee;
-            background: rgba(0,0,0,0.6);
-            padding: 20px;
-            border-left: 5px solid var(--secondary);
-            backdrop-filter: blur(5px);
+            padding: 30px;
+            background: rgba(0,0,0,0.4);
+            border-top: 2px solid var(--secondary);
+            border-bottom: 2px solid var(--secondary);
+            background: linear-gradient(90deg, rgba(0,243,255,0) 0%, rgba(0,243,255,0.05) 50%, rgba(0,243,255,0) 100%);
         }
 
         .options-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 25px;
-            width: 90%;
+            gap: 20px;
+            width: 85%;
             max-width: 1200px;
         }
 
         .option-btn {
-            background: rgba(10,10,10, 0.9);
-            border: 2px solid #444;
-            color: white;
-            padding: 30px 10px;
-            font-family: var(--font-pixel);
-            font-size: 1.8rem;
-            cursor: pointer;
-            transition: all 0.15s;
-            text-transform: uppercase;
-            position: relative;
+            font-size: 1.4rem;
+            padding: 30px 20px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100px;
         }
 
-        .option-btn:hover {
-            border-color: var(--accent);
-            color: var(--accent);
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
-        }
-        
-        .option-btn:active { transform: scale(0.95); }
-
-        /* --- TRANSITION OVERLAY --- */
-        #era-transition {
-            background: black;
-            z-index: 200;
-        }
+        /* --- TRANSITIONS --- */
         #year-counter {
-            font-size: 8rem;
-            font-family: var(--font-pixel);
-            color: var(--secondary);
-            text-shadow: 0 0 30px var(--secondary);
+            font-size: 10rem;
+            font-family: var(--font-display);
+            color: transparent;
+            -webkit-text-stroke: 2px var(--secondary);
+            text-shadow: 0 0 20px var(--secondary);
         }
 
-        /* --- VISUAL FX --- */
+        /* --- FX (TIME INSTABILITY) --- */
+        .time-critical {
+            animation: chromaticAberration 0.2s infinite;
+        }
+        @keyframes chromaticAberration {
+            0% { text-shadow: 2px 0 var(--danger), -2px 0 var(--secondary); transform: translate(1px, 0); }
+            50% { text-shadow: -2px 0 var(--danger), 2px 0 var(--secondary); transform: translate(-1px, 0); }
+            100% { text-shadow: 2px 0 var(--danger), -2px 0 var(--secondary); transform: translate(0, 1px); }
+        }
+
         .shake-screen { animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both; }
-        
         @keyframes shake {
             10%, 90% { transform: translate3d(-5px, 0, 0); }
             20%, 80% { transform: translate3d(10px, 0, 0); }
@@ -286,535 +257,305 @@
             40%, 60% { transform: translate3d(10px, 0, 0); }
         }
 
-        .rewind-active { animation: rewindAnim 1.5s cubic-bezier(0.25, 1, 0.5, 1); }
+        .rewind-active { animation: rewindEffect 1.5s ease-in-out; }
+        @keyframes rewindEffect {
+            0% { filter: invert(0) blur(0px); transform: scale(1); }
+            20% { filter: invert(1) blur(4px) hue-rotate(90deg); transform: scale(1.1) rotate(-3deg); }
+            80% { filter: invert(0.8) blur(2px) hue-rotate(-90deg); transform: scale(1.05) rotate(3deg); }
+            100% { filter: invert(0) blur(0px); transform: scale(1); }
+        }
+
+        .correct-flash { animation: flashG 0.3s; }
+        @keyframes flashG { 0% { background: rgba(57, 255, 20, 0.2); } 100% { background: transparent; } }
         
-        @keyframes rewindAnim {
-            0% { filter: invert(0); transform: scale(1); }
-            10% { filter: invert(1); transform: scale(1.1) rotate(-3deg); }
-            50% { filter: invert(0.8) hue-rotate(180deg); transform: scale(1.05) rotate(3deg); }
-            100% { filter: invert(0); transform: scale(1) rotate(0deg); }
+        .wrong-flash { animation: flashR 0.3s; }
+        @keyframes flashR { 0% { background: rgba(255, 0, 60, 0.3); } 100% { background: transparent; } }
+
+        @media (max-width: 800px) {
+            .options-grid { grid-template-columns: 1fr; }
+            h1.glitch-title { font-size: 15vw; }
         }
 
-        .correct-flash { animation: flashGreen 0.4s ease-out; }
-        @keyframes flashGreen {
-            0% { background-color: var(--accent); }
-            100% { background-color: transparent; }
-        }
-
-        .wrong-flash { animation: flashRed 0.4s ease-out; }
-        @keyframes flashRed {
-            0% { background-color: var(--danger); }
-            100% { background-color: transparent; }
-        }
-
-        /* --- GAME OVER --- */
-        .game-over-title {
-            font-size: 5rem;
-            color: var(--danger);
-            margin-bottom: 20px;
-            font-family: var(--font-pixel);
-            text-shadow: 5px 5px 0 #000;
-        }
     </style>
 </head>
 <body id="main-body">
 
     <canvas id="chrono-canvas"></canvas>
-    
-    <div class="scanlines"></div>
+    <div class="noise-overlay"></div> <div class="scanlines"></div>
 
-    <div id="hud-top-left" class="hud-element">AURA: <span id="score-val" style="color:var(--accent)">0</span></div>
-    <div id="hud-top-right" class="hud-element">REWIND: <span id="rewind-val">READY</span></div>
+    <div id="hud-top-left" class="hud-element">
+        <span style="font-size:0.8rem; opacity:0.7">SCORE_DB://</span><br>
+        <span id="score-val" style="color:var(--accent); font-size:1.4rem;">0</span>
+    </div>
+    
+    <div id="hud-top-right" class="hud-element">
+        <span style="font-size:0.8rem; opacity:0.7">STATUS://</span><br>
+        <span id="rewind-val">ONLINE</span>
+    </div>
+    
     <div id="hud-bottom-right" class="hud-element">NOVICE</div>
 
     <div id="landing-page" class="screen">
-        <h1 class="glitch-title">NEURO-FRIED</h1>
-        <div class="subtitle">CHRONO SINGULARITY</div>
-        <button class="lock-in-btn" id="start-btn">INITIALIZE PROTOCOL</button>
-        <p style="margin-top: 30px; font-size: 1rem; color: #888; font-family: var(--font-pixel);">[ PRESS ENTER TO START ]</p>
+        <h1 class="glitch-title">NEURO<br>FRIED</h1>
+        <div class="subtitle">/// CHRONO_SINGULARITY_VER_2.5 ///</div>
+        <button class="lock-in-btn" id="start-btn">INITIALIZE SYSTEM</button>
+        <p style="margin-top: 30px; font-family: var(--font-pixel); opacity: 0.5;">[ PRESS ENTER TO CONNECT ]</p>
     </div>
 
     <div id="era-transition" class="screen hidden">
-        <div style="color:white; font-size: 1.5rem; margin-bottom:20px;">WARPING TO...</div>
+        <div style="font-family: var(--font-pixel); letter-spacing: 2px;">TIME WARP SEQUENCE INITIATED</div>
         <div id="year-counter">1990</div>
     </div>
 
     <div id="game-ui" class="screen hidden">
+        <div class="era-display" id="era-display" style="opacity: 0.8; letter-spacing: 5px;">YEAR: 1999</div>
         <div id="timer-wrapper"><div id="timer-bar"></div></div>
-        <div class="era-display" id="era-display">ERA: 1999</div>
-        <div class="question-box" id="question-text">Loading Data...</div>
+        
+        <div class="question-box">
+            <span style="color:var(--secondary); font-size: 0.8rem; display:block; margin-bottom:10px;">>> INCOMING QUERY:</span>
+            <span id="question-text">Loading Data...</span>
+        </div>
+        
         <div class="options-grid" id="options-area"></div>
     </div>
 
     <div id="game-over" class="screen hidden">
-        <div class="game-over-title">TIMELINE COLLAPSED</div>
-        <div style="font-size: 2rem; margin-bottom: 30px; text-align: center;">
-            <p>You survived <span id="final-rounds" style="color:var(--secondary)">0</span> eras.</p>
-            <p>Final Aura: <span id="final-score" style="color:var(--accent)">0</span></p>
+        <h1 class="glitch-title" style="font-size: 4rem; color: var(--danger); text-shadow: none;">FATAL<br>ERROR</h1>
+        <div style="font-size: 1.5rem; margin-bottom: 30px; text-align: center; font-family: var(--font-main);">
+            <p>TIMELINE SEVERED AT ERA <span id="final-rounds" style="color:var(--secondary)">0</span></p>
+            <p>TOTAL AURA: <span id="final-score" style="color:var(--accent)">0</span></p>
         </div>
-        <button class="lock-in-btn" id="retry-btn">RESET TIMELINE</button>
+        <button class="lock-in-btn" id="retry-btn">REBOOT SYSTEM</button>
     </div>
 
     <script>
-        /**
-         * ------------------------------------------------------------------
-         * DATA LAYER: The Time Capsule
-         * ------------------------------------------------------------------
-         */
+        // --- DATA ---
         const QUESTIONS_DB = [
-            // --- THE 90s (Vaporwave Era) ---
-            { era: 1990, text: "This software made 'Surfing the Web' possible for normal people.", correct: "WorldWideWeb / Nexus", wrongs: ["Chrome", "Internet Explorer"] },
-            { era: 1993, text: "The FPS game that defined the genre (and caused moral panic).", correct: "DOOM", wrongs: ["Call of Duty", "Halo"] },
-            { era: 1995, text: "Windows 95 launched with a guide featuring characters from this sitcom.", correct: "Friends", wrongs: ["Seinfeld", "Full House"] },
-            { era: 1996, text: "The first sheep ever cloned. Hello, Dolly.", correct: "Dolly", wrongs: ["Molly", "Polly"] },
-            { era: 1997, text: "James Cameron's movie that dominated the world.", correct: "Titanic", wrongs: ["Avatar", "Terminator 2"] },
-            { era: 1998, text: "Google was founded in a...", correct: "Garage", wrongs: ["Basement", "Skyscraper"] },
-            { era: 1999, text: "The file sharing service that terrified the music industry.", correct: "Napster", wrongs: ["Spotify", "Limewire"] },
-            
-            // --- THE 00s (Digital Revolution) ---
-            { era: 2000, text: "The indestructible brick phone everyone owned.", correct: "Nokia 3310", wrongs: ["Motorola Razr", "Blackberry"] },
-            { era: 2001, text: "Apple launched this device, putting '1000 songs in your pocket'.", correct: "iPod", wrongs: ["Zune", "Walkman"] },
-            { era: 2003, text: "The social network where Tom was everyone's first friend.", correct: "MySpace", wrongs: ["Facebook", "Friendster"] },
-            { era: 2004, text: "The launch of 'The Facebook'. Access was limited to...", correct: "Harvard Students", wrongs: ["Everyone", "US Citizens"] },
-            { era: 2005, text: "The first video ever uploaded to YouTube.", correct: "Me at the zoo", wrongs: ["Charlie Bit Me", "Evolution of Dance"] },
-            { era: 2007, text: "Steve Jobs introduced three devices in one.", correct: "iPhone", wrongs: ["iPad", "MacBook"] },
-            { era: 2009, text: "The blocky sandbox game created by Notch.", correct: "Minecraft", wrongs: ["Roblox", "Terraria"] },
-
-            // --- THE 10s (The Mobile/Social Era) ---
-            { era: 2010, text: "The app that made photo filters famous (originally Burbank).", correct: "Instagram", wrongs: ["Snapchat", "Vine"] },
-            { era: 2012, text: "First YouTube video to hit 1 Billion views.", correct: "Gangnam Style", wrongs: ["Baby Shark", "Despacito"] },
-            { era: 2013, text: "The 6-second video app that defined a generation's humor.", correct: "Vine", wrongs: ["TikTok", "Musical.ly"] },
-            { era: 2016, text: "Everyone went outside to catch them all.", correct: "Pokemon GO", wrongs: ["Ingress", "Digimon"] },
-            { era: 2017, text: "The fidget toy that spun into every classroom.", correct: "Fidget Spinner", wrongs: ["Pop-it", "Slime"] },
-            { era: 2019, text: "The first image of this cosmic phenomenon was captured.", correct: "Black Hole", wrongs: ["Supernova", "Alien"] },
-
-            // --- THE 20s (The Modern Glitch) ---
-            { era: 2020, text: "The video conferencing tool that became a verb.", correct: "Zoom", wrongs: ["Skype", "Teams"] },
-            { era: 2021, text: "Digital art sold for millions as NFTs. What does NFT stand for?", correct: "Non-Fungible Token", wrongs: ["New Fund Tech", "No Fun Today"] },
-            { era: 2022, text: "Elon Musk bought this platform for $44 Billion.", correct: "Twitter", wrongs: ["Facebook", "Tumblr"] },
-            { era: 2023, text: "The AI Chatbot that changed homework forever.", correct: "ChatGPT", wrongs: ["Siri", "Alexa"] },
-            { era: 2024, text: "Slang: To have charisma or charm.", correct: "Rizz", wrongs: ["Drip", "Cap"] },
-            { era: 2025, text: "The theme of this Game Jam.", correct: "The Changing of Time", wrongs: ["Space Travel", "Retro Future"] }
+            { era: 1990, text: "Software that made 'Surfing the Web' possible.", correct: "WorldWideWeb", wrongs: ["Chrome", "Explorer"] },
+            { era: 1993, text: "FPS game that caused moral panic.", correct: "DOOM", wrongs: ["Call of Duty", "Halo"] },
+            { era: 1995, text: "Windows 95 guide sitcom.", correct: "Friends", wrongs: ["Seinfeld", "Office"] },
+            { era: 1996, text: "First cloned sheep.", correct: "Dolly", wrongs: ["Molly", "Polly"] },
+            { era: 1997, text: "James Cameron's world dominator.", correct: "Titanic", wrongs: ["Avatar", "Terminator"] },
+            { era: 1998, text: "Google was founded in a...", correct: "Garage", wrongs: ["Basement", "Office"] },
+            { era: 1999, text: "Scary file sharing service.", correct: "Napster", wrongs: ["Spotify", "Limewire"] },
+            { era: 2000, text: "Indestructible brick phone.", correct: "Nokia 3310", wrongs: ["Razr", "Blackberry"] },
+            { era: 2001, text: "1000 songs in your pocket.", correct: "iPod", wrongs: ["Zune", "Walkman"] },
+            { era: 2003, text: "Tom was your first friend.", correct: "MySpace", wrongs: ["Facebook", "Twitter"] },
+            { era: 2005, text: "First YouTube video.", correct: "Me at the zoo", wrongs: ["Charlie Bit Me", "Cats"] },
+            { era: 2007, text: "3 Devices in 1.", correct: "iPhone", wrongs: ["iPad", "Android"] },
+            { era: 2009, text: "Blocky sandbox game.", correct: "Minecraft", wrongs: ["Roblox", "Terraria"] },
+            { era: 2010, text: "Filters (originally Burbank).", correct: "Instagram", wrongs: ["Snapchat", "Vine"] },
+            { era: 2012, text: "1 Billion YouTube views.", correct: "Gangnam Style", wrongs: ["Baby Shark", "Justin B"] },
+            { era: 2013, text: "6-second video app.", correct: "Vine", wrongs: ["TikTok", "Shorts"] },
+            { era: 2016, text: "Catch them all outside.", correct: "Pokemon GO", wrongs: ["Digimon", "Ingress"] },
+            { era: 2020, text: "Zoom fatigue.", correct: "Zoom", wrongs: ["Skype", "Teams"] },
+            { era: 2023, text: "AI Chatbot revolution.", correct: "ChatGPT", wrongs: ["Siri", "Alexa"] },
+            { era: 2024, text: "Gen Z Charisma.", correct: "Rizz", wrongs: ["Drip", "Swag"] }
         ];
 
-        /**
-         * ------------------------------------------------------------------
-         * AUDIO SYSTEM: Procedural Synth
-         * ------------------------------------------------------------------
-         */
+        // --- AUDIO ---
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        
         const SOUNDS = {
-            win: (time) => {
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(500, time);
-                osc.frequency.exponentialRampToValueAtTime(1000, time + 0.1);
-                gain.gain.setValueAtTime(0.2, time);
-                gain.gain.exponentialRampToValueAtTime(0.01, time + 0.3);
-                osc.connect(gain); gain.connect(audioCtx.destination);
-                osc.start(time); osc.stop(time + 0.3);
+            win: (t) => {
+                const o = audioCtx.createOscillator(); const g = audioCtx.createGain();
+                o.type='sine'; o.frequency.setValueAtTime(600,t); o.frequency.exponentialRampToValueAtTime(1200,t+0.1);
+                g.gain.setValueAtTime(0.1,t); g.gain.exponentialRampToValueAtTime(0.01,t+0.3);
+                o.connect(g); g.connect(audioCtx.destination); o.start(t); o.stop(t+0.3);
             },
-            lose: (time) => {
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                osc.type = 'sawtooth';
-                osc.frequency.setValueAtTime(150, time);
-                osc.frequency.linearRampToValueAtTime(50, time + 0.5);
-                gain.gain.setValueAtTime(0.2, time);
-                gain.gain.linearRampToValueAtTime(0.01, time + 0.5);
-                osc.connect(gain); gain.connect(audioCtx.destination);
-                osc.start(time); osc.stop(time + 0.5);
+            lose: (t) => {
+                const o = audioCtx.createOscillator(); const g = audioCtx.createGain();
+                o.type='sawtooth'; o.frequency.setValueAtTime(100,t); o.frequency.linearRampToValueAtTime(50,t+0.5);
+                g.gain.setValueAtTime(0.2,t); g.gain.linearRampToValueAtTime(0.01,t+0.5);
+                o.connect(g); g.connect(audioCtx.destination); o.start(t); o.stop(t+0.5);
             },
-            rewind: (time) => {
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                osc.type = 'triangle';
-                osc.frequency.setValueAtTime(100, time);
-                osc.frequency.linearRampToValueAtTime(1200, time + 1.2);
-                gain.gain.setValueAtTime(0.3, time);
-                gain.gain.linearRampToValueAtTime(0.01, time + 1.2);
-                osc.connect(gain); gain.connect(audioCtx.destination);
-                osc.start(time); osc.stop(time + 1.2);
+            rewind: (t) => {
+                const o = audioCtx.createOscillator(); const g = audioCtx.createGain();
+                o.type='square'; o.frequency.setValueAtTime(200,t); o.frequency.linearRampToValueAtTime(800,t+0.8);
+                g.gain.setValueAtTime(0.1,t); g.gain.linearRampToValueAtTime(0,t+0.8);
+                o.connect(g); g.connect(audioCtx.destination); o.start(t); o.stop(t+0.8);
             }
         };
 
-        // Background Pulse (Heartbeat of Time)
-        let bgInterval;
-        function startHeartbeat(tempo) {
-            if(bgInterval) clearInterval(bgInterval);
-            let beat = 0;
-            bgInterval = setInterval(() => {
-                if (audioCtx.state === 'suspended') audioCtx.resume();
-                const t = audioCtx.currentTime;
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                osc.connect(gain); gain.connect(audioCtx.destination);
-                
-                // High tick on 1, Low on others
-                if (beat % 4 === 0) {
-                    osc.frequency.value = 800;
-                    gain.gain.value = 0.05;
-                } else {
-                    osc.frequency.value = 400;
-                    gain.gain.value = 0.02;
-                }
-                
-                osc.start(t); osc.stop(t + 0.05);
-                beat++;
-            }, tempo);
-        }
-
-        /**
-         * ------------------------------------------------------------------
-         * VISUAL SYSTEM: Canvas Time Tunnel
-         * ------------------------------------------------------------------
-         */
+        // --- VISUALS (TIME DILATION) ---
         const canvas = document.getElementById('chrono-canvas');
         const ctx = canvas.getContext('2d');
-        let stars = [];
-        let warpSpeed = 2;
-        let isReversed = false;
+        let stars = []; let warpSpeed = 2; let isReversed = false;
 
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
-        window.addEventListener('resize', resizeCanvas);
-        resizeCanvas();
+        function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+        window.addEventListener('resize', resize); resize();
 
         class Star {
-            constructor() {
-                this.reset();
-            }
-            reset() {
-                this.x = (Math.random() - 0.5) * canvas.width * 2;
-                this.y = (Math.random() - 0.5) * canvas.height * 2;
-                this.z = Math.random() * canvas.width;
-                this.pz = this.z;
-            }
+            constructor() { this.reset(); }
+            reset() { this.x = (Math.random()-0.5)*canvas.width*2; this.y = (Math.random()-0.5)*canvas.height*2; this.z = Math.random()*canvas.width; }
             update() {
-                if (!isReversed) {
-                    this.z -= warpSpeed;
-                    if (this.z < 1) {
-                        this.reset();
-                        this.z = canvas.width;
-                        this.pz = this.z;
-                    }
-                } else {
-                    this.z += warpSpeed * 3; // Fast rewind
-                    if (this.z > canvas.width) {
-                        this.z = 1;
-                        this.pz = 1;
-                    }
+                if(!isReversed) { 
+                    this.z -= warpSpeed; 
+                    if(this.z<1) { this.reset(); this.z = canvas.width; } 
+                }
+                else { 
+                    this.z += warpSpeed*4; 
+                    if(this.z>canvas.width) { this.z = 1; } 
                 }
             }
             draw() {
-                let sx = (this.x / this.z) * canvas.width + canvas.width / 2;
-                let sy = (this.y / this.z) * canvas.height + canvas.height / 2;
+                let sx = (this.x/this.z)*canvas.width + canvas.width/2;
+                let sy = (this.y/this.z)*canvas.height + canvas.height/2;
+                // THEME: "Speed it up" - Stars stretch longer as warpSpeed increases
+                let len = warpSpeed * 2; 
+                let r = (1 - this.z/canvas.width)*3;
                 
-                // Previous position for trail effect
-                let px = (this.x / this.pz) * canvas.width + canvas.width / 2;
-                let py = (this.y / this.pz) * canvas.height + canvas.height / 2;
-                
-                this.pz = this.z;
-
-                let r = (1 - this.z / canvas.width) * 4;
-                
-                ctx.beginPath();
-                ctx.moveTo(px, py);
-                ctx.lineTo(sx, sy);
+                ctx.strokeStyle = "white"; 
                 ctx.lineWidth = r;
-                // Color based on theme
-                let hue = document.body.classList.contains('theme-90s') ? 300 :
-                          document.body.classList.contains('theme-00s') ? 120 : 180;
-                
-                ctx.strokeStyle = `hsl(${hue}, 100%, 70%)`;
+                ctx.beginPath(); 
+                ctx.moveTo(sx, sy);
+                // Draw trails based on movement to simulate speed
+                ctx.lineTo(sx + (this.x/this.z)*len, sy + (this.y/this.z)*len);
                 ctx.stroke();
             }
         }
+        for(let i=0; i<300; i++) stars.push(new Star());
 
-        // Initialize Stars
-        for(let i=0; i<400; i++) stars.push(new Star());
-
-        function animateCanvas() {
-            // Trail effect
-            ctx.fillStyle = "rgba(0, 0, 0, 0.2)";
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            
-            stars.forEach(s => {
-                s.update();
-                s.draw();
-            });
-            requestAnimationFrame(animateCanvas);
+        function animate() {
+            // Trail effect (Motion Blur)
+            ctx.fillStyle = "rgba(5, 5, 5, 0.4)"; 
+            ctx.fillRect(0,0,canvas.width,canvas.height);
+            stars.forEach(s => { s.update(); s.draw(); });
+            requestAnimationFrame(animate);
         }
-        animateCanvas();
+        animate();
 
-        /**
-         * ------------------------------------------------------------------
-         * GAME LOGIC
-         * ------------------------------------------------------------------
-         */
-        
-        // DOM Elements
-        const screens = {
-            landing: document.getElementById('landing-page'),
-            transition: document.getElementById('era-transition'),
-            game: document.getElementById('game-ui'),
-            over: document.getElementById('game-over')
-        };
-        
+        // --- GAMEPLAY ---
         const els = {
+            main: document.getElementById('main-body'),
+            landing: document.getElementById('landing-page'),
+            game: document.getElementById('game-ui'),
+            over: document.getElementById('game-over'),
+            transition: document.getElementById('era-transition'),
             score: document.getElementById('score-val'),
             rewind: document.getElementById('rewind-val'),
             timer: document.getElementById('timer-bar'),
-            question: document.getElementById('question-text'),
-            options: document.getElementById('options-area'),
-            era: document.getElementById('era-display'),
-            rank: document.getElementById('hud-bottom-right'),
-            yearCounter: document.getElementById('year-counter'),
-            mainBody: document.getElementById('main-body')
+            qBox: document.querySelector('.question-box'),
+            qText: document.getElementById('question-text'),
+            opts: document.getElementById('options-area'),
+            era: document.getElementById('era-display')
         };
 
-        // State
-        let gameState = {
-            active: false,
-            score: 0,
-            rounds: 0,
-            hasRewind: true,
-            maxTime: 4000,
-            currentTime: 4000,
-            currentQ: null,
-            timerId: null
-        };
+        let state = { active: false, score: 0, rounds: 0, hasRewind: true, maxTime: 4000, curTime: 4000, q: null, timer: null };
 
-        // --- Helper Functions ---
-        function switchScreen(screenName) {
-            Object.values(screens).forEach(s => s.classList.add('hidden'));
-            screens[screenName].classList.remove('hidden');
-        }
-
-        function setTheme(year) {
-            els.mainBody.className = ""; // Reset
-            if (year < 2000) els.mainBody.classList.add('theme-90s');
-            else if (year < 2010) els.mainBody.classList.add('theme-00s');
-            else if (year < 2020) els.mainBody.classList.add('theme-10s');
-        }
-
-        // --- Core Loop ---
-
-        function initGame() {
-            gameState.score = 0;
-            gameState.rounds = 0;
-            gameState.hasRewind = true;
-            gameState.maxTime = 5000;
-            gameState.active = true;
-
-            // Reset UI
-            els.score.innerText = "0";
-            els.rank.innerText = "NOVICE";
-            els.rewind.innerText = "READY";
-            els.rewind.style.color = "var(--warning)";
-            els.rewind.style.border = "1px solid var(--warning)";
-            
-            // Audio Start
-            startHeartbeat(500);
-            warpSpeed = 2;
-
-            nextRound();
+        function init() {
+            state.score=0; state.rounds=0; state.hasRewind=true; state.maxTime=5000; state.active=true;
+            els.score.innerText="0"; els.rewind.innerText="ONLINE"; els.rewind.style.color="var(--secondary)";
+            els.landing.classList.add('hidden'); els.over.classList.add('hidden');
+            warpSpeed=2; nextRound();
         }
 
         function nextRound() {
-            gameState.rounds++;
-            
-            // 1. Difficulty Scaling
-            gameState.maxTime = Math.max(1500, gameState.maxTime * 0.95);
-            gameState.currentTime = gameState.maxTime;
-            
-            // Speed up heartbeat
-            let tempo = Math.max(100, 500 - (gameState.rounds * 30));
-            startHeartbeat(tempo);
-            warpSpeed = 2 + (gameState.rounds * 0.5);
+            state.rounds++;
+            // THEME: "Speed it up" - Time gets faster, warp gets faster
+            state.maxTime = Math.max(1500, state.maxTime * 0.95);
+            state.curTime = state.maxTime;
+            warpSpeed += 0.8; 
 
-            // 2. Select Question
-            const q = QUESTIONS_DB[Math.floor(Math.random() * QUESTIONS_DB.length)];
-            gameState.currentQ = q;
+            state.q = QUESTIONS_DB[Math.floor(Math.random()*QUESTIONS_DB.length)];
+            
+            els.game.classList.add('hidden');
+            els.transition.classList.remove('hidden');
+            document.getElementById('year-counter').innerText = state.q.era;
+            
+            els.main.className = "";
+            if(state.q.era < 2000) els.main.classList.add('theme-90s');
+            else if(state.q.era < 2010) els.main.classList.add('theme-00s');
+            else els.main.classList.add('theme-10s');
 
-            // 3. Era Transition Effect
-            performTransition(q.era, () => {
-                displayQuestion(q);
-            });
+            setTimeout(() => {
+                els.transition.classList.add('hidden');
+                els.game.classList.remove('hidden');
+                showQ();
+            }, 1200);
         }
 
-        function performTransition(targetYear, callback) {
-            switchScreen('transition');
-            setTheme(targetYear);
+        function showQ() {
+            els.era.innerText = `YEAR: ${state.q.era}`;
+            els.qText.innerText = state.q.text;
+            els.qText.style.color = "#eee";
+            els.opts.innerHTML = "";
+            els.qBox.classList.remove('time-critical'); // Reset glitch effect
             
-            // Rolling numbers animation
-            let current = parseInt(els.yearCounter.innerText);
-            let step = targetYear > current ? 1 : -1;
-            let countSpeed = 20;
-
-            const interval = setInterval(() => {
-                if (Math.abs(targetYear - current) > 10) current += (step * 3); // speed up
-                else current += step;
-
-                els.yearCounter.innerText = current;
-
-                if ((step > 0 && current >= targetYear) || (step < 0 && current <= targetYear)) {
-                    clearInterval(interval);
-                    els.yearCounter.innerText = targetYear;
-                    setTimeout(() => {
-                        switchScreen('game');
-                        callback();
-                    }, 500);
-                }
-            }, countSpeed);
-        }
-
-        function displayQuestion(q) {
-            els.era.innerText = `ERA: ${q.era}`;
-            els.question.innerText = q.text;
-            els.question.style.color = "#eee"; // reset warning color
-            
-            // Options
-            els.options.innerHTML = '';
-            let choices = [q.correct, ...q.wrongs];
-            choices.sort(() => Math.random() - 0.5);
-
-            choices.forEach(choice => {
-                const btn = document.createElement('button');
-                btn.className = 'option-btn';
-                btn.innerText = choice;
-                btn.onclick = () => handleAnswer(choice, q.correct);
-                els.options.appendChild(btn);
+            let choices = [state.q.correct, ...state.q.wrongs].sort(()=>Math.random()-0.5);
+            choices.forEach(c => {
+                let btn = document.createElement('button');
+                btn.className = "option-btn";
+                btn.innerText = c;
+                btn.onclick = () => check(c);
+                els.opts.appendChild(btn);
             });
-
             startTimer();
         }
 
         function startTimer() {
-            if (gameState.timerId) clearInterval(gameState.timerId);
-            
-            // "Time Anomaly": Randomly make timer glitch (5% chance)
-            const isGlitch = Math.random() < 0.05;
-            if (isGlitch) els.timer.classList.add('anomaly-glitch');
-            else els.timer.classList.remove('anomaly-glitch');
-
-            gameState.timerId = setInterval(() => {
-                gameState.currentTime -= 20;
-                
-                // Render Bar
-                const pct = (gameState.currentTime / gameState.maxTime) * 100;
+            if(state.timer) clearInterval(state.timer);
+            state.timer = setInterval(() => {
+                state.curTime -= 20;
+                let pct = (state.curTime/state.maxTime)*100;
                 els.timer.style.width = pct + "%";
                 
-                // Color urgency
-                els.timer.style.backgroundColor = pct < 30 ? "var(--danger)" : "var(--accent)";
-
-                if (gameState.currentTime <= 0) {
-                    clearInterval(gameState.timerId);
-                    handleFail();
+                // THEME: "Fall apart" - When time is low, UI glitches
+                if(pct < 30) {
+                    els.timer.style.backgroundColor = "var(--danger)";
+                    els.qBox.classList.add('time-critical');
+                } else {
+                    els.timer.style.backgroundColor = "var(--accent)";
                 }
+
+                if(state.curTime <= 0) { clearInterval(state.timer); fail(); }
             }, 20);
         }
 
-        function handleAnswer(selected, correct) {
-            if (!gameState.active || gameState.currentTime <= 0) return;
-            
-            clearInterval(gameState.timerId);
-
-            if (selected === correct) {
-                // SUCCESS
+        function check(ans) {
+            if(!state.active) return;
+            clearInterval(state.timer);
+            if(ans === state.q.correct) {
                 SOUNDS.win(audioCtx.currentTime);
-                gameState.score += 100 + Math.floor(gameState.currentTime / 10);
-                els.score.innerText = gameState.score;
-                updateRank();
-                
-                // Visual Flash
-                els.mainBody.classList.add('correct-flash');
-                setTimeout(() => els.mainBody.classList.remove('correct-flash'), 400);
-
+                state.score += 100 + Math.floor(state.curTime/10);
+                els.score.innerText = state.score;
+                els.main.classList.add('correct-flash');
+                setTimeout(()=>els.main.classList.remove('correct-flash'),300);
                 setTimeout(nextRound, 500);
             } else {
-                // FAIL
-                handleFail();
+                fail();
             }
         }
 
-        function handleFail() {
-            if (gameState.hasRewind) {
-                triggerRewind();
+        function fail() {
+            if(state.hasRewind) {
+                // THEME: "Rewind/Loop"
+                state.hasRewind = false;
+                els.rewind.innerText = "OFFLINE";
+                els.rewind.style.color = "var(--danger)";
+                SOUNDS.rewind(audioCtx.currentTime);
+                isReversed = true;
+                els.main.classList.add('rewind-active');
+                els.qText.innerHTML = "<span style='color:var(--warning)'>⚠ PARADOX DETECTED. REWINDING TIMELINE...</span>";
+                setTimeout(() => {
+                    isReversed = false;
+                    els.main.classList.remove('rewind-active');
+                    state.curTime = state.maxTime;
+                    els.qText.innerText = state.q.text;
+                    startTimer();
+                }, 1500);
             } else {
-                gameOver();
+                state.active = false;
+                SOUNDS.lose(audioCtx.currentTime);
+                els.game.classList.add('hidden');
+                els.over.classList.remove('hidden');
+                document.getElementById('final-score').innerText = state.score;
+                document.getElementById('final-rounds').innerText = state.rounds;
             }
         }
 
-        function triggerRewind() {
-            // THEME MECHANIC: Rewind
-            gameState.hasRewind = false;
-            
-            // Visuals
-            els.rewind.innerText = "BROKEN";
-            els.rewind.style.color = "var(--danger)";
-            els.rewind.style.borderColor = "var(--danger)";
-            els.mainBody.classList.add('rewind-active');
-            
-            // Audio
-            SOUNDS.rewind(audioCtx.currentTime);
-            
-            // Canvas Reverse
-            isReversed = true;
-
-            // Narrative
-            els.question.innerHTML = "<span style='color:var(--warning)'>⚠ TIMELINE PARADOX.<br>INITIATING REWIND PROTOCOL...</span>";
-
-            setTimeout(() => {
-                els.mainBody.classList.remove('rewind-active');
-                isReversed = false;
-                
-                // Restore logic
-                gameState.currentTime = gameState.maxTime;
-                els.question.innerText = gameState.currentQ.text;
-                els.question.style.color = "#eee";
-                startTimer();
-            }, 1500);
-        }
-
-        function updateRank() {
-            const s = gameState.score;
-            let r = "NOVICE";
-            if (s > 1000) r = "TIME TRAVELER";
-            if (s > 2500) r = "CHRONO LORD";
-            if (s > 5000) r = "SINGULARITY";
-            els.rank.innerText = r;
-        }
-
-        function gameOver() {
-            gameState.active = false;
-            SOUNDS.lose(audioCtx.currentTime);
-            
-            els.mainBody.classList.add('shake-screen');
-            els.mainBody.classList.add('wrong-flash');
-            
-            setTimeout(() => {
-                switchScreen('over');
-                document.getElementById('final-rounds').innerText = gameState.rounds;
-                document.getElementById('final-score').innerText = gameState.score;
-                clearInterval(bgInterval); // Stop heartbeat
-                els.mainBody.classList.remove('shake-screen', 'wrong-flash');
-            }, 1000);
-        }
-
-        // --- Inputs ---
-        document.getElementById('start-btn').addEventListener('click', initGame);
-        document.getElementById('retry-btn').addEventListener('click', initGame);
-        
-        window.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
-                if (!gameState.active) initGame();
-            }
-        });
+        document.getElementById('start-btn').onclick = init;
+        document.getElementById('retry-btn').onclick = init;
+        window.onkeydown = (e) => { if(e.key==="Enter" && !state.active) init(); };
 
     </script>
 </body>
