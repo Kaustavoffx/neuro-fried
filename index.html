@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>NEURO-FRIED: OMNI ARCHIVE</title>
+    <title>NEURO-FRIED: FINALIST BUILD</title>
     <style>
         /* =========================================
-           1. CORE & FONTS
+           1. CORE CONFIGURATION
            ========================================= */
         @import url('https://fonts.googleapis.com/css2?family=Courier+Prime:wght@700&family=VT323&display=swap');
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@900&display=swap');
@@ -24,7 +24,7 @@
             --f-mono: 'VT323', monospace;
         }
 
-        /* --- MASSIVE THEME ENGINE --- */
+        /* --- THEME ENGINE (20 Variations) --- */
         body.t-finance { --primary:#ffd700; --secondary:#50c878; --accent:#fff; --bg-color:#051005; }
         body.t-code    { --primary:#00ff00; --secondary:#008f11; --accent:#ccffcc; --bg-color:#000; }
         body.t-tech    { --primary:#00f3ff; --secondary:#ffffff; --accent:#0099ff; --bg-color:#0a0a1a; }
@@ -52,7 +52,7 @@
             margin: 0; padding: 0; background-color: var(--bg-color); color: white;
             font-family: var(--f-ui); height: 100vh; overflow: hidden;
             display: flex; justify-content: center; align-items: center;
-            transition: background-color 0.8s ease, color 0.5s ease;
+            transition: background-color 1s ease, color 0.5s ease, filter 0.5s ease;
         }
 
         /* LAYERS */
@@ -61,7 +61,7 @@
         .scanlines { position: fixed; inset: 0; pointer-events: none; z-index: 2; opacity: 0.3; background: linear-gradient(to bottom, rgba(255,255,255,0) 50%, rgba(0,0,0,0.1) 50%); background-size: 100% 4px; }
         .noise { position: fixed; inset: 0; pointer-events: none; z-index: 3; opacity: 0.05; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
 
-        /* UI */
+        /* HEADER */
         header {
             position: fixed; top: 0; width: 100%; padding: 15px 40px;
             display: flex; justify-content: space-between; align-items: center;
@@ -71,6 +71,7 @@
         .brand { font-family: var(--f-title); font-size: 1.5rem; letter-spacing: 2px; text-shadow: 0 0 10px var(--primary); color: var(--primary); }
         .creator { font-family: var(--f-mono); color: #888; font-size: 1rem; }
 
+        /* HUD */
         .hud-panel {
             position: absolute; z-index: 50; padding: 10px 25px;
             background: var(--glass-bg); backdrop-filter: var(--glass-blur);
@@ -80,6 +81,9 @@
         .hud-left { top: 90px; left: 40px; border-left: 3px solid var(--accent); }
         .hud-right { top: 90px; right: 40px; border-right: 3px solid var(--secondary); text-align: right; }
         .stat-val { font-family: var(--f-title); font-size: 2.2rem; color: var(--primary); }
+        .entropy-bar { width: 100px; height: 4px; background: #333; margin-top: 5px; float: right; }
+        .entropy-fill { width: 100%; height: 100%; background: var(--secondary); transition: width 0.3s; }
+        
         .status-badge { font-family: var(--f-mono); color: var(--secondary); border: 1px solid var(--secondary); padding: 2px 6px; margin-top: 5px; display: inline-block; }
         .status-badge.offline { color: #555; border-color: #333; text-decoration: line-through; }
 
@@ -99,13 +103,14 @@
         }
         @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
 
+        /* JUDGE OPTIMIZED MISSION LOG */
         .mission-log {
             font-family: var(--f-mono); color: #ccc; background: var(--glass-bg);
-            border: var(--glass-border); padding: 30px 40px; border-radius: 8px; margin-bottom: 40px;
-            text-align: left; max-width: 600px; border-left: 4px solid var(--warning);
+            border: var(--glass-border); padding: 25px 40px; border-radius: 8px; margin-bottom: 40px;
+            text-align: left; max-width: 600px; border-left: 4px solid var(--danger);
             box-shadow: 0 20px 60px rgba(0,0,0,0.7);
         }
-        .mission-log strong { color: white; display:block; margin-bottom:10px; font-family:var(--f-title); }
+        .mission-log strong { color: white; display:block; margin-bottom:10px; font-family:var(--f-title); letter-spacing:1px; }
         
         .tech-btn {
             position: relative; z-index: 10000;
@@ -123,9 +128,7 @@
             overflow-y: auto; padding: 20px;
             scrollbar-width: thin; scrollbar-color: var(--primary) #111;
         }
-        .archive-grid {
-            display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; /* 5 Columns for 20 items */
-        }
+        .archive-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; }
         .topic-card {
             background: var(--glass-bg); border: 1px solid rgba(255,255,255,0.1);
             padding: 15px; text-align: center; cursor: pointer; transition: 0.2s;
@@ -134,7 +137,6 @@
             animation: cardIn 0.5s backwards;
         }
         @keyframes cardIn { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
-        
         .topic-card:hover { border-color: var(--secondary); transform: scale(1.05); z-index: 10; background: rgba(255,255,255,0.1); }
         .topic-icon { font-size: 2.5rem; margin-bottom: 10px; color: var(--primary); text-shadow: 0 0 10px var(--primary); }
         .topic-name { font-family: var(--f-ui); font-weight: bold; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; color:#ddd; }
@@ -146,10 +148,7 @@
             box-shadow: 0 0 80px rgba(0,0,0,0.6);
             border-top: 2px solid var(--primary);
         }
-        .time-display {
-            font-family: var(--f-mono); font-size: 2rem; color: var(--secondary);
-            margin: 30px 0; border-bottom: 1px solid #333; padding-bottom: 20px;
-        }
+        .time-display { font-family: var(--f-mono); font-size: 2rem; color: var(--secondary); margin: 30px 0; border-bottom: 1px solid #333; padding-bottom: 20px; }
         .btn-row { display: flex; gap: 30px; justify-content: center; }
 
         /* GAMEPLAY */
@@ -208,7 +207,8 @@
             <div class="stat-val" id="hud-score">0</div>
         </div>
         <div class="hud-panel hud-right">
-            <div style="font-size:0.8rem; color:#888;">SYSTEMS</div>
+            <div style="font-size:0.8rem; color:#888;">TIMELINE INTEGRITY</div>
+            <div class="entropy-bar"><div class="entropy-fill" id="stability-bar"></div></div>
             <div class="status-badge" id="badge-rewind">REWIND: READY</div>
             <div class="status-badge" id="badge-freeze">FREEZE: READY</div>
         </div>
@@ -216,19 +216,18 @@
 
     <div id="s-title" class="screen active">
         <h1 class="glitch-title">NEURO<br>FRIED</h1>
-        <div class="subtitle">/// OMNI_ARCHIVE_X ///</div>
+        <div class="subtitle">/// JUDGEMENT_DAY_EDITION ///</div>
         <div class="mission-log">
-            <strong>SYSTEM INITIALIZATION:</strong>
-            [1] ACCESS THE OMNI-ARCHIVE DATABASE.<br>
-            [2] SELECT ONE OF 20 KNOWLEDGE SECTORS.<br>
-            [3] STABILIZE TIMELINE (1935 - 2035).<br>
-            [4] WARNING: ENTROPY ACTIVE.
+            <strong>MISSION PROTOCOL:</strong>
+            STABILIZE THE TIMELINE.<br>
+            TIME ACCELERATES CONTINUOUSLY.<br>
+            <span style="color:var(--danger)">INTERVENTIONS CAUSE ENTROPY.</span>
         </div>
-        <button class="tech-btn" onclick="Game.goToTopics()">ACCESS ARCHIVE</button>
+        <button class="tech-btn" id="init-btn">INITIALIZE SYSTEM</button>
     </div>
 
     <div id="s-topics" class="screen hidden">
-        <h2 style="font-family:var(--f-title); color:white; margin-bottom:20px; text-shadow:0 0 10px white;">SELECT DATA SECTOR</h2>
+        <h2 style="font-family:var(--f-title); color:white; margin-bottom:20px;">SELECT MEMORY STREAM</h2>
         <div class="archive-container">
             <div class="archive-grid" id="topic-grid"></div>
         </div>
@@ -236,15 +235,15 @@
 
     <div id="s-timeline" class="screen hidden">
         <div class="timeline-box">
-            <h2 style="font-family:var(--f-title); color:white;">SELECT TEMPORAL FLOW</h2>
+            <h2 style="font-family:var(--f-title); color:white;">CHOOSE TIME DIRECTION</h2>
             <div class="time-display">
                 <span style="color:var(--secondary)">1935</span>
                 <span style="color:#666"> &lt; ----- &gt; </span>
                 <span style="color:var(--primary)">2035</span>
             </div>
             <div class="btn-row">
-                <button class="tech-btn" onclick="Game.startGame('asc')">CHRONOLOGICAL<br><span style="font-size:0.8rem; opacity:0.7">STANDARD</span></button>
-                <button class="tech-btn" style="border-color:var(--danger); color:var(--danger);" onclick="Game.startGame('desc')">REWIND FLOW<br><span style="font-size:0.8rem; opacity:0.7">HARD MODE</span></button>
+                <button class="tech-btn" onclick="Game.startGame('asc')">CHRONOLOGICAL</button>
+                <button class="tech-btn" style="border-color:var(--danger); color:var(--danger);" onclick="Game.startGame('desc')">REWIND FLOW</button>
             </div>
         </div>
     </div>
@@ -726,6 +725,7 @@
             ]}
         ];
 
+
         // --- 2. AUDIO & VISUALS (Safe) ---
         const AudioEngine={ctx:null,init(){try{this.ctx=new(window.AudioContext||window.webkitAudioContext)();}catch(e){}},resume(){if(this.ctx&&this.ctx.state==='suspended')this.ctx.resume();},startMusic(){if(!this.ctx)return;setInterval(()=>{if(Game.active)this.playTone(110,'sawtooth',0.3,0.1);},400);},playTone(f,t,d,v){if(!this.ctx)return;const o=this.ctx.createOscillator();const g=this.ctx.createGain();o.type=t;o.frequency.value=f;g.gain.value=0;g.gain.linearRampToValueAtTime(v,this.ctx.currentTime+0.01);g.gain.exponentialRampToValueAtTime(0.001,this.ctx.currentTime+d);o.connect(g);g.connect(this.ctx.destination);o.start();o.stop(this.ctx.currentTime+d);},sfx(t){if(!this.ctx)return;if(t=='win')this.playTone(440,'sine',0.2,0.2);if(t=='lose')this.playTone(80,'sawtooth',0.5,0.4);if(t=='rewind')this.playTone(300,'triangle',0.6,0.2);}};
         
@@ -734,7 +734,7 @@
         // --- 3. GAME ENGINE ---
         const Game = {
             active: false, score: 0, round: 0, maxTime: 8000, curr: 0, timer: null,
-            currentTopic: null, qData: [], abilities: {rewind:true, freeze:true}, rewinding: false, freeze: false,
+            currentTopic: null, qData: [], abilities: {rewind:true, freeze:true}, rewinding: false, freeze: false, entropy: 0,
 
             init() { 
                 Canvas.init(); 
@@ -768,11 +768,13 @@
             startGame(dir) {
                 this.qData = [...this.currentTopic.qs];
                 if(dir==='asc') this.qData.sort((a,b)=>a.y - b.y);
-                else this.qData.sort((a,b)=>b.y - a.y); // Rewind Mode
+                else this.qData.sort((a,b)=>b.y - a.y);
                 
-                this.score=0; this.round=0; this.abilities={rewind:true, freeze:true};
+                this.score=0; this.round=0; this.abilities={rewind:true, freeze:true}; this.entropy=0;
                 document.getElementById('hud').classList.remove('hidden');
                 document.getElementById('hud-score').innerText="0";
+                document.getElementById('stability-bar').style.width="100%";
+                
                 window.onkeydown = (e) => { if(e.code==='Space') this.triggerFreeze(); };
                 
                 this.switchScreen('s-timeline', 's-game');
@@ -785,7 +787,7 @@
                 const d = this.qData[this.round];
                 
                 document.getElementById('era-display').innerText = `YEAR: ${d.y}`;
-                document.getElementById('q-text').innerText = d.q;
+                document.getElementById('q-text').innerText = "DECIDE: " + d.q; // REFRAINED TRIVIA
                 document.getElementById('q-text').style.color="white";
 
                 const gr = document.getElementById('opt-area'); gr.innerHTML="";
@@ -827,23 +829,37 @@
 
             triggerRewind() {
                 this.abilities.rewind = false;
+                this.entropy += 0.3; this.updateEntropy();
+                this.maxTime -= 1500; // PUNISHMENT
+                
                 document.getElementById('badge-rewind').classList.add('offline');
                 document.getElementById('badge-rewind').innerText = "REWIND: USED";
                 AudioEngine.sfx('rewind');
+                
                 document.body.classList.add('rewind-fx');
-                document.getElementById('q-text').innerHTML = "<span style='color:var(--warning)'>⚠ REWINDING TIMELINE...</span>";
+                document.getElementById('q-text').innerHTML = "YOU'VE BEEN HERE BEFORE.<br><span style='opacity:0.6; font-size:0.7em; color:var(--danger)'>TIME REMEMBERS.</span>";
+                
                 setTimeout(() => {
                     document.body.classList.remove('rewind-fx');
-                    this.maxTime += 1000; this.nextRound();
-                }, 1000);
+                    this.nextRound();
+                }, 1500);
             },
 
             triggerFreeze() {
                 if(!this.active || !this.abilities.freeze) return;
                 this.abilities.freeze = false;
+                this.entropy += 0.1; this.updateEntropy();
+                
                 document.getElementById('badge-freeze').classList.add('offline');
+                document.getElementById('badge-freeze').innerText = "FREEZE: EMPTY";
                 this.freeze = true;
                 setTimeout(() => this.freeze = false, 3000);
+            },
+            
+            updateEntropy() {
+                const w = Math.max(0, 100 - (this.entropy*100));
+                document.getElementById('stability-bar').style.width = w + "%";
+                document.body.style.filter = `grayscale(${this.entropy}) contrast(${1+this.entropy})`;
             },
 
             gameOver() {
@@ -861,6 +877,8 @@
             }
         };
 
+        // BINDING
+        document.getElementById('init-btn').addEventListener('click', () => Game.goToTopics());
         Game.init();
     </script>
 </body>
