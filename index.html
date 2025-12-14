@@ -1,3 +1,13 @@
+<!-- 
+    PROJECT: NEURO-FRIED
+    AUTHOR: KAUSTAV CHOWDHURY
+    DATE: DECEMBER 2025
+    
+    DEV NOTES:
+    - The physics in the roulette are tuned for drama, don't mess with the drag coefficients.
+    - Glassmorphism is heavy here, might need optimization for mobile later.
+    - "Time is the only currency." - K.C.
+-->
 <!DOCTYPE html>
 <html lang="en">
 
@@ -34,17 +44,6 @@
             --f-title: 'Orbitron', sans-serif;
             --f-ui: 'Rajdhani', sans-serif;
             --f-mono: 'VT323', monospace;
-        }
-
-        /* LIGHT MODE OVERRIDES */
-        body.light-mode {
-            --bg-color: #e0e5ec;
-            --primary: #0055ff;
-            --secondary: #00aaff;
-            --accent: #000000;
-            --text-main: #1a1a1a;
-            --particle-col: #000000;
-            --glass-bg: rgba(255, 255, 255, 0.75);
         }
 
         /* CATEGORY THEMES */
@@ -787,6 +786,73 @@
             }
         }
 
+        /* ROULETTE (HORIZONTAL) */
+        .roulette-window {
+            height: 120px;
+            /* Shorter height for horizontal strip */
+            width: 100%;
+            overflow: hidden;
+            position: relative;
+            /* Side fades instead of top/bottom */
+            mask-image: linear-gradient(90deg, transparent, black 20%, black 80%, transparent);
+            -webkit-mask-image: linear-gradient(90deg, transparent, black 20%, black 80%, transparent);
+            margin-bottom: 30px;
+            display: flex;
+            /* Center track vertically */
+            align-items: center;
+        }
+
+        .roulette-track {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            /* Center alignment is handled by the initial scroll calculations */
+            padding-left: 50%;
+            will-change: transform;
+        }
+
+        .roulette-item {
+            flex: 0 0 180px;
+            /* Slightly narrower to allow gaps */
+            margin: 0 10px;
+            /* Spacing between cards */
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--f-title);
+            font-size: 1.2rem;
+            /* Adjusted for card size */
+            color: var(--text-main);
+
+            /* Card Look */
+            background: rgba(0, 243, 255, 0.05);
+            /* Subtle glass */
+            border: 1px solid rgba(0, 243, 255, 0.2);
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+
+            /* Default state (will be overridden by JS) */
+            opacity: 0.3;
+            transform: scale(0.7);
+            filter: blur(2px);
+            transition: border-color 0.2s, background-color 0.2s;
+            /* Color transitions only, transform is manual */
+            white-space: normal;
+            /* Allow text wrap if needed */
+            text-align: center;
+            line-height: 1.1;
+            padding: 10px;
+        }
+
+        .roulette-item.locked {
+            border-color: var(--primary);
+            background: rgba(0, 243, 255, 0.2);
+            color: var(--primary);
+            box-shadow: 0 0 30px var(--primary);
+            z-index: 100 !important;
+        }
+
         /* ANOMALIES & STREAKS */
         .anomaly-mirror .q-card,
         .anomaly-mirror .opt-btn {
@@ -804,7 +870,7 @@
             background: rgba(0, 0, 0, 0.8);
             padding: 20px;
             z-index: 9999;
-            animation: flashWarn 0.5s infinite;
+            animation: flashWarn 0.5s 2 forwards;
             pointer-events: none;
             border-top: 2px solid var(--danger);
             border-bottom: 2px solid var(--danger);
@@ -1116,20 +1182,26 @@
         }
 
         body.paradox-hit {
-            animation: violentShake 0.4s infinite;
+            animation: chromaticPulse 0.3s ease-out;
         }
 
-        @keyframes violentShake {
+        @keyframes chromaticPulse {
             0% {
-                transform: translate(5px, 5px);
+                transform: scale(1);
+                text-shadow: none;
+                filter: brightness(1);
             }
 
             50% {
-                transform: translate(-5px, -5px);
+                transform: scale(1.02);
+                text-shadow: 3px 0 var(--danger), -3px 0 var(--primary);
+                filter: brightness(1.2);
             }
 
             100% {
-                transform: translate(5px, -5px);
+                transform: scale(1);
+                text-shadow: none;
+                filter: brightness(1);
             }
         }
 
@@ -1224,8 +1296,13 @@
     </div>
 
     <header>
-        <div class="brand">NEURO-FRIED</div>
-        <button id="theme-toggle" onclick="toggleTheme()">☀</button>
+        <div style="display:flex; flex-direction:column; align-items:flex-start;">
+            <div class="brand">NEURO-FRIED</div>
+            <div
+                style="font-family:var(--f-ui); font-size:1rem; color:var(--primary); font-weight:700; letter-spacing:2px; margin-top:0px; text-shadow: 0 0 5px rgba(0, 243, 255, 0.4);">
+                DEV: KAUSTAV CHOWDHURY
+            </div>
+        </div>
     </header>
 
     <div id="hud" class="hidden">
@@ -1276,19 +1353,23 @@
         </div>
 
         <button class="tech-btn" id="init-btn">INITIALIZE SYSTEM</button>
-        <div class="made-with-love">MADE WITH CARE — KAUSTAV CHOWDHURY</div>
     </div>
 
     <div id="s-roulette" class="screen hidden">
         <h2 style="font-family:var(--f-title); color:var(--text-main); margin-bottom:20px; opacity:0.8;">SEARCHING
             ARCHIVES...</h2>
         <div class="roulette-box">
-            <div id="roulette-display">LOADING...</div>
-            <div id="roulette-actions" class="hidden" style="margin-top:30px;">
+            <div class="roulette-window">
+                <div class="roulette-track" id="roulette-track"></div>
+                <div
+                    style="position:absolute; inset:0; background:linear-gradient(to bottom, var(--glass-bg), transparent 40%, transparent 60%, var(--glass-bg)); pointer-events:none; z-index:20;">
+                </div>
+            </div>
+            <div id="roulette-actions" class="hidden" style="margin-top:10px;">
                 <button class="tech-btn" onclick="Game.confirmTopic()"
                     style="border-color:var(--primary); color:var(--primary);">ACCEPT</button>
                 <button class="tech-btn" onclick="Game.reroll()"
-                    style="border-color:var(--danger); color:var(--danger);">REROLL (-10s)</button>
+                    style="border-color:var(--danger); color:var(--danger);">REROLL</button>
             </div>
         </div>
     </div>
@@ -1881,26 +1962,133 @@
             },
 
             startRoulette() {
-                const disp = document.getElementById('roulette-display');
+                const track = document.getElementById('roulette-track');
                 const acts = document.getElementById('roulette-actions');
-                acts.classList.add('hidden');
-                disp.classList.remove('locked-topic');
 
-                let delay = 50; let count = 0;
-                const spin = () => {
-                    const r = TOPICS[Math.floor(Math.random() * TOPICS.length)];
-                    disp.innerText = r.name;
-                    AudioEngine.sfx('spin');
-                    count++; delay *= 1.1;
-                    if (count < 25) setTimeout(spin, delay);
-                    else {
-                        this.currentTopic = r;
-                        disp.classList.add('locked-topic');
+                track.innerHTML = "";
+                acts.classList.add('hidden');
+
+                // Reset transform safely
+                track.style.transform = "translateX(0px)";
+
+                // 1. GENERATE ITEMS 
+                const itemCount = 50;
+                const targetIndex = 35;
+                const itemWidth = 200; // 180px + 20px margin
+
+                let targetTopic = null;
+                const items = [];
+
+                for (let i = 0; i < itemCount; i++) {
+                    const t = TOPICS[Math.floor(Math.random() * TOPICS.length)];
+                    const el = document.createElement('div');
+                    el.className = 'roulette-item';
+                    el.innerText = t.name;
+                    track.appendChild(el);
+
+                    if (i === targetIndex) targetTopic = t;
+                    // Center of item i is at i * itemWidth + itemWidth/2
+                    items.push({ el, cx: i * itemWidth + itemWidth / 2 });
+                }
+
+                this.currentTopic = targetTopic;
+
+                // 2. MATHS
+                const finalScroll = (targetIndex * itemWidth) + (itemWidth / 2);
+
+                // Physics
+                let scrollX = 0;
+                let speed = 0;
+                const maxSpeed = 50; // Faster top speed
+                const accelRate = 1.5; // Quicker accel
+                const decelDist = 2000; // Shorter brake distance
+                const minSpeed = 0.5;
+
+                let state = 'accel';
+
+                const loop = () => {
+                    const distRemaining = finalScroll - scrollX;
+
+                    if (distRemaining > decelDist) {
+                        if (speed < maxSpeed) speed += accelRate;
+                    } else if (distRemaining > 0.5) {
+                        let targetSpeed = distRemaining * 0.03; // Braking slightly harder
+                        if (targetSpeed > maxSpeed) targetSpeed = maxSpeed;
+                        if (targetSpeed < minSpeed) targetSpeed = minSpeed;
+                        speed += (targetSpeed - speed) * 0.1;
+                    } else {
+                        scrollX = finalScroll;
+                        speed = 0;
+                        state = 'done';
+                    }
+
+                    scrollX += speed;
+                    track.style.transform = `translateX(-${scrollX}px)`;
+
+                    // DYNAMIC SCALE (CAROUSEL EFFECT)
+                    // Viewport Center relative to track origin (0) matches scrollX value
+                    // because of the padding-left: 50% trick.
+                    const viewCenter = scrollX;
+
+                    // Optimization: visible range is roughly +/- 1000px?
+                    const visRange = 1000;
+
+                    items.forEach((it) => {
+                        const dist = it.cx - viewCenter;
+
+                        // Culling for performance (optional but good practice)
+                        if (Math.abs(dist) > visRange) {
+                            // Just keep them small/hidden logic if needed, or skip style updates
+                            // But let's ensure they stay consistent just in case
+                            it.el.style.transform = 'scale(0.5)';
+                            it.el.style.opacity = '0';
+                            return;
+                        }
+
+                        // Curve Formula
+                        // dist = 0 -> scale 1.3, opacity 1
+                        // dist = 200 (neighbor) -> scale 0.9, opacity 0.5
+                        // dist = 400 (outer) -> scale 0.6, opacity 0.2
+
+                        const normDist = Math.abs(dist) / itemWidth; // 0, 1, 2...
+
+                        // Scale: Peak at 1.4, drop off
+                        let scale = Math.max(0.6, 1.4 - (normDist * 0.4));
+
+                        // Opacity: Peak at 1, sharp drop
+                        let opacity = Math.max(0.1, 1 - (normDist * 0.6));
+
+                        // Blur: 0 at center, increasing out
+                        let blur = Math.min(10, normDist * 3);
+
+                        // Apply
+                        it.el.style.transform = `scale(${scale})`;
+                        it.el.style.opacity = opacity;
+                        it.el.style.filter = `blur(${blur}px)`;
+                        it.el.style.zIndex = Math.floor(100 - normDist); // Center on top
+                    });
+
+                    // Audio Tick
+                    if (speed > 1) {
+                        const currIdx = Math.floor(scrollX / itemWidth);
+                        const prevIdx = Math.floor((scrollX - speed) / itemWidth);
+                        if (currIdx !== prevIdx) AudioEngine.sfx('spin');
+                    }
+
+                    if (state !== 'done') {
+                        requestAnimationFrame(loop);
+                    } else {
+                        // Finished
+                        items[targetIndex].el.classList.add('locked');
+                        items[targetIndex].el.style.transform = 'scale(1.5)';
+                        items[targetIndex].el.style.opacity = '1';
+                        // Keep blur 0
                         AudioEngine.sfx('win');
                         acts.classList.remove('hidden');
                     }
                 };
-                spin();
+
+                requestAnimationFrame(loop);
             },
 
             confirmTopic() {
@@ -1908,7 +2096,7 @@
                 this.switchScreen('s-roulette', 's-timeline');
             },
 
-            reroll() { this.maxTime -= 1000; this.startRoulette(); },
+            reroll() { this.startRoulette(); },
 
             startGame(dir) {
                 this.qData = [...this.currentTopic.qs];
@@ -2185,13 +2373,16 @@
                 document.getElementById('fail-modal').classList.remove('active');
                 document.body.classList.add('power-off-anim');
 
-                // Hide HUD immediately
-                document.getElementById('hud').classList.add('hidden');
-                document.getElementById('s-game').classList.add('hidden');
+                // Don't hide UI yet! Let it squash.
 
                 setTimeout(() => {
                     document.body.classList.remove('power-off-anim');
-                    // START OUTRO SEQUENCE instead of direct game over screen
+
+                    // Now hide UI
+                    document.getElementById('hud').classList.add('hidden');
+                    document.getElementById('s-game').classList.add('hidden');
+
+                    // START OUTRO SEQUENCE
                     this.runOutroSequence();
                 }, 700);
             },
