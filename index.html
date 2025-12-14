@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -15,11 +16,11 @@
         :root {
             /* DEFAULT: DARK BLUE FOCUS */
             --bg-color: #020205;
-            --primary: #00f3ff;       
-            --secondary: #0077ff;     
+            --primary: #00f3ff;
+            --secondary: #0077ff;
             --accent: #ffffff;
             --danger: #ff003c;
-            --green: #39ff14; 
+            --green: #39ff14;
             --text-main: #ffffff;
             --particle-col: #ffffff;
 
@@ -37,179 +38,1173 @@
 
         /* LIGHT MODE OVERRIDES */
         body.light-mode {
-            --bg-color: #e0e5ec; --primary: #0055ff; --secondary: #00aaff; --accent: #000000;
-            --text-main: #1a1a1a; --particle-col: #000000; --glass-bg: rgba(255, 255, 255, 0.75);
+            --bg-color: #e0e5ec;
+            --primary: #0055ff;
+            --secondary: #00aaff;
+            --accent: #000000;
+            --text-main: #1a1a1a;
+            --particle-col: #000000;
+            --glass-bg: rgba(255, 255, 255, 0.75);
         }
 
         /* CATEGORY THEMES */
-        body.t-finance { --primary:#ffd700; --secondary:#50c878; --bg-color:#051005; --text-main:#fff; --particle-col:#fff; }
-        body.t-code    { --primary:#00ff00; --secondary:#008f11; --bg-color:#000; --text-main:#fff; --particle-col:#0f0; }
-        body.t-space   { --primary:#9d00ff; --secondary:#e0b0ff; --bg-color:#0d001a; --text-main:#fff; --particle-col:#fff; }
-        body.t-social  { --primary:#ff0055; --secondary:#ffcc00; --bg-color:#1a0505; --text-main:#fff; --particle-col:#fff; }
-        body.t-gaming  { --primary:#ff4400; --secondary:#ffee00; --bg-color:#1a0a00; --text-main:#fff; --particle-col:#fff; }
+        body.t-finance {
+            --primary: #ffd700;
+            --secondary: #50c878;
+            --bg-color: #051005;
+            --text-main: #fff;
+            --particle-col: #fff;
+        }
 
-        * { box-sizing: border-box; user-select: none; -webkit-tap-highlight-color: transparent; }
+        body.t-code {
+            --primary: #00ff00;
+            --secondary: #008f11;
+            --bg-color: #000;
+            --text-main: #fff;
+            --particle-col: #0f0;
+        }
+
+        body.t-space {
+            --primary: #9d00ff;
+            --secondary: #e0b0ff;
+            --bg-color: #0d001a;
+            --text-main: #fff;
+            --particle-col: #fff;
+        }
+
+        body.t-social {
+            --primary: #ff0055;
+            --secondary: #ffcc00;
+            --bg-color: #1a0505;
+            --text-main: #fff;
+            --particle-col: #fff;
+        }
+
+        body.t-gaming {
+            --primary: #ff4400;
+            --secondary: #ffee00;
+            --bg-color: #1a0a00;
+            --text-main: #fff;
+            --particle-col: #fff;
+        }
+
+        * {
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
 
         body {
-            margin: 0; padding: 0; background-color: var(--bg-color); color: var(--text-main);
-            font-family: var(--f-ui); height: 100vh; overflow: hidden;
-            display: flex; justify-content: center; align-items: center;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: var(--f-ui);
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             transition: background-color 0.8s ease, color 0.5s ease;
         }
 
         /* LAYERS & VFX */
-        #render-layer { position: fixed; inset: 0; z-index: 0; }
-        .vignette { position: fixed; inset: 0; pointer-events: none; z-index: 1; background: radial-gradient(circle, transparent 40%, var(--bg-color) 100%); }
-        .scanlines { position: fixed; inset: 0; pointer-events: none; z-index: 2; opacity: 0.15; background: linear-gradient(to bottom, rgba(128,128,128,0) 50%, rgba(0,0,0,0.1) 50%); background-size: 100% 4px; }
-        
-        .fx-overlay { position: fixed; inset: 0; z-index: 900; pointer-events: none; opacity: 0; transition: opacity 0.2s; }
-        .fx-rewind { background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.2) 3px); mix-blend-mode: overlay; }
-        .fx-freeze { background: rgba(0, 243, 255, 0.1); box-shadow: inset 0 0 100px var(--secondary); backdrop-filter: grayscale(100%) blur(4px); }
+        #render-layer {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+        }
+
+        .vignette {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 1;
+            background: radial-gradient(circle, transparent 40%, var(--bg-color) 100%);
+        }
+
+        .scanlines {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 2;
+            opacity: 0.15;
+            background: linear-gradient(to bottom, rgba(128, 128, 128, 0) 50%, rgba(0, 0, 0, 0.1) 50%);
+            background-size: 100% 4px;
+        }
+
+        .fx-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 900;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .fx-rewind {
+            background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255, 255, 255, 0.2) 3px);
+            mix-blend-mode: overlay;
+        }
+
+        .fx-freeze {
+            background: rgba(0, 243, 255, 0.1);
+            box-shadow: inset 0 0 100px var(--secondary);
+            backdrop-filter: grayscale(100%) blur(4px);
+        }
 
         /* UI FRAMEWORK */
         header {
-            position: fixed; top: 0; width: 100%; padding: 20px 40px;
-            display: flex; justify-content: space-between; align-items: center;
-            z-index: 100; backdrop-filter: blur(10px);
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+            backdrop-filter: blur(10px);
         }
-        .brand { font-family: var(--f-title); font-size: 1.4rem; letter-spacing: 2px; color: var(--primary); text-shadow: 0 0 10px var(--primary); }
-        
+
+        .brand {
+            font-family: var(--f-title);
+            font-size: 1.4rem;
+            letter-spacing: 2px;
+            color: var(--primary);
+            text-shadow: 0 0 10px var(--primary);
+        }
+
         #theme-toggle {
-            background: transparent; border: 1px solid var(--primary); color: var(--primary);
-            width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-size: 1.2rem;
-            display: flex; align-items: center; justify-content: center; transition: 0.3s;
+            background: transparent;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.3s;
         }
 
         /* HUD - REDESIGNED */
         .hud-panel {
-            position: absolute; z-index: 50; padding: 15px 25px;
-            background: var(--glass-bg); backdrop-filter: var(--glass-blur);
-            border: var(--glass-border); border-radius: 8px;
-            box-shadow: var(--glass-shadow); transition: 0.3s;
+            position: absolute;
+            z-index: 50;
+            padding: 15px 25px;
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            border: var(--glass-border);
+            border-radius: 8px;
+            box-shadow: var(--glass-shadow);
+            transition: 0.3s;
         }
-        .hud-top-right { top: 90px; right: 40px; border-right: 4px solid var(--primary); text-align: right; }
-        
-        .stat-label { font-size: 0.8rem; color: var(--text-main); margin-bottom: 5px; letter-spacing: 2px; font-weight: bold; opacity: 0.7; }
-        .stat-val { font-family: var(--f-title); font-size: 2.2rem; color: var(--primary); }
-        
+
+        .hud-top-right {
+            top: 90px;
+            right: 40px;
+            border-right: 4px solid var(--primary);
+            text-align: right;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--text-main);
+            margin-bottom: 5px;
+            letter-spacing: 2px;
+            font-weight: bold;
+            opacity: 0.7;
+        }
+
+        .stat-val {
+            font-family: var(--f-title);
+            font-size: 2.2rem;
+            color: var(--primary);
+        }
+
         /* LIVES INDICATOR */
-        .lives-container { display: flex; gap: 5px; justify-content: flex-end; margin-top: 5px; }
-        .life-pip { width: 15px; height: 15px; background: var(--secondary); transform: skewX(-20deg); box-shadow: 0 0 10px var(--secondary); }
-        .life-pip.lost { background: #333; box-shadow: none; border: 1px solid #555; }
+        .lives-container {
+            display: flex;
+            gap: 5px;
+            justify-content: flex-end;
+            margin-top: 5px;
+        }
+
+        .life-pip {
+            width: 15px;
+            height: 15px;
+            background: var(--secondary);
+            transform: skewX(-20deg);
+            box-shadow: 0 0 10px var(--secondary);
+        }
+
+        .life-pip.lost {
+            background: #333;
+            box-shadow: none;
+            border: 1px solid #555;
+        }
 
         /* BIG FREEZE BUTTON (Left) */
-        .freeze-container { position: absolute; bottom: 40px; left: 40px; z-index: 60; }
+        .freeze-container {
+            position: absolute;
+            bottom: 40px;
+            left: 40px;
+            z-index: 60;
+        }
+
         .big-freeze-btn {
-            width: 120px; height: 120px; border-radius: 50%;
-            background: rgba(0, 243, 255, 0.1); border: 2px solid var(--secondary);
-            color: var(--secondary); font-family: var(--f-title); font-size: 1.2rem;
-            cursor: pointer; transition: 0.3s;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: rgba(0, 243, 255, 0.1);
+            border: 2px solid var(--secondary);
+            color: var(--secondary);
+            font-family: var(--f-title);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: 0.3s;
             box-shadow: 0 0 30px rgba(0, 243, 255, 0.2);
             backdrop-filter: blur(10px);
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
             animation: pulseFreeze 3s infinite;
         }
-        .big-freeze-btn span { font-size: 0.8rem; font-family: var(--f-mono); margin-top: 5px; opacity: 0.7; }
-        .big-freeze-btn:hover { transform: scale(1.1); background: var(--secondary); color: black; box-shadow: 0 0 60px var(--secondary); }
-        .big-freeze-btn.used { filter: grayscale(1); opacity: 0.5; cursor: not-allowed; animation: none; }
-        @keyframes pulseFreeze { 0% { box-shadow: 0 0 0 rgba(0,243,255,0); } 50% { box-shadow: 0 0 40px rgba(0,243,255,0.4); } 100% { box-shadow: 0 0 0 rgba(0,243,255,0); } }
+
+        .big-freeze-btn span {
+            font-size: 0.8rem;
+            font-family: var(--f-mono);
+            margin-top: 5px;
+            opacity: 0.7;
+        }
+
+        .big-freeze-btn:hover {
+            transform: scale(1.1);
+            background: var(--secondary);
+            color: black;
+            box-shadow: 0 0 60px var(--secondary);
+        }
+
+        .big-freeze-btn.used {
+            filter: grayscale(1);
+            opacity: 0.5;
+            cursor: not-allowed;
+            animation: none;
+        }
+
+        @keyframes pulseFreeze {
+            0% {
+                box-shadow: 0 0 0 rgba(0, 243, 255, 0);
+            }
+
+            50% {
+                box-shadow: 0 0 40px rgba(0, 243, 255, 0.4);
+            }
+
+            100% {
+                box-shadow: 0 0 0 rgba(0, 243, 255, 0);
+            }
+        }
+
+        .btn-hud-rewind {
+            border-color: var(--primary);
+            color: var(--primary);
+            box-shadow: 0 0 30px rgba(0, 243, 255, 0.2);
+            animation: pulseRewind 3s infinite;
+            margin-top: 20px;
+        }
+
+        .btn-hud-rewind:hover {
+            background: var(--primary);
+            color: black;
+            box-shadow: 0 0 60px var(--primary);
+            transform: scale(1.1);
+        }
+
+        @keyframes pulseRewind {
+            0% {
+                box-shadow: 0 0 0 rgba(0, 243, 255, 0);
+            }
+
+            50% {
+                box-shadow: 0 0 40px rgba(0, 243, 255, 0.4);
+            }
+
+            100% {
+                box-shadow: 0 0 0 rgba(0, 243, 255, 0);
+            }
+        }
 
         /* FAIL MODAL (The Main Event) */
         .fail-modal {
-            position: fixed; inset: 0; z-index: 2000;
-            background: rgba(0,0,0,0.9); backdrop-filter: blur(20px);
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            opacity: 0; pointer-events: none; transition: 0.3s;
+            position: fixed;
+            inset: 0;
+            z-index: 2000;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(20px);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: 0.3s;
         }
-        .fail-modal.active { opacity: 1; pointer-events: all; }
-        
-        .fail-title { font-family: var(--f-title); font-size: 4rem; color: var(--danger); text-shadow: 0 0 40px var(--danger); margin-bottom: 20px; text-align: center; letter-spacing: 4px; }
-        .fail-sub { font-family: var(--f-mono); font-size: 1.2rem; color: white; margin-bottom: 50px; text-align: center; letter-spacing: 2px; }
-        
-        .fail-btn-row { display: flex; gap: 40px; }
+
+        .fail-modal.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .fail-title {
+            font-family: var(--f-title);
+            font-size: 4rem;
+            color: var(--danger);
+            text-shadow: 0 0 40px var(--danger);
+            margin-bottom: 20px;
+            text-align: center;
+            letter-spacing: 4px;
+        }
+
+        .fail-sub {
+            font-family: var(--f-mono);
+            font-size: 1.2rem;
+            color: white;
+            margin-bottom: 50px;
+            text-align: center;
+            letter-spacing: 2px;
+        }
+
+        .fail-btn-row {
+            display: flex;
+            gap: 40px;
+        }
+
         .fail-btn {
-            padding: 30px 60px; font-family: var(--f-title); font-size: 1.5rem;
-            border: 2px solid; cursor: pointer; transition: 0.2s; text-transform: uppercase;
-            background: transparent; letter-spacing: 2px; border-radius: 8px;
+            padding: 30px 60px;
+            font-family: var(--f-title);
+            font-size: 1.5rem;
+            border: 2px solid;
+            cursor: pointer;
+            transition: 0.2s;
+            text-transform: uppercase;
+            background: transparent;
+            letter-spacing: 2px;
+            border-radius: 8px;
         }
-        .btn-rewind { border-color: var(--primary); color: var(--primary); box-shadow: 0 0 30px var(--primary); }
-        .btn-rewind:hover { background: var(--primary); color: black; transform: scale(1.05); }
-        
-        .btn-exit { border-color: var(--danger); color: var(--danger); box-shadow: 0 0 10px var(--danger); }
-        .btn-exit:hover { background: var(--danger); color: white; transform: scale(1.05); }
+
+        .btn-rewind {
+            border-color: var(--primary);
+            color: var(--primary);
+            box-shadow: 0 0 30px var(--primary);
+        }
+
+        .btn-rewind:hover {
+            background: var(--primary);
+            color: black;
+            transform: scale(1.05);
+        }
+
+        .btn-exit {
+            border-color: var(--danger);
+            color: var(--danger);
+            box-shadow: 0 0 10px var(--danger);
+        }
+
+        .btn-exit:hover {
+            background: var(--danger);
+            color: white;
+            transform: scale(1.05);
+        }
 
         /* SCREENS */
-        .screen { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 10; opacity: 0; pointer-events: none; transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1); padding-top: 60px; }
-        .screen.active { opacity: 1; pointer-events: all; }
-        .hidden { display: none !important; opacity: 0 !important; }
+        .screen {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+            padding-top: 60px;
+        }
+
+        .screen.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .hidden {
+            display: none !important;
+            opacity: 0 !important;
+        }
 
         /* LANDING */
-        h1.glitch-title { font-family: var(--f-title); font-size: 8vw; color: var(--text-main); margin: 0; text-transform: uppercase; text-shadow: 0 0 30px var(--primary); animation: float 4s ease-in-out infinite; }
-        @keyframes float { 0% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        h1.glitch-title {
+            font-family: var(--f-title);
+            font-size: 8vw;
+            color: var(--text-main);
+            margin: 0;
+            text-transform: uppercase;
+            text-shadow: 0 0 30px var(--primary);
+            animation: float 4s ease-in-out infinite;
+        }
 
-        .mission-log { font-family: var(--f-mono); color: var(--text-main); opacity: 0.8; background: var(--glass-bg); border: var(--glass-border); padding: 25px 40px; border-radius: 12px; margin-bottom: 40px; text-align: left; max-width: 600px; border-left: 3px solid var(--primary); box-shadow: var(--glass-shadow); backdrop-filter: var(--glass-blur); }
+        @keyframes float {
+            0% {
+                transform: translateY(0);
+            }
 
-        .tech-btn { position: relative; z-index: 10000; background: rgba(0, 243, 255, 0.05); color: var(--primary); border: 1px solid var(--primary); padding: 20px 50px; font-family: var(--f-title); font-size: 1.2rem; cursor: pointer; text-transform: uppercase; transition: 0.3s; letter-spacing: 2px; border-radius: 4px; pointer-events: auto; }
-        .tech-btn:hover { background: var(--primary); color: var(--bg-color); box-shadow: 0 0 40px var(--primary); }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .mission-log {
+            font-family: var(--f-mono);
+            color: var(--text-main);
+            opacity: 0.8;
+            background: var(--glass-bg);
+            border: var(--glass-border);
+            padding: 25px 40px;
+            border-radius: 12px;
+            margin-bottom: 40px;
+            text-align: left;
+            max-width: 600px;
+            border-left: 3px solid var(--primary);
+            box-shadow: var(--glass-shadow);
+            backdrop-filter: var(--glass-blur);
+        }
+
+        .tech-btn {
+            position: relative;
+            z-index: 10000;
+            background: rgba(0, 243, 255, 0.05);
+            color: var(--primary);
+            border: 1px solid var(--primary);
+            padding: 20px 50px;
+            font-family: var(--f-title);
+            font-size: 1.2rem;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: 0.3s;
+            letter-spacing: 2px;
+            border-radius: 4px;
+            pointer-events: auto;
+        }
+
+        .tech-btn:hover {
+            background: var(--primary);
+            color: var(--bg-color);
+            box-shadow: 0 0 40px var(--primary);
+        }
 
         /* MADE WITH LOVE ANIMATION */
         .made-with-love {
-            position: absolute; bottom: 30px;
-            font-family: var(--f-mono); font-size: 2.9rem; color: #666;
-            width: 100%; text-align: center; pointer-events: none;
+            position: absolute;
+            bottom: 30px;
+            font-family: var(--f-mono);
+            font-size: 2.9rem;
+            color: #666;
+            width: 100%;
+            text-align: center;
+            pointer-events: none;
             animation: heartbeat 2s infinite ease-in-out;
             letter-spacing: 1px;
         }
+
         @keyframes heartbeat {
-            0%, 100% { opacity: 0.6; transform: scale(1); }
-            50% { opacity: 1; transform: scale(1.1); color: var(--danger); text-shadow: 0 0 10px var(--danger); }
+
+            0%,
+            100% {
+                opacity: 0.6;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(1.1);
+                color: var(--danger);
+                text-shadow: 0 0 10px var(--danger);
+            }
         }
 
         /* GAMEPLAY */
-        .game-grid { width: 90%; max-width: 900px; display: flex; flex-direction: column; gap: 30px; }
-        .timer-rail { width: 100%; height: 6px; background: rgba(128,128,128,0.2); border-radius:3px; overflow: hidden; }
-        .timer-fill { width: 100%; height: 100%; background: var(--primary); box-shadow: 0 0 15px var(--primary); transition: width 0.1s linear, background 0.3s; }
-        
-        .q-card { background: var(--glass-bg); backdrop-filter: var(--glass-blur); padding: 50px; text-align: center; border-radius: 16px; border: var(--glass-border); position: relative; box-shadow: var(--glass-shadow); }
-        .era-tag { font-family: var(--f-title); color: var(--secondary); font-size: 1.5rem; margin-bottom: 20px; display: block; letter-spacing: 4px; opacity: 0.8; }
-        .q-text { font-size: 2rem; line-height: 1.4; color: var(--text-main); font-weight: bold; }
+        /* CRT POWER OFF */
+        .power-off-anim {
+            animation: powerOff 0.6s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+        }
 
-        .opt-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
-        .opt-btn { background: rgba(255,255,255,0.03); border: var(--glass-border); padding: 30px; font-family: var(--f-ui); font-size: 1.3rem; color: var(--text-main); cursor: pointer; transition: 0.2s; text-align: center; border-radius: 8px; }
-        .opt-btn:hover { background: rgba(0, 243, 255, 0.1); border-color: var(--primary); color: var(--primary); transform: translateY(-3px); }
+        @keyframes powerOff {
+            0% {
+                transform: scale(1);
+                filter: brightness(1) blur(0);
+            }
+
+            40% {
+                transform: scale(1, 0.002);
+                filter: brightness(30) blur(5px);
+            }
+
+            100% {
+                transform: scale(0, 0);
+                filter: brightness(0);
+                opacity: 0;
+            }
+        }
+
+        .game-grid {
+            width: 90%;
+            max-width: 900px;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .opt-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            width: 100%;
+        }
+
+        .opt-btn {
+            flex: 1 1 45%;
+            /* Grow to fill, base 45% */
+            min-width: 300px;
+        }
+
+        /* PROTOCOL INTERACTION */
+        .protocol-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 40px;
+            perspective: 1000px;
+            cursor: pointer;
+        }
+
+        .protocol-trigger {
+            font-family: var(--f-mono);
+            color: var(--secondary);
+            letter-spacing: 3px;
+            padding: 10px 20px;
+            border: 1px solid transparent;
+            transition: 0.3s;
+            position: relative;
+            z-index: 20;
+            text-shadow: 0 0 10px var(--secondary);
+            animation: pulse-trigger 2s infinite;
+        }
+
+        @keyframes pulse-trigger {
+            0% {
+                opacity: 0.7;
+            }
+
+            50% {
+                opacity: 1;
+                text-shadow: 0 0 20px var(--secondary);
+            }
+
+            100% {
+                opacity: 0.7;
+            }
+        }
+
+        .protocol-container:hover .protocol-trigger {
+            color: var(--primary);
+            border: 1px solid var(--primary);
+            background: rgba(0, 243, 255, 0.1);
+            box-shadow: 0 0 30px rgba(0, 243, 255, 0.2);
+            animation: none;
+        }
+
+        .mission-log {
+            font-family: var(--f-mono);
+            color: var(--text-main);
+            background: var(--glass-bg);
+            border: var(--glass-border);
+            padding: 0 40px;
+            /* Collapsed padding */
+            border-radius: 12px;
+            text-align: left;
+            max-width: 600px;
+            border-left: 3px solid var(--primary);
+            box-shadow: var(--glass-shadow);
+            backdrop-filter: var(--glass-blur);
+
+            /* Hidden State */
+            max-height: 0;
+            opacity: 0;
+            transform: rotateX(-20deg) translateY(-20px);
+            transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .protocol-container:hover .mission-log {
+            /* Expanded State */
+            max-height: 500px;
+            opacity: 1;
+            transform: rotateX(0deg) translateY(20px);
+            padding: 25px 40px;
+            pointer-events: all;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Typing effect for lines? Maybe too complex for CSS only, keep it clean first */
+        .protocol-line {
+            opacity: 0;
+            transform: translateX(-20px);
+            transition: 0.3s;
+        }
+
+        .protocol-container:hover .protocol-line {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .protocol-container:hover .protocol-line:nth-child(1) {
+            transition-delay: 0.1s;
+        }
+
+        .protocol-container:hover .protocol-line:nth-child(2) {
+            transition-delay: 0.2s;
+        }
+
+        .protocol-container:hover .protocol-line:nth-child(3) {
+            transition-delay: 0.3s;
+        }
+
+        .protocol-container:hover .protocol-line:nth-child(4) {
+            transition-delay: 0.4s;
+        }
+
+        .protocol-container:hover .protocol-line:nth-child(5) {
+            transition-delay: 0.5s;
+        }
+
+        /* OUTRO SEQUENCE */
+        .outro-text {
+            font-family: var(--f-title);
+            font-size: 8vw;
+            color: white;
+            opacity: 0;
+            transform: scale(0.8);
+            position: absolute;
+            width: 100%;
+            text-align: center;
+        }
+
+        .anim-in {
+            animation: outroIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        .anim-out {
+            animation: outroOut 0.5s cubic-bezier(0.6, -0.28, 0.735, 0.045) forwards;
+        }
+
+        @keyframes outroIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.5);
+            }
+
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes outroOut {
+            0% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            100% {
+                opacity: 0;
+                transform: scale(1.5);
+            }
+        }
+
+        /* HYPE INTRO */
+        .hype-num {
+            font-size: 15vw;
+            font-family: var(--f-title);
+            color: var(--primary);
+            text-shadow: 0 0 50px var(--primary);
+            animation: zoomFade 0.8s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+            opacity: 0;
+            transform: scale(3);
+        }
+
+        @keyframes zoomFade {
+            0% {
+                opacity: 0;
+                transform: scale(3);
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            100% {
+                opacity: 0;
+                transform: scale(0.5);
+            }
+        }
+
+        .glitch-text {
+            color: var(--accent);
+            letter-spacing: 5px;
+            text-align: center;
+            margin-top: 20px;
+            animation: glitchText 0.3s infinite;
+        }
+
+        @keyframes glitchText {
+            0% {
+                transform: translate(2px, 0);
+            }
+
+            50% {
+                transform: translate(-2px, 0);
+            }
+
+            100% {
+                transform: translate(2px, 0);
+            }
+        }
+
+        /* ANOMALIES & STREAKS */
+        .anomaly-mirror .q-card,
+        .anomaly-mirror .opt-btn {
+            transform: scaleX(-1);
+        }
+
+        .anomaly-alert {
+            position: fixed;
+            top: 30%;
+            width: 100%;
+            text-align: center;
+            font-family: var(--f-title);
+            font-size: 2rem;
+            color: var(--danger);
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            z-index: 9999;
+            animation: flashWarn 0.5s infinite;
+            pointer-events: none;
+            border-top: 2px solid var(--danger);
+            border-bottom: 2px solid var(--danger);
+        }
+
+        @keyframes flashWarn {
+            0% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+        .pulse-text {
+            animation: pulseTxt 0.5s infinite alternate;
+            color: var(--green) !important;
+            text-shadow: 0 0 10px var(--green);
+        }
+
+        @keyframes pulseTxt {
+            from {
+                transform: scale(1);
+            }
+
+            to {
+                transform: scale(1.1);
+            }
+        }
+
+        @media (max-width: 900px) {
+            .opt-grid {
+                grid-template-columns: 1fr;
+            }
+
+            h1.glitch-title {
+                font-size: 12vw;
+            }
+
+            .roulette-box {
+                min-width: 90%;
+                padding: 30px;
+            }
+
+            .fail-btn-row {
+                flex-direction: column;
+            }
+
+            .freeze-container {
+                bottom: 20px;
+                left: 20px;
+            }
+        }
+
+        /* RETRO COIN */
+        .coin-cont {
+            width: 40px;
+            height: 40px;
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: 10px;
+            perspective: 1000px;
+        }
+
+        .retro-coin {
+            width: 100%;
+            height: 100%;
+            background: #ffd700;
+            border-radius: 50%;
+            border: 4px solid #b8860b;
+            box-shadow: inset 0 0 10px #fff7cc, 0 0 10px rgba(255, 215, 0, 0.7);
+            position: relative;
+            animation: spinCoin 3s linear infinite;
+            transform-style: preserve-3d;
+        }
+
+        .retro-coin::after {
+            content: '$';
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--f-mono);
+            font-weight: bold;
+            color: #b8860b;
+            font-size: 1.2rem;
+            transform: translateZ(1px);
+        }
+
+        @keyframes spinCoin {
+            0% {
+                transform: rotateY(0deg);
+            }
+
+            100% {
+                transform: rotateY(360deg);
+            }
+        }
+
+        .score-sparkle {
+            position: absolute;
+            pointer-events: none;
+            animation: sparkleFloat 1s forwards;
+            color: #ffd700;
+            font-family: var(--f-mono);
+            font-weight: bold;
+            font-size: 1.5rem;
+            text-shadow: 0 0 5px #fff;
+        }
+
+        @keyframes sparkleFloat {
+            0% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+
+            100% {
+                opacity: 0;
+                transform: translateY(-50px) scale(0);
+            }
+        }
+
+        .timer-rail {
+            width: 100%;
+            height: 6px;
+            background: rgba(128, 128, 128, 0.2);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .timer-fill {
+            width: 100%;
+            height: 100%;
+            background: var(--primary);
+            box-shadow: 0 0 15px var(--primary);
+            transition: width 0.1s linear, background 0.3s;
+        }
+
+        .q-card {
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            padding: 50px;
+            text-align: center;
+            border-radius: 16px;
+            border: var(--glass-border);
+            position: relative;
+            box-shadow: var(--glass-shadow);
+        }
+
+        .era-tag {
+            font-family: var(--f-title);
+            color: var(--secondary);
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            display: block;
+            letter-spacing: 4px;
+            opacity: 0.8;
+        }
+
+        .q-text {
+            font-size: 2rem;
+            line-height: 1.4;
+            color: var(--text-main);
+            font-weight: bold;
+        }
+
+        .opt-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .opt-btn {
+            background: rgba(255, 255, 255, 0.03);
+            border: var(--glass-border);
+            padding: 30px;
+            font-family: var(--f-ui);
+            font-size: 1.3rem;
+            color: var(--text-main);
+            cursor: pointer;
+            transition: 0.2s;
+            text-align: center;
+            border-radius: 8px;
+        }
+
+        .opt-btn:hover {
+            background: rgba(0, 243, 255, 0.1);
+            border-color: var(--primary);
+            color: var(--primary);
+            transform: translateY(-3px);
+        }
 
         /* ROULETTE & TIMELINE */
-        .roulette-box { background: var(--glass-bg); padding: 60px; border: var(--glass-border); text-align: center; border-radius: 16px; min-width: 500px; box-shadow: var(--glass-shadow); backdrop-filter: var(--glass-blur); }
-        #roulette-display { font-family: var(--f-title); font-size: 3.5rem; color: var(--primary); margin: 40px 0; text-shadow: 0 0 20px var(--primary); min-height: 80px; }
-        .locked-topic { animation: flashLock 0.5s; color: var(--accent) !important; text-shadow: 0 0 40px var(--accent) !important; scale: 1.2; transition: 0.3s;}
-        @keyframes flashLock { 0% { transform: scale(1); } 50% { transform: scale(1.2); filter: brightness(2); } 100% { transform: scale(1); } }
-        .timeline-box { background: var(--glass-bg); padding: 50px; border: var(--glass-border); text-align: center; max-width: 700px; border-radius: 16px; box-shadow: var(--glass-shadow); border-top: 3px solid var(--primary); }
-        .btn-row { display: flex; gap: 30px; justify-content: center; margin-top: 30px; }
+        .roulette-box {
+            background: var(--glass-bg);
+            padding: 60px;
+            border: var(--glass-border);
+            text-align: center;
+            border-radius: 16px;
+            min-width: 500px;
+            box-shadow: var(--glass-shadow);
+            backdrop-filter: var(--glass-blur);
+        }
+
+        #roulette-display {
+            font-family: var(--f-title);
+            font-size: 3.5rem;
+            color: var(--primary);
+            margin: 40px 0;
+            text-shadow: 0 0 20px var(--primary);
+            min-height: 80px;
+        }
+
+        .locked-topic {
+            animation: flashLock 0.5s;
+            color: var(--accent) !important;
+            text-shadow: 0 0 40px var(--accent) !important;
+            scale: 1.2;
+            transition: 0.3s;
+        }
+
+        @keyframes flashLock {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.2);
+                filter: brightness(2);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .timeline-box {
+            background: var(--glass-bg);
+            padding: 50px;
+            border: var(--glass-border);
+            text-align: center;
+            max-width: 700px;
+            border-radius: 16px;
+            box-shadow: var(--glass-shadow);
+            border-top: 3px solid var(--primary);
+        }
+
+        .btn-row {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            margin-top: 30px;
+        }
 
         /* OVER (MATCHING IMAGE 2/4) */
-        .share-card { 
-            margin-bottom: 30px; border: 4px solid var(--primary); width: 320px; height: 480px; 
-            position: relative; background: #000; box-shadow: 0 0 60px rgba(0,0,0,0.5); 
+        .share-card {
+            margin-bottom: 30px;
+            border: 4px solid var(--primary);
+            width: 320px;
+            height: 480px;
+            position: relative;
+            background: #000;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.5);
         }
-        .controls { display: flex; flex-direction: column; gap: 15px; width: 300px; }
+
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            width: 300px;
+        }
 
         /* FX */
-        body.is-rewinding { animation: vhs-glitch 0.2s infinite; filter: invert(1) hue-rotate(180deg); }
-        body.is-rewinding .fx-rewind { opacity: 1; }
-        @keyframes vhs-glitch { 0% { transform: translate(2px,0); } 20% { transform: translate(-2px,0); } 40% { transform: translate(1px,1px); } 60% { transform: translate(-1px,-1px); } }
-        body.is-frozen .fx-freeze { opacity: 1; }
-        body.paradox-hit { animation: violentShake 0.4s infinite; }
-        @keyframes violentShake { 0% {transform:translate(5px, 5px);} 50% {transform:translate(-5px, -5px);} 100% {transform:translate(5px, -5px);} }
+        body.is-rewinding {
+            animation: vhs-glitch 0.2s infinite;
+            filter: invert(1) hue-rotate(180deg);
+        }
 
-        @media (max-width: 900px) { .opt-grid { grid-template-columns: 1fr; } h1.glitch-title { font-size: 12vw; } .roulette-box { min-width: 90%; padding: 30px; } .fail-btn-row { flex-direction: column; } .freeze-container { bottom: 20px; left: 20px; } }
+        body.is-rewinding .fx-rewind {
+            opacity: 1;
+        }
+
+        @keyframes vhs-glitch {
+            0% {
+                transform: translate(2px, 0);
+            }
+
+            20% {
+                transform: translate(-2px, 0);
+            }
+
+            40% {
+                transform: translate(1px, 1px);
+            }
+
+            60% {
+                transform: translate(-1px, -1px);
+            }
+        }
+
+        body.is-frozen .fx-freeze {
+            opacity: 1;
+        }
+
+        body.paradox-hit {
+            animation: violentShake 0.4s infinite;
+        }
+
+        @keyframes violentShake {
+            0% {
+                transform: translate(5px, 5px);
+            }
+
+            50% {
+                transform: translate(-5px, -5px);
+            }
+
+            100% {
+                transform: translate(5px, -5px);
+            }
+        }
+
+        @media (max-width: 900px) {
+            .opt-grid {
+                grid-template-columns: 1fr;
+            }
+
+            h1.glitch-title {
+                font-size: 15vw;
+                /* Larger on mobile for impact */
+            }
+
+            .roulette-box {
+                min-width: 90%;
+                padding: 30px;
+            }
+
+            .fail-btn-row {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .freeze-container {
+                bottom: 20px;
+                left: 20px;
+            }
+
+            /* Responsive HUD */
+            .hud-top-right {
+                top: auto;
+                bottom: 20px;
+                /* Move score to bottom on mobile */
+                right: 20px;
+                background: rgba(0, 0, 0, 0.8);
+            }
+
+            .big-freeze-btn {
+                width: 80px;
+                height: 80px;
+                font-size: 0.9rem;
+            }
+
+            /* Touch Targets */
+            .tech-btn,
+            .opt-btn {
+                min-height: 60px;
+                /* Thumbs are fat */
+            }
+
+            .outro-text {
+                font-size: 12vw;
+            }
+        }
+
+        @media (max-width: 450px) {
+            .mission-log {
+                font-size: 0.8rem;
+                padding: 15px;
+            }
+
+            .hud-panel {
+                transform: scale(0.9);
+                transform-origin: bottom right;
+            }
+        }
     </style>
 </head>
+
 <body>
 
     <div id="render-layer"><canvas id="c"></canvas></div>
     <div class="vignette"></div>
     <div class="scanlines"></div>
-    
+
     <div class="fx-overlay fx-rewind"></div>
     <div class="fx-overlay fx-freeze"></div>
 
@@ -217,12 +1212,14 @@
         <div class="fail-title">TIMELINE FRACTURED</div>
         <div class="fail-sub">ANOMALY DETECTED. CHOOSE ACTION.</div>
         <div style="font-family:var(--f-mono); opacity:0.6;">
-        EVERY REWIND ACCELERATES COLLAPSE.
+            EVERY REWIND ACCELERATES COLLAPSE.
         </div>
 
         <div class="fail-btn-row">
-            <button class="fail-btn btn-rewind" onclick="Game.triggerRewind()">REWIND<br><span style="font-size:0.8rem">COST: 1 LIFE</span></button>
-            <button class="fail-btn btn-exit" onclick="Game.gameOver()">EXIT<br><span style="font-size:0.8rem">ACCEPT FATE</span></button>
+            <button class="fail-btn btn-rewind" onclick="Game.triggerRewind()">REWIND<br><span
+                    style="font-size:0.8rem">COST: 1 LIFE</span></button>
+            <button class="fail-btn btn-exit" onclick="Game.gameOver()">EXIT<br><span style="font-size:0.8rem">ACCEPT
+                    FATE</span></button>
         </div>
     </div>
 
@@ -234,44 +1231,64 @@
     <div id="hud" class="hidden">
         <div class="hud-panel hud-top-right">
             <div class="stat-label">SCORE</div>
-            <div class="stat-val" id="hud-score">0</div>
+            <div style="display:flex; align-items:center; justify-content:flex-end;">
+                <div class="coin-cont">
+                    <div class="retro-coin"></div>
+                </div>
+                <div class="stat-val" id="hud-score">0</div>
+            </div>
             <div class="stat-label" style="margin-top:10px;">ANCHORS</div>
+            <div id="hud-streak"
+                style="font-family:var(--f-mono); color:var(--green); font-size:1.2rem; min-height:1.5rem;"></div>
             <div class="lives-container" id="lives-container">
                 <div class="life-pip"></div>
                 <div class="life-pip"></div>
                 <div class="life-pip"></div>
             </div>
         </div>
-        
+
         <div class="freeze-container">
             <button class="big-freeze-btn" id="btn-freeze" onclick="Game.triggerFreeze()">
                 FREEZE
                 <span>[SPACE]</span>
+            </button>
+            <button class="big-freeze-btn btn-hud-rewind" id="btn-rewind-hud" onclick="Game.triggerProactiveRewind()">
+                REWIND
+                <span>[R]</span>
             </button>
         </div>
     </div>
 
     <div id="s-title" class="screen active">
         <h1 class="glitch-title">NEURO<br>FRIED</h1>
-        <div class="subtitle">/// SURVIVAL_PROTOCOL ///</div>
-        <div class="mission-log">
-            <strong>MISSION PROTOCOL:</strong>
-            [1] INITIALIZE ARCHIVE ROULETTE.<br>
-            [2] LOCK ONTO A MEMORY STREAM.<br>
-            [3] YOU HAVE 3 TIMELINE ANCHORS (LIVES).<br>
-            [4] <span style="color:var(--danger)">WARNING:</span> FAILURE REQUIRES REWIND OR EXIT.
+
+        <div class="protocol-container">
+            <div class="protocol-trigger">/// HOVER_FOR_SURVIVAL_PROTOCOL ///</div>
+            <div class="mission-log">
+                <div class="protocol-line"><strong>MISSION PROTOCOL:</strong></div>
+                <div class="protocol-line">[1] INITIALIZE ARCHIVE ROULETTE.</div>
+                <div class="protocol-line">[2] LOCK ONTO A MEMORY STREAM.</div>
+                <div class="protocol-line">[3] YOU HAVE 3 TIMELINE ANCHORS (LIVES).</div>
+                <div class="protocol-line">[4] USE [R] OR HUD TO REWIND TIME (-1 LIFE).</div>
+                <div class="protocol-line"><span style="color:var(--danger)">WARNING:</span> FAILURE REQUIRES REWIND OR
+                    EXIT.</div>
+            </div>
         </div>
+
         <button class="tech-btn" id="init-btn">INITIALIZE SYSTEM</button>
         <div class="made-with-love">MADE WITH CARE — KAUSTAV CHOWDHURY</div>
     </div>
 
     <div id="s-roulette" class="screen hidden">
-        <h2 style="font-family:var(--f-title); color:var(--text-main); margin-bottom:20px; opacity:0.8;">SEARCHING ARCHIVES...</h2>
+        <h2 style="font-family:var(--f-title); color:var(--text-main); margin-bottom:20px; opacity:0.8;">SEARCHING
+            ARCHIVES...</h2>
         <div class="roulette-box">
             <div id="roulette-display">LOADING...</div>
             <div id="roulette-actions" class="hidden" style="margin-top:30px;">
-                <button class="tech-btn" onclick="Game.confirmTopic()" style="border-color:var(--primary); color:var(--primary);">ACCEPT</button>
-                <button class="tech-btn" onclick="Game.reroll()" style="border-color:var(--danger); color:var(--danger);">REROLL (-10s)</button>
+                <button class="tech-btn" onclick="Game.confirmTopic()"
+                    style="border-color:var(--primary); color:var(--primary);">ACCEPT</button>
+                <button class="tech-btn" onclick="Game.reroll()"
+                    style="border-color:var(--danger); color:var(--danger);">REROLL (-10s)</button>
             </div>
         </div>
     </div>
@@ -284,14 +1301,36 @@
             </div>
             <div class="btn-row">
                 <button class="tech-btn" onclick="Game.startGame('asc')">CHRONOLOGICAL</button>
-                <button class="tech-btn" style="border-color:var(--danger); color:var(--danger);" onclick="Game.startGame('desc')">REWIND FLOW</button>
+                <button class="tech-btn" style="border-color:var(--danger); color:var(--danger);"
+                    onclick="Game.startGame('desc')">REWIND FLOW</button>
             </div>
+        </div>
+    </div>
+
+    <div id="s-hype" class="screen hidden" style="background: rgba(0,0,0,0.9); z-index: 5000;">
+        <div id="hype-count" class="hype-num">3</div>
+        <div id="hype-msg-cont" class="hype-msg-cont hidden"></div>
+    </div>
+
+    <div id="s-outro" class="screen hidden"
+        style="background: black; z-index: 6000; flex-direction: column; justify-content: center; align-items: center;">
+        <div id="outro-t1" class="outro-text">THANKS</div>
+        <div id="outro-t2" class="outro-text">FOR PLAYING</div>
+        <div id="outro-t3" class="outro-text" style="color:var(--primary)">MY GAME</div>
+        <div id="outro-final" class="outro-text hidden" style="margin-top: 50px;">
+            <span id="word-restart"
+                style="text-decoration: line-through; text-decoration-color: var(--danger); text-decoration-thickness: 5px; opacity: 0.5;">RESTART</span>
+            <br>
+            <span id="word-rewind" class="glitch-text"
+                style="color:var(--secondary); font-size: 1.5em; display:none;">REWIND</span>
         </div>
     </div>
 
     <div id="s-game" class="screen hidden">
         <div class="game-grid">
-            <div class="timer-rail"><div class="timer-fill" id="timer-bar"></div></div>
+            <div class="timer-rail">
+                <div class="timer-fill" id="timer-bar"></div>
+            </div>
             <div class="q-card">
                 <span class="era-tag" id="era-display">YEAR: 1990</span>
                 <div class="q-text" id="q-text">LOADING...</div>
@@ -301,26 +1340,38 @@
     </div>
 
     <div id="s-over" class="screen hidden">
-        <h1 style="font-family:var(--f-title); font-size:4rem; color:var(--danger); margin-bottom:30px;">SIGNAL LOST</h1>
+        <h1 style="font-family:var(--f-title); font-size:4rem; color:var(--danger); margin-bottom:30px;">SIGNAL LOST
+        </h1>
         <div style="font-family:var(--f-mono); opacity:0.8; letter-spacing:2px; margin-bottom:20px;">
             THE TIMELINE CONTINUES WITHOUT YOU.
         </div>
 
         <div class="share-card">
-            <img id="card-img" style="width:100%; height:100%; object-fit:cover; filter:grayscale(100%); opacity:0.6;" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%25' height='100%25'%3E%3Crect fill='%23111' width='100%25' height='100%25'/%3E%3Ctext x='50%25' y='50%25' fill='%23333' font-family='monospace' text-anchor='middle' dominant-baseline='middle'%3ENO IMAGE%3C/text%3E%3C/svg%3E">
-            <div style="position:absolute; inset:0; background:linear-gradient(to top, black 20%, transparent 80%);"></div>
+            <img id="card-img" style="width:100%; height:100%; object-fit:cover; filter:grayscale(100%); opacity:0.6;"
+                src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%25' height='100%25'%3E%3Crect fill='%23111' width='100%25' height='100%25'/%3E%3Ctext x='50%25' y='50%25' fill='%23333' font-family='monospace' text-anchor='middle' dominant-baseline='middle'%3ENO IMAGE%3C/text%3E%3C/svg%3E">
+            <div style="position:absolute; inset:0; background:linear-gradient(to top, black 20%, transparent 80%);">
+            </div>
             <div style="position:absolute; inset:10px; border:1px solid rgba(255,255,255,0.2);"></div>
-            <div style="position:absolute; top:20px; width:100%; text-align:center; font-family:var(--f-title); color:var(--primary); font-size:0.9rem; letter-spacing:2px;">NEURO-FRIED // AGENT</div>
-            
+            <div
+                style="position:absolute; top:20px; width:100%; text-align:center; font-family:var(--f-title); color:var(--primary); font-size:0.9rem; letter-spacing:2px;">
+                NEURO-FRIED // AGENT</div>
+
             <div style="position:absolute; bottom:30px; width:100%; text-align:center;">
                 <div style="color:#aaa; font-family:var(--f-mono); margin-bottom:5px;">FINAL AURA</div>
-                <div style="color:var(--green); font-family:var(--f-title); font-size:4.5rem; text-shadow:0 0 20px var(--green);" id="final-score">0</div>
-                <div style="color:white; font-family:var(--f-title); font-size:1.8rem; letter-spacing:3px;" id="final-name">UNKNOWN</div>
+                <div style="color:var(--green); font-family:var(--f-title); font-size:4.5rem; text-shadow:0 0 20px var(--green);"
+                    id="final-score">0</div>
+                <div style="color:white; font-family:var(--f-title); font-size:1.8rem; letter-spacing:3px;"
+                    id="final-name">UNKNOWN</div>
             </div>
         </div>
         <div class="controls">
-            <input type="text" placeholder="ENTER NAME" style="padding:15px; background:rgba(255,255,255,0.1); border:1px solid #555; color:white; text-align:center;" oninput="document.getElementById('final-name').innerText=this.value.toUpperCase()||'UNKNOWN'">
-            <label class="action-btn" style="padding:15px; border:1px solid #555; color:white; text-align:center; cursor:pointer;">📷 UPLOAD <input type="file" hidden accept="image/*" onchange="if(this.files[0]){let r=new FileReader();r.onload=e=>document.getElementById('card-img').src=e.target.result;r.readAsDataURL(this.files[0]);}"/></label>
+            <input type="text" placeholder="ENTER NAME"
+                style="padding:15px; background:rgba(255,255,255,0.1); border:1px solid #555; color:white; text-align:center;"
+                oninput="document.getElementById('final-name').innerText=this.value.toUpperCase()||'UNKNOWN'">
+            <label class="action-btn"
+                style="padding:15px; border:1px solid #555; color:white; text-align:center; cursor:pointer;">📷 UPLOAD
+                <input type="file" hidden accept="image/*"
+                    onchange="if(this.files[0]){let r=new FileReader();r.onload=e=>document.getElementById('card-img').src=e.target.result;r.readAsDataURL(this.files[0]);}" /></label>
             <button class="tech-btn" onclick="location.reload()">REBOOT</button>
         </div>
     </div>
@@ -328,455 +1379,495 @@
     <script>
         // --- 1. DATA: 20 CATEGORIES (400 Qs Skeleton - Full sample set) ---
         const TOPICS = [
-            { id: 'finance', name: 'FINANCE & MARKETS', icon: '📈', theme: 't-finance', qs: [
-                {y:1929, q:"The Great Depression began with...", a:"Black Tuesday", w:["Red Friday", "Gray Monday"]},
-                {y:1971, q:"Nixon ended the direct convertibility of the dollar to...", a:"Gold", w:["Silver", "Oil"]},
-                {y:1987, q:"Black Monday saw the Dow drop...", a:"22%", w:["50%", "10%"]},
-                {y:2001, q:"Enron collapsed due to...", a:"Accounting Fraud", w:["Market Crash", "Hacks"]},
-                {y:2008, q:"Bank collapse that sparked the crisis.", a:"Lehman Brothers", w:["Goldman Sachs", "JP Morgan"]},
-                {y:2009, q:"Created as a decentralized digital currency.", a:"Bitcoin", w:["Litecoin", "Ethereum"]},
-                {y:2021, q:"GameStop stock squeezed by...", a:"Reddit", w:["Twitter", "Facebook"]},
-                {y:1944, q:"Bretton Woods established the...", a:"IMF", w:["WTO", "NATO"]},
-                {y:1999, q:"Repeal of Glass-Steagall allowed...", a:"Mega Banks", w:["Crypto", "Offshore"]},
-                {y:2010, q:"The Flash Crash lasted...", a:"36 Minutes", w:["1 Hour", "1 Day"]},
-                {y:2022, q:"FTX Exchange collapsed due to...", a:"Fraud", w:["Hacks", "Regulation"]},
-                {y:1933, q:"FDR confiscated private...", a:"Gold", w:["Guns", "Land"]},
-                {y:2000, q:"The Dot Com bubble burst caused...", a:"Recession", w:["Inflation", "War"]},
-                {y:2023, q:"Silicon Valley Bank failed due to...", a:"Bond Rates", w:["Crypto", "Hacks"]},
-                {y:1950, q:"First credit card introduced.", a:"Diners Club", w:["Visa", "Amex"]},
-                {y:1998, q:"Long-Term Capital Management...", a:"Collapsed", w:["Soared", "Merged"]},
-                {y:2007, q:"The start of the...", a:"Subprime Crisis", w:["Oil Crisis", "Tech Boom"]},
-                {y:2017, q:"Bitcoin hit this milestone.", a:"$20,000", w:["$1,000", "$100,000"]},
-                {y:1923, q:"Hyperinflation destroyed the...", a:"German Mark", w:["US Dollar", "Pound"]},
-                {y:2030, q:"Projected year for...", a:"CBDCs", w:["Cash End", "Gold Return"]}
-            ]},
-            { id: 'coding', name: 'CODE & ALGOS', icon: '💻', theme: 't-code', qs: [
-                {y:1936, q:"Father of theoretical computer science.", a:"Alan Turing", w:["Ada Lovelace", "Charles Babbage"]},
-                {y:1945, q:"First actual computer bug.", a:"Moth", w:["Ant", "Fly"]},
-                {y:1957, q:"First high-level language.", a:"FORTRAN", w:["COBOL", "BASIC"]},
-                {y:1972, q:"Language created by Dennis Ritchie.", a:"C", w:["B", "D"]},
-                {y:1991, q:"Linux kernel was released by...", a:"Linus Torvalds", w:["Steve Jobs", "Bill Gates"]},
-                {y:1995, q:"Programming language created in 10 days.", a:"JavaScript", w:["Java", "Python"]},
-                {y:2004, q:"Google's email service launched on April 1st.", a:"Gmail", w:["Hotmail", "Yahoo"]},
-                {y:2008, q:"GitHub was founded to host...", a:"Git Repos", w:["SVN", "Mercurial"]},
-                {y:2009, q:"Language created by Google.", a:"Go", w:["Rust", "Swift"]},
-                {y:2014, q:"HTML5 became a...", a:"Standard", w:["Suggestion", "Law"]},
-                {y:1983, q:"C++ was released by...", a:"Stroustrup", w:["Gosling", "Rossum"]},
-                {y:1991, q:"Python was released by...", a:"Guido van Rossum", w:["Eich", "Wall"]},
-                {y:2010, q:"Rust was released by...", a:"Mozilla", w:["Google", "Apple"]},
-                {y:2023, q:"AI model that changed coding.", a:"GPT-4", w:["DeepBlue", "Watson"]},
-                {y:1969, q:"UNIX was developed at...", a:"Bell Labs", w:["Xerox PARC", "MIT"]},
-                {y:1995, q:"Java slogan: Write Once...", a:"Run Anywhere", w:["Run Fast", "Debug Everywhere"]},
-                {y:2001, q:"Agile Manifesto was...", a:"Signed", w:["Rejected", "Lost"]},
-                {y:2015, q:"VS Code was released by...", a:"Microsoft", w:["Apple", "Adobe"]},
-                {y:1989, q:"Python is named after...", a:"Monty Python", w:["Snake", "Constrictor"]},
-                {y:2024, q:"Devin AI claimed to be...", a:"First AI Engineer", w:["Fastest Coder", "Best Debugger"]}
-            ]},
-            { id: 'tech', name: 'FUTURE TECH', icon: '🤖', theme: 't-tech', qs: [
-                {y:1969, q:"Network that became the basis for the Internet.", a:"ARPANET", w:["SKYNET", "INTRANET"]},
-                {y:1984, q:"Apple launched Macintosh with...", a:"1984 Ad", w:["Think Different", "Hello"]},
-                {y:2007, q:"Device that combined phone, ipod, and communicator.", a:"iPhone", w:["Blackberry", "Palm Pilot"]},
-                {y:2016, q:"AI that defeated the Go world champion.", a:"AlphaGo", w:["DeepBlue", "Watson"]},
-                {y:2023, q:"Large Language Model released by OpenAI.", a:"GPT-4", w:["Bard", "Llama"]},
-                {y:2024, q:"Apple's Spatial Computer.", a:"Vision Pro", w:["Oculus", "Hololens"]},
-                {y:1977, q:"First complete personal computer.", a:"Apple II", w:["Altair", "Commodore"]},
-                {y:1998, q:"Google was founded in a...", a:"Garage", w:["Dorm", "Office"]},
-                {y:2001, q:"Wikipedia was launched by...", a:"Jimmy Wales", w:["Assange", "Snowden"]},
-                {y:2011, q:"Siri was integrated into...", a:"iPhone 4S", w:["iPhone 3G", "iPhone 5"]},
-                {y:1989, q:"World Wide Web invented by...", a:"Tim Berners-Lee", w:["Al Gore", "Vint Cerf"]},
-                {y:2004, q:"Firefox 1.0 challenged...", a:"Internet Explorer", w:["Netscape", "Opera"]},
-                {y:2012, q:"Google Glass was a...", a:"Flop", w:["Hit", "Standard"]},
-                {y:2020, q:"Zoom became the standard for...", a:"Meetings", w:["Gaming", "Dating"]},
-                {y:1990, q:"Photoshop 1.0 released for...", a:"Macintosh", w:["Windows", "Linux"]},
-                {y:2006, q:"Tesla Roadster revealed.", a:"Electric Car", w:["Hybrid", "Hydrogen"]},
-                {y:2015, q:"OpenAI was founded.", a:"Non-Profit", w:["For-Profit", "Gov Org"]},
-                {y:1979, q:"Sony Walkman changed...", a:"Music", w:["Video", "Gaming"]},
-                {y:2022, q:"DALL-E 2 generated...", a:"Images", w:["Video", "Music"]},
-                {y:2025, q:"The Singularity is...", a:"Near", w:["Far", "Impossible"]}
-            ]},
-            { id: 'social', name: 'SOCIAL MEDIA', icon: '📱', theme: 't-social', qs: [
-                {y:2004, q:"The Facebook started at...", a:"Harvard", w:["Yale", "Stanford"]},
-                {y:2006, q:"Twitter's original character limit.", a:"140", w:["280", "100"]},
-                {y:2010, q:"Instagram launched for...", a:"iOS Only", w:["Android", "Web"]},
-                {y:2011, q:"Snapchat's key feature.", a:"Disappearing", w:["Filters", "Stories"]},
-                {y:2016, q:"TikTok original name.", a:"Douyin", w:["Musical.ly", "Vine"]},
-                {y:2003, q:"First major social network.", a:"MySpace", w:["Friendster", "Hi5"]},
-                {y:2005, q:"YouTube's first video.", a:"Me at the zoo", w:["Cat video", "Dance"]},
-                {y:2012, q:"Facebook bought Instagram for...", a:"$1 Billion", w:["$500 Million", "$10 Billion"]},
-                {y:2013, q:"Vine introduced...", a:"6 sec videos", w:["Stories", "Live"]},
-                {y:2018, q:"Cambridge Analytica scandal hit...", a:"Facebook", w:["Twitter", "Google"]},
-                {y:2022, q:"Elon Musk bought Twitter for...", a:"$44 Billion", w:["$20 Billion", "$100 Billion"]},
-                {y:2007, q:"Hashtags were invented on...", a:"Twitter", w:["Instagram", "Facebook"]},
-                {y:2020, q:"BeReal encouraged...", a:"Authenticity", w:["Filters", "Ads"]},
-                {y:2011, q:"Google+ was a...", a:"Failure", w:["Success", "Standard"]},
-                {y:2014, q:"Amazon bought Twitch.", a:"Streaming", w:["Shopping", "Gaming"]},
-                {y:2004, q:"Digg was a news...", a:"Aggregator", w:["Creator", "Paper"]},
-                {y:2010, q:"Pinterest launched for...", a:"Moodboards", w:["Dating", "Jobs"]},
-                {y:2016, q:"Pokemon GO was...", a:"Social AR", w:["VR", "Console"]},
-                {y:2023, q:"Threads challenged...", a:"Twitter", w:["Reddit", "TikTok"]},
-                {y:2008, q:"Spotify launched in...", a:"Europe", w:["USA", "Asia"]}
-            ]},
-            { id: 'space', name: 'COSMIC FRONTIER', icon: '🚀', theme: 't-space', qs: [
-                {y:1957, q:"First satellite in orbit.", a:"Sputnik 1", w:["Explorer", "Vostok"]},
-                {y:1969, q:"Apollo 11 landed on...", a:"The Moon", w:["Mars", "Venus"]},
-                {y:1990, q:"Telescope launched into orbit.", a:"Hubble", w:["Webb", "Kepler"]},
-                {y:2015, q:"SpaceX landed a...", a:"Rocket Booster", w:["Shuttle", "Capsule"]},
-                {y:2022, q:"Successor to Hubble.", a:"James Webb", w:["Galileo", "Copernicus"]},
-                {y:1961, q:"First human in space.", a:"Yuri Gagarin", w:["Shepard", "Glenn"]},
-                {y:1986, q:"Challenger disaster involved...", a:"O-Rings", w:["Engine", "Fuel"]},
-                {y:2012, q:"Curiosity Rover landed on...", a:"Mars", w:["Moon", "Titan"]},
-                {y:1977, q:"Voyager probes carry...", a:"Golden Record", w:["CD", "Map"]},
-                {y:1998, q:"ISS construction...", a:"Began", w:["Ended", "Failed"]},
-                {y:2003, q:"Columbia disaster on...", a:"Re-entry", w:["Launch", "Orbit"]},
-                {y:2020, q:"SpaceX launched humans to...", a:"ISS", w:["Moon", "Mars"]},
-                {y:1969, q:"Armstrong's first word.", a:"Houston", w:["Eagle", "Step"]},
-                {y:2019, q:"First image of a...", a:"Black Hole", w:["Quasar", "Pulsar"]},
-                {y:1958, q:"NASA was...", a:"Founded", w:["Ended", "Merged"]},
-                {y:2021, q:"Perseverance landed with...", a:"Helicopter", w:["Bike", "Boat"]},
-                {y:1972, q:"Last moon landing.", a:"Apollo 17", w:["Apollo 11", "Apollo 13"]},
-                {y:2006, q:"Pluto was...", a:"Demoted", w:["Discovered", "Exploded"]},
-                {y:2024, q:"Artemis mission targets...", a:"Moon", w:["Mars", "Asteroid"]},
-                {y:2030, q:"Goal for Mars...", a:"Landing", w:["Colony", "Flyby"]}
-            ]},
-            { id: 'gaming', name: 'GAMING HISTORY', icon: '🎮', theme: 't-gaming', qs: [
-                {y:1985, q:"Nintendo saved the industry with...", a:"NES", w:["Atari", "Sega"]},
-                {y:1993, q:"FPS that caused controversy.", a:"DOOM", w:["Quake", "Halo"]},
-                {y:1996, q:"Mario went...", a:"3D", w:["VR", "Online"]},
-                {y:2004, q:"WoW defined...", a:"MMORPGs", w:["FPS", "RTS"]},
-                {y:2011, q:"Minecraft officially...", a:"Released", w:["Beta", "Alpha"]},
-                {y:1980, q:"Pac-Man was created by...", a:"Namco", w:["Nintendo", "Sega"]},
-                {y:1989, q:"Game Boy launched with...", a:"Tetris", w:["Mario", "Zelda"]},
-                {y:1991, q:"Sonic challenged...", a:"Mario", w:["Zelda", "Link"]},
-                {y:1997, q:"Final Fantasy VII on...", a:"PlayStation", w:["N64", "Saturn"]},
-                {y:2000, q:"PS2 became the...", a:"Best Seller", w:["Worst", "Average"]},
-                {y:2001, q:"Halo launched with...", a:"Xbox", w:["PS2", "GameCube"]},
-                {y:2006, q:"Wii introduced...", a:"Motion", w:["VR", "4K"]},
-                {y:2013, q:"GTA V broke...", a:"Sales Records", w:["Consoles", "Laws"]},
-                {y:2017, q:"Switch combined...", a:"Home & Handheld", w:["VR & AR", "PC & Console"]},
-                {y:2020, q:"Cyberpunk 2077 had a...", a:"Rough Launch", w:["Perfect Launch", "Delay"]},
-                {y:1972, q:"Pong was the...", a:"First Hit", w:["Last Hit", "Flop"]},
-                {y:1998, q:"Ocarina of Time set...", a:"Standards", w:["Records", "Traps"]},
-                {y:2007, q:"Portal introduced...", a:"Portals", w:["Guns", "Zombies"]},
-                {y:2018, q:"Fortnite popularized...", a:"Battle Royale", w:["FPS", "RPG"]},
-                {y:2022, q:"Elden Ring won...", a:"GOTY", w:["Nothing", "Indie"]}
-            ]},
-            { id: 'cyber', name: 'CYBER SECURITY', icon: '🔒', theme: 't-cyber', qs: [
-                {y:1988, q:"The Morris Worm was the...", a:"First Worm", w:["Virus", "Trojan"]},
-                {y:2010, q:"Stuxnet targeted...", a:"Iran Nuclear", w:["US Banks", "Russia"]},
-                {y:2013, q:"Snowden revealed...", a:"NSA Spying", w:["CIA Plots", "FBI"]},
-                {y:2017, q:"WannaCry was...", a:"Ransomware", w:["Spyware", "Adware"]},
-                {y:2020, q:"SolarWinds hack affected...", a:"US Gov", w:["Facebook", "Google"]},
-                {y:1995, q:"Kevin Mitnick was...", a:"Arrested", w:["Hired", "Found"]},
-                {y:2000, q:"ILOVEYOU virus spread via...", a:"Email", w:["USB", "Web"]},
-                {y:2014, q:"Mt. Gox lost...", a:"Bitcoin", w:["Dollars", "Gold"]},
-                {y:2011, q:"PSN was...", a:"Hacked", w:["Upgraded", "Sold"]},
-                {y:2016, q:"Mirai Botnet used...", a:"IoT Devices", w:["PCs", "Phones"]},
-                {y:2019, q:"Capital One breach via...", a:"Firewall", w:["Phishing", "Physical"]},
-                {y:2021, q:"Colonial Pipeline paid...", a:"Ransom", w:["Taxes", "Nothing"]},
-                {y:2022, q:"Lapsus$ hacked...", a:"Nvidia", w:["AMD", "Intel"]},
-                {y:2008, q:"Conficker worm infected...", a:"Millions", w:["Thousands", "Hundreds"]},
-                {y:2015, q:"Ashley Madison data...", a:"Leaked", w:["Saved", "Lost"]},
-                {y:2018, q:"GDPR enacted for...", a:"Privacy", w:["Speed", "Security"]},
-                {y:2023, q:"MGM Resorts...", a:"Hacked", w:["Closed", "Sold"]},
-                {y:1999, q:"Melissa Virus was a...", a:"Macro", w:["Micro", "Nano"]},
-                {y:2012, q:"LinkedIn passwords...", a:"Stolen", w:["Reset", "Sold"]},
-                {y:2024, q:"AI Phishing is...", a:"Rising", w:["Falling", "Stable"]}
-            ]},
-            { id: 'mobile', name: 'MOBILE PHONES', icon: '📵', theme: 't-mobile', qs: [
-                {y:1973, q:"First mobile call by...", a:"Motorola", w:["Nokia", "Bell"]},
-                {y:1983, q:"Motorola DynaTAC price.", a:"$4000", w:["$1000", "$500"]},
-                {y:2000, q:"The indestructible phone.", a:"Nokia 3310", w:["Razr", "Ericsson"]},
-                {y:2007, q:"iPhone introduced...", a:"Multi-touch", w:["Stylus", "Keyboard"]},
-                {y:2008, q:"Android launched on...", a:"HTC Dream", w:["Samsung", "Pixel"]},
-                {y:1992, q:"First Smartphone concept.", a:"IBM Simon", w:["Apple Newton", "Palm"]},
-                {y:2004, q:"Moto Razr was a...", a:"Fashion Icon", w:["Smart Phone", "Brick"]},
-                {y:2010, q:"iPhone 4 scandal.", a:"Antennagate", w:["Bendgate", "Battery"]},
-                {y:2016, q:"Samsung Note 7...", a:"Exploded", w:["Cracked", "Lost"]},
-                {y:1999, q:"Blackberry introduced...", a:"Email", w:["Games", "Music"]},
-                {y:2002, q:"Nokia 7650 had a...", a:"Camera", w:["GPS", "Wifi"]},
-                {y:2017, q:"iPhone X removed...", a:"Home Button", w:["Screen", "Cam"]},
-                {y:2009, q:"App Store slogan.", a:"There's an app", w:["Download it", "Get it"]},
-                {y:2011, q:"Galaxy Note popularized...", a:"Phablets", w:["Tablets", "Watches"]},
-                {y:2019, q:"Foldable phones...", a:"Returned", w:["Died", "Exploded"]},
-                {y:2020, q:"5G rollout...", a:"Began", w:["Ended", "Failed"]},
-                {y:1996, q:"StarTAC was the first...", a:"Clamshell", w:["Slider", "Touch"]},
-                {y:2013, q:"Fingerprint sensor on...", a:"iPhone 5S", w:["iPhone 5", "iPhone 6"]},
-                {y:2023, q:"USB-C on iPhone...", a:"15", w:["14", "13"]},
-                {y:2005, q:"Google bought...", a:"Android", w:["Nokia", "HTC"]}
-            ]},
-            { id: 'internet', name: 'INTERNET CULTURE', icon: '🌐', theme: 't-net', qs: [
-                {y:1993, q:"Eternal September began on...", a:"Usenet", w:["Reddit", "Digg"]},
-                {y:1996, q:"Dancing Baby was a...", a:"Meme", w:["Virus", "Game"]},
-                {y:2005, q:"First YouTube video.", a:"Me at zoo", w:["Cats", "Shoes"]},
-                {y:2007, q:"Rickrolling uses...", a:"Never Gonna", w:["Sandstorm", "Halo"]},
-                {y:2012, q:"Gangnam Style hit...", a:"1 Billion", w:["1 Million", "1 Trillion"]},
-                {y:1998, q:"Hamster Dance was...", a:"Viral", w:["Viral", "Dead"]},
-                {y:2004, q:"Numa Numa guy...", a:"Lip Synced", w:["Danced", "Sang"]},
-                {y:2006, q:"Lonelygirl15 was...", a:"Fake", w:["Real", "Alien"]},
-                {y:2011, q:"Nyan Cat is a...", a:"Pop Tart", w:["Toast", "Bread"]},
-                {y:2013, q:"The Fox says...", a:"Ring Ding", w:["Meow", "Woof"]},
-                {y:2015, q:"The Dress was...", a:"Blue/Black", w:["Gold/White", "Red/Green"]},
-                {y:2016, q:"Harambe became a...", a:"Symbol", w:["Pet", "Logo"]},
-                {y:2019, q:"Storm Area 51...", a:"Failed", w:["Succeeded", "Happened"]},
-                {y:2009, q:"David After...", a:"Dentist", w:["School", "Doctor"]},
-                {y:2010, q:"Bed Intruder...", a:"Song", w:["Movie", "Book"]},
-                {y:2014, q:"Ice Bucket Challenge for...", a:"ALS", w:["Cancer", "Flu"]},
-                {y:2018, q:"Tide Pods are not...", a:"Food", w:["Soap", "Toys"]},
-                {y:2007, q:"Charlie bit my...", a:"Finger", w:["Toe", "Ear"]},
-                {y:2020, q:"Coffin Dance...", a:"Meme", w:["Song", "Dance"]},
-                {y:2012, q:"Overly Attached...", a:"Girlfriend", w:["Boyfriend", "Mom"]}
-            ]},
-            { id: 'chips', name: 'HARDWARE', icon: '💾', theme: 't-hard', qs: [
-                {y:1965, q:"Moore's Law involves...", a:"Transistors", w:["Heat", "Cost"]},
-                {y:1971, q:"First Microprocessor.", a:"Intel 4004", w:["8086", "Pentium"]},
-                {y:1993, q:"Pentium processor by...", a:"Intel", w:["AMD", "IBM"]},
-                {y:2006, q:"Core 2 Duo introduced...", a:"Multi-core", w:["Speed", "Heat"]},
-                {y:2020, q:"Apple M1 chip used...", a:"ARM", w:["x86", "RISC"]},
-                {y:1981, q:"IBM PC used...", a:"Intel 8088", w:["Motorola", "Zilog"]},
-                {y:1999, q:"Nvidia invented the...", a:"GPU", w:["CPU", "APU"]},
-                {y:2017, q:"Ryzen challenged...", a:"Intel", w:["Nvidia", "Apple"]},
-                {y:1958, q:"Integrated Circuit...", a:"Invented", w:["Lost", "Sold"]},
-                {y:1985, q:"Amiga used...", a:"Custom Chips", w:["Standard", "None"]},
-                {y:2011, q:"Raspberry Pi is a...", a:"Tiny PC", w:["Cake", "Toy"]},
-                {y:2000, q:"USB drives replaced...", a:"Floppies", w:["CDs", "DVDs"]},
-                {y:2012, q:"SSD prices...", a:"Dropped", w:["Rose", "Stalled"]},
-                {y:1995, q:"3dfx Voodoo was for...", a:"Graphics", w:["Sound", "Net"]},
-                {y:2022, q:"RTX 4090 requires...", a:"Power", w:["Water", "Air"]},
-                {y:2005, q:"Xbox 360 used...", a:"PowerPC", w:["x86", "ARM"]},
-                {y:1991, q:"Sound Blaster...", a:"Audio", w:["Video", "Net"]},
-                {y:2015, q:"USB-C introduced...", a:"Reversibility", w:["Speed", "Power"]},
-                {y:1976, q:"Cray-1 was a...", a:"Supercomputer", w:["Laptop", "Phone"]},
-                {y:2024, q:"Chips Act boosts...", a:"US Fab", w:["China", "EU"]}
-            ]},
-            { id: 'os', name: 'OPERATING SYS', icon: '💿', theme: 't-os', qs: [
-                {y:1981, q:"MS-DOS launched with...", a:"IBM PC", w:["Apple", "Compaq"]},
-                {y:1984, q:"MacOS introduced...", a:"GUI", w:["CLI", "Touch"]},
-                {y:1995, q:"Windows 95 brought...", a:"Start Menu", w:["Tiles", "Dock"]},
-                {y:2001, q:"Windows XP was...", a:"Beloved", w:["Hated", "Ignored"]},
-                {y:2015, q:"Windows 10 was the...", a:"Last Version", w:["First", "Best"]},
-                {y:1991, q:"Linux Kernel...", a:"Released", w:["Sold", "Closed"]},
-                {y:1985, q:"Windows 1.0 was a...", a:"Shell", w:["OS", "App"]},
-                {y:2007, q:"iOS was based on...", a:"OS X", w:["Linux", "Windows"]},
-                {y:2009, q:"Windows 7 fixed...", a:"Vista", w:["XP", "98"]},
-                {y:2001, q:"Mac OS X used...", a:"Unix", w:["DOS", "Linux"]},
-                {y:2012, q:"Windows 8 removed...", a:"Start Btn", w:["Desktop", "Mouse"]},
-                {y:1969, q:"Unix created at...", a:"Bell Labs", w:["MIT", "Stanford"]},
-                {y:1990, q:"Windows 3.0 was a...", a:"Hit", w:["Flop", "Bug"]},
-                {y:2004, q:"Ubuntu made Linux...", a:"Easy", w:["Hard", "Fast"]},
-                {y:2008, q:"Android is based on...", a:"Linux", w:["Java", "Windows"]},
-                {y:2021, q:"Windows 11 centered...", a:"Taskbar", w:["Windows", "Icons"]},
-                {y:1993, q:"Windows NT was...", a:"32-bit", w:["16-bit", "64-bit"]},
-                {y:1987, q:"OS/2 was by...", a:"IBM/MS", w:["Apple", "Dell"]},
-                {y:2011, q:"ChromeOS runs...", a:"Web Apps", w:["Exe", "Dmg"]},
-                {y:2000, q:"Windows ME was...", a:"Unstable", w:["Great", "Fast"]}
-            ]},
-            { id: 'crypto', name: 'CRYPTO & WEB3', icon: '⛓️', theme: 't-crypto', qs: [
-                {y:2009, q:"Bitcoin Genesis Block.", a:"Jan 3", w:["Dec 25", "Jan 1"]},
-                {y:2015, q:"Ethereum launched...", a:"Smart Contracts", w:["NFTs", "Mining"]},
-                {y:2013, q:"Dogecoin started as...", a:"Joke", w:["Scam", "Bank"]},
-                {y:2017, q:"ICO Boom raised...", a:"Billions", w:["Millions", "Trillions"]},
-                {y:2022, q:"The Merge moved ETH to...", a:"Proof of Stake", w:["Work", "History"]},
-                {y:2010, q:"Bitcoin Pizza cost...", a:"10k BTC", w:["100 BTC", "1k BTC"]},
-                {y:2014, q:"Mt Gox hack lost...", a:"850k BTC", w:["100k", "1M"]},
-                {y:2021, q:"Beeple NFT sold for...", a:"$69M", w:["$1M", "$100k"]},
-                {y:2011, q:"Silk Road used...", a:"Bitcoin", w:["Cash", "Card"]},
-                {y:2016, q:"The DAO was...", a:"Hacked", w:["Success", "Sold"]},
-                {y:2022, q:"Terra Luna...", a:"Crashed", w:["Mooned", "Stayed"]},
-                {y:2008, q:"Whitepaper by...", a:"Satoshi", w:["Vitalik", "CZ"]},
-                {y:2020, q:"DeFi Summer...", a:"Exploded", w:["Failed", "Stopped"]},
-                {y:2017, q:"CryptoKitties clogged...", a:"Ethereum", w:["Bitcoin", "Solana"]},
-                {y:2021, q:"El Salvador adopted...", a:"Bitcoin", w:["ETH", "Doge"]},
-                {y:2018, q:"Crypto Winter...", a:"Froze", w:["Heated", "Melted"]},
-                {y:2024, q:"Bitcoin ETF...", a:"Approved", w:["Denied", "Pending"]},
-                {y:2019, q:"Facebook Libra...", a:"Failed", w:["Launched", "Succeeded"]},
-                {y:2021, q:"Bored Apes...", a:"Minted", w:["Sold", "Lost"]},
-                {y:2013, q:"Vitalik proposed...", a:"Ethereum", w:["Bitcoin 2", "Solana"]}
-            ]},
-            { id: 'vr', name: 'VR & AR', icon: '🥽', theme: 't-vr', qs: [
-                {y:2012, q:"Oculus Kickstarter.", a:"Palmer Luckey", w:["Zuckerberg", "Carmack"]},
-                {y:2016, q:"HTC Vive used...", a:"Lighthouses", w:["Cameras", "Lasers"]},
-                {y:2014, q:"Facebook bought Oculus.", a:"$2B", w:["$1B", "$500M"]},
-                {y:2019, q:"Oculus Quest was...", a:"Standalone", w:["PC Only", "Phone"]},
-                {y:2024, q:"Apple Vision Pro.", a:"Spatial", w:["Virtual", "Augmented"]},
-                {y:1995, q:"Virtual Boy was...", a:"Red", w:["Blue", "Green"]},
-                {y:2016, q:"PSVR launched for...", a:"PS4", w:["PS3", "PS5"]},
-                {y:2020, q:"Half-Life: Alyx...", a:"VR Only", w:["PC", "Console"]},
-                {y:2011, q:"Ready Player One...", a:"Book", w:["Movie", "Game"]},
-                {y:2015, q:"Google Cardboard...", a:"Cheap", w:["Expensive", "Complex"]},
-                {y:2021, q:"Metaverse hype...", a:"Peaked", w:["Died", "Started"]},
-                {y:1968, q:"Sword of Damocles...", a:"First HMD", w:["Game", "Movie"]},
-                {y:2018, q:"Beat Saber...", a:"Hit", w:["Miss", "Flop"]},
-                {y:2016, q:"Pokemon GO is...", a:"AR", w:["VR", "MR"]},
-                {y:2013, q:"Google Glass...", a:"Failed", w:["Won", "Stayed"]},
-                {y:2022, q:"Meta Quest Pro...", a:"Expensive", w:["Cheap", "Free"]},
-                {y:1992, q:"Lawnmower Man...", a:"Movie", w:["Game", "Book"]},
-                {y:2019, q:"Valve Index...", a:"Finger Tracking", w:["Eye", "Body"]},
-                {y:2023, q:"Quest 3...", a:"Mixed Reality", w:["VR", "AR"]},
-                {y:1990, q:"Virtuality Arcade...", a:"Machines", w:["Consoles", "PCs"]}
-            ]},
-            { id: 'ai', name: 'AI REVOLUTION', icon: '🧠', theme: 't-ai', qs: [
-                {y:2022, q:"ChatGPT launch.", a:"Nov 30", w:["Jan 1", "Dec 25"]},
-                {y:2016, q:"AlphaGo beat...", a:"Lee Sedol", w:["Kasparov", "Carlsen"]},
-                {y:1950, q:"Turing Test...", a:"Proposed", w:["Solved", "Failed"]},
-                {y:1997, q:"Deep Blue beat...", a:"Kasparov", w:["Sedol", "Fischer"]},
-                {y:2023, q:"GPT-4 release.", a:"Multimodal", w:["Text", "Image"]},
-                {y:2011, q:"Watson won...", a:"Jeopardy", w:["Chess", "Go"]},
-                {y:2012, q:"AlexNet breakthrough.", a:"Vision", w:["Text", "Audio"]},
-                {y:2017, q:"Transformer paper.", a:"Attention", w:["Memory", "Speed"]},
-                {y:2021, q:"DALL-E generated...", a:"Images", w:["Video", "Text"]},
-                {y:2014, q:"GANs invented by...", a:"Goodfellow", w:["Hinton", "LeCun"]},
-                {y:2020, q:"GPT-3 released.", a:"175B Params", w:["100B", "1T"]},
-                {y:1956, q:"Dartmouth Workshop.", a:"AI Born", w:["AI Died", "AI Peak"]},
-                {y:1966, q:"ELIZA chatbot.", a:"Therapist", w:["Friend", "Enemy"]},
-                {y:2015, q:"OpenAI founded.", a:"Non-profit", w:["For-profit", "Gov"]},
-                {y:2024, q:"Sora generates...", a:"Video", w:["Audio", "Code"]},
-                {y:2018, q:"BERT model by...", a:"Google", w:["Meta", "OpenAI"]},
-                {y:2006, q:"Deep Learning...", a:"Rebranded", w:["Invented", "Lost"]},
-                {y:2023, q:"Bard became...", a:"Gemini", w:["Bing", "Chat"]},
-                {y:1980, q:"Expert Systems...", a:"Peak", w:["Start", "End"]},
-                {y:2025, q:"AGI is...", a:"Prediction", w:["Here", "Gone"]}
-            ]},
-            { id: 'founder', name: 'TECH FOUNDERS', icon: '👔', theme: 't-founder', qs: [
-                {y:1976, q:"Jobs & Wozniak founded...", a:"Apple", w:["Microsoft", "IBM"]},
-                {y:1975, q:"Gates & Allen founded...", a:"Microsoft", w:["Apple", "Intel"]},
-                {y:1994, q:"Bezos founded...", a:"Amazon", w:["eBay", "PayPal"]},
-                {y:1998, q:"Page & Brin founded...", a:"Google", w:["Yahoo", "Bing"]},
-                {y:2004, q:"Zuckerberg founded...", a:"Facebook", w:["Twitter", "Snap"]},
-                {y:2002, q:"Musk founded...", a:"SpaceX", w:["Tesla", "PayPal"]},
-                {y:1968, q:"Moore & Noyce...", a:"Intel", w:["AMD", "Nvidia"]},
-                {y:1993, q:"Jensen Huang...", a:"Nvidia", w:["ATI", "Intel"]},
-                {y:1984, q:"Michael Dell...", a:"Dell", w:["HP", "Compaq"]},
-                {y:2006, q:"Jack Dorsey...", a:"Twitter", w:["Square", "Vine"]},
-                {y:2008, q:"Brian Chesky...", a:"Airbnb", w:["Uber", "Lyft"]},
-                {y:2009, q:"Travis Kalanick...", a:"Uber", w:["Lyft", "Grab"]},
-                {y:2011, q:"Evan Spiegel...", a:"Snapchat", w:["Insta", "FB"]},
-                {y:1977, q:"Larry Ellison...", a:"Oracle", w:["SAP", "Salesforce"]},
-                {y:2012, q:"Vitalik Buterin...", a:"Ethereum", w:["Bitcoin", "Solana"]},
-                {y:1995, q:"Pierre Omidyar...", a:"eBay", w:["Amazon", "Craigslist"]},
-                {y:2007, q:"Reed Hastings...", a:"Netflix", w:["Hulu", "Disney"]},
-                {y:2010, q:"Kevin Systrom...", a:"Instagram", w:["Vine", "TikTok"]},
-                {y:1939, q:"Hewlett & Packard...", a:"HP", w:["IBM", "Dell"]},
-                {y:2005, q:"Sam Altman...", a:"Y Combinator", w:["OpenAI", "Reddit"]}
-            ]},
-            { id: 'phys', name: 'PHYSICS', icon: '⚛️', theme: 't-phys', qs: [
-                {y:1905, q:"Einstein's...", a:"Annus Mirabilis", w:["Year", "Day"]},
-                {y:1915, q:"General Relativity...", a:"Published", w:["Written", "Lost"]},
-                {y:1945, q:"Trinity Test...", a:"Atomic Bomb", w:["H-Bomb", "TNT"]},
-                {y:1964, q:"Higgs mechanism...", a:"Proposed", w:["Found", "Lost"]},
-                {y:2012, q:"Higgs Boson...", a:"Discovered", w:["Lost", "Hidden"]},
-                {y:1927, q:"Solvay Conference...", a:"Quantum", w:["Relativity", "Light"]},
-                {y:1986, q:"Chernobyl...", a:"Meltdown", w:["Test", "Fire"]},
-                {y:2015, q:"Gravitational Waves...", a:"Detected", w:["Seen", "Heard"]},
-                {y:1990, q:"Webb construction...", a:"Began", w:["Ended", "Launched"]},
-                {y:1965, q:"Cosmic Background...", a:"Found", w:["Lost", "Hidden"]},
-                {y:1935, q:"Schrodinger's...", a:"Cat", w:["Dog", "Rat"]},
-                {y:1954, q:"CERN established.", a:"Geneva", w:["Paris", "London"]},
-                {y:2019, q:"Black Hole...", a:"Imaged", w:["Found", "Lost"]},
-                {y:1974, q:"Hawking Radiation...", a:"Proposed", w:["Found", "Seen"]},
-                {y:1911, q:"Superconductivity...", a:"Discovered", w:["Invented", "Lost"]},
-                {y:2022, q:"Fusion Ignition...", a:"Achieved", w:["Failed", "Tried"]},
-                {y:1900, q:"Planck's...", a:"Constant", w:["Variable", "Number"]},
-                {y:1924, q:"Hubble found...", a:"Galaxies", w:["Stars", "Planets"]},
-                {y:1995, q:"Top Quark...", a:"Found", w:["Lost", "Hidden"]},
-                {y:2011, q:"Neutrinos...", a:"Faster?", w:["Slower", "Same"]}
-            ]},
-            { id: 'startup', name: 'TECH HUSTLE', icon: '💼', theme: 't-startup', qs: [
-                {y:2000, q:"Dot Com...", a:"Bubble", w:["Boom", "Bang"]},
-                {y:2008, q:"Airbnb founded during...", a:"Recession", w:["Boom", "War"]},
-                {y:2010, q:"WeWork founded.", a:"Coworking", w:["Living", "Eating"]},
-                {y:2019, q:"WeWork IPO...", a:"Failed", w:["Soared", "Okay"]},
-                {y:2022, q:"Theranos founder...", a:"Convicted", w:["Freed", "Hired"]},
-                {y:2009, q:"Uber founded as...", a:"UberCab", w:["Taxi", "Lyft"]},
-                {y:2011, q:"Zoom founded.", a:"Video", w:["Chat", "Phone"]},
-                {y:2013, q:"Slack launched.", a:"Messaging", w:["Email", "Video"]},
-                {y:2005, q:"Y Combinator...", a:"Started", w:["Ended", "Sold"]},
-                {y:2012, q:"Coinbase founded.", a:"Crypto", w:["Bank", "Stock"]},
-                {y:2014, q:"Magic Leap...", a:"Hype", w:["Real", "Fake"]},
-                {y:2020, q:"Snowflake IPO.", a:"Cloud", w:["Data", "Web"]},
-                {y:2021, q:"Rivian IPO.", a:"EV", w:["Gas", "Hybrid"]},
-                {y:2006, q:"Spotify founded.", a:"Music", w:["Video", "Pod"]},
-                {y:2015, q:"Juicero...", a:"Failed", w:["Won", "Sold"]},
-                {y:2003, q:"Tesla founded.", a:"EVs", w:["Gas", "Solar"]},
-                {y:2016, q:"Quibi...", a:"Short", w:["Long", "Med"]},
-                {y:2020, q:"Quibi...", a:"Died", w:["Lived", "Sold"]},
-                {y:1999, q:"Pets.com...", a:"Icon", w:["Store", "Site"]},
-                {y:2018, q:"Robinhood...", a:"Trading", w:["Bank", "Loan"]}
-            ]},
-            { id: 'bio', name: 'BIOTECH', icon: '🧬', theme: 't-bio', qs: [
-                {y:1953, q:"DNA Structure...", a:"Discovered", w:["Invented", "Lost"]},
-                {y:1996, q:"Dolly the...", a:"Sheep", w:["Cow", "Cat"]},
-                {y:2003, q:"Human Genome...", a:"Sequenced", w:["Mapped", "Read"]},
-                {y:2012, q:"CRISPR...", a:"Gene Editing", w:["Cloning", "Copying"]},
-                {y:2020, q:"mRNA Vaccine.", a:"COVID-19", w:["Flu", "Cold"]},
-                {y:1978, q:"First IVF baby.", a:"Louise Brown", w:["Jane Doe", "Mary"]},
-                {y:1990, q:"Human Genome Project...", a:"Began", w:["Ended", "Failed"]},
-                {y:2006, q:"23andMe...", a:"Founded", w:["Sold", "Closed"]},
-                {y:2018, q:"He Jiankui...", a:"CRISPR Babies", w:["Clones", "Cures"]},
-                {y:1928, q:"Penicillin...", a:"Discovered", w:["Invented", "Made"]},
-                {y:1983, q:"PCR...", a:"Invented", w:["Found", "Lost"]},
-                {y:2024, q:"Neuralink...", a:"Human Trial", w:["Monkey", "Pig"]},
-                {y:2013, q:"Lab Grown Burger.", a:"Eaten", w:["Sold", "Made"]},
-                {y:2001, q:"Anthrax...", a:"Attacks", w:["Cure", "Virus"]},
-                {y:1951, q:"HeLa Cells...", a:"Taken", w:["Given", "Sold"]},
-                {y:2022, q:"Pig Heart...", a:"Transplant", w:["Kidney", "Liver"]},
-                {y:1997, q:"Gattaca...", a:"Movie", w:["Book", "Game"]},
-                {y:2015, q:"Elizabeth Holmes...", a:"Fraud", w:["Hero", "Doc"]},
-                {y:1980, q:"GMO patent...", a:"Allowed", w:["Denied", "Banned"]},
-                {y:2025, q:"Biohacking...", a:"Trend", w:["Law", "Rule"]}
-            ]},
-            { id: 'energy', name: 'ENERGY & AUTO', icon: '⚡', theme: 't-energy', qs: [
-                {y:2008, q:"Tesla Roadster...", a:"Released", w:["Sold", "Built"]},
-                {y:2011, q:"Fukushima...", a:"Disaster", w:["Test", "Plant"]},
-                {y:1886, q:"First Car...", a:"Benz", w:["Ford", "Audi"]},
-                {y:1908, q:"Model T...", a:"Mass Produced", w:["Hand Made", "Fast"]},
-                {y:2020, q:"Tesla Stock...", a:"Soared", w:["Crashed", "Flat"]},
-                {y:2015, q:"Dieselgate...", a:"VW", w:["BMW", "Audi"]},
-                {y:1973, q:"Oil Crisis...", a:"OPEC", w:["USA", "EU"]},
-                {y:1986, q:"Chernobyl...", a:"Meltdown", w:["Fire", "Test"]},
-                {y:2010, q:"Deepwater Horizon...", a:"Spill", w:["Fire", "Leak"]},
-                {y:1997, q:"Toyota Prius...", a:"Hybrid", w:["EV", "Gas"]},
-                {y:2012, q:"Model S...", a:"Sedan", w:["SUV", "Truck"]},
-                {y:2019, q:"Cybertruck...", a:"Unveiled", w:["Sold", "Built"]},
-                {y:1954, q:"Solar Cell...", a:"Bell Labs", w:["MIT", "NASA"]},
-                {y:2006, q:"Inconvenient Truth...", a:"Movie", w:["Book", "Talk"]},
-                {y:2016, q:"Paris Agreement...", a:"Signed", w:["Lost", "Burned"]},
-                {y:2022, q:"Fusion...", a:"Gain", w:["Loss", "Even"]},
-                {y:1979, q:"Three Mile Island...", a:"Accident", w:["Test", "Fire"]},
-                {y:2003, q:"Tesla...", a:"Founded", w:["Sold", "Built"]},
-                {y:2025, q:"EV Mandates...", a:"Coming", w:["Gone", "Here"]},
-                {y:1900, q:"Electric Cars...", a:"Existed", w:["Didnt", "Rare"]}
-            ]},
-            { id: 'general', name: 'GENERAL FACTS', icon: '📚', theme: 't-gen', qs: [
-                {y:1939, q:"WW2 Started...", a:"Sept 1", w:["Aug 1", "Oct 1"]},
-                {y:1945, q:"WW2 Ended...", a:"Sept 2", w:["Aug 2", "Oct 2"]},
-                {y:1963, q:"JFK...", a:"Assassinated", w:["Resigned", "Died"]},
-                {y:1989, q:"Berlin Wall...", a:"Fell", w:["Built", "Moved"]},
-                {y:2001, q:"9/11...", a:"Attacks", w:["Accident", "Test"]},
-                {y:1912, q:"Titanic...", a:"Sank", w:["Sailed", "Built"]},
-                {y:1969, q:"Woodstock...", a:"Festival", w:["Concert", "Party"]},
-                {y:1991, q:"USSR...", a:"Dissolved", w:["Formed", "Moved"]},
-                {y:2020, q:"COVID-19...", a:"Pandemic", w:["Flu", "Cold"]},
-                {y:2016, q:"Brexit...", a:"Vote", w:["Law", "Rule"]},
-                {y:1953, q:"Everest...", a:"Climbed", w:["Seen", "Found"]},
-                {y:1977, q:"Star Wars...", a:"Released", w:["Filmed", "Made"]},
-                {y:1994, q:"Lion King...", a:"Released", w:["Made", "Sold"]},
-                {y:2009, q:"Avatar...", a:"Released", w:["Made", "Sold"]},
-                {y:2019, q:"Endgame...", a:"Released", w:["Made", "Sold"]},
-                {y:1980, q:"John Lennon...", a:"Died", w:["Born", "Sang"]},
-                {y:1997, q:"Princess Diana...", a:"Died", w:["Born", "Wed"]},
-                {y:2011, q:"Arab Spring...", a:"Protests", w:["War", "Peace"]},
-                {y:2022, q:"Queen Elizabeth...", a:"Died", w:["Born", "Wed"]},
-                {y:1937, q:"Amelia Earhart...", a:"Vanished", w:["Landed", "Flew"]}
-            ]}
+            {
+                id: 'finance', name: 'FINANCE & MARKETS', icon: '📈', theme: 't-finance', qs: [
+                    { y: 1929, q: "The Great Depression began with...", a: "Black Tuesday", w: ["Red Friday", "Gray Monday"] },
+                    { y: 1971, q: "Nixon ended the direct convertibility of the dollar to...", a: "Gold", w: ["Silver", "Oil"] },
+                    { y: 1987, q: "Black Monday saw the Dow drop...", a: "22%", w: ["50%", "10%"] },
+                    { y: 2001, q: "Enron collapsed due to...", a: "Accounting Fraud", w: ["Market Crash", "Hacks"] },
+                    { y: 2008, q: "Bank collapse that sparked the crisis.", a: "Lehman Brothers", w: ["Goldman Sachs", "JP Morgan"] },
+                    { y: 2009, q: "Created as a decentralized digital currency.", a: "Bitcoin", w: ["Litecoin", "Ethereum"] },
+                    { y: 2021, q: "GameStop stock squeezed by...", a: "Reddit", w: ["Twitter", "Facebook"] },
+                    { y: 1944, q: "Bretton Woods established the...", a: "IMF", w: ["WTO", "NATO"] },
+                    { y: 1999, q: "Repeal of Glass-Steagall allowed...", a: "Mega Banks", w: ["Crypto", "Offshore"] },
+                    { y: 2010, q: "The Flash Crash lasted...", a: "36 Minutes", w: ["1 Hour", "1 Day"] },
+                    { y: 2022, q: "FTX Exchange collapsed due to...", a: "Fraud", w: ["Hacks", "Regulation"] },
+                    { y: 1933, q: "FDR confiscated private...", a: "Gold", w: ["Guns", "Land"] },
+                    { y: 2000, q: "The Dot Com bubble burst caused...", a: "Recession", w: ["Inflation", "War"] },
+                    { y: 2023, q: "Silicon Valley Bank failed due to...", a: "Bond Rates", w: ["Crypto", "Hacks"] },
+                    { y: 1950, q: "First credit card introduced.", a: "Diners Club", w: ["Visa", "Amex"] },
+                    { y: 1998, q: "Long-Term Capital Management...", a: "Collapsed", w: ["Soared", "Merged"] },
+                    { y: 2007, q: "The start of the...", a: "Subprime Crisis", w: ["Oil Crisis", "Tech Boom"] },
+                    { y: 2017, q: "Bitcoin hit this milestone.", a: "$20,000", w: ["$1,000", "$100,000"] },
+                    { y: 1923, q: "Hyperinflation destroyed the...", a: "German Mark", w: ["US Dollar", "Pound"] },
+                    { y: 2030, q: "Projected year for...", a: "CBDCs", w: ["Cash End", "Gold Return"] }
+                ]
+            },
+            {
+                id: 'coding', name: 'CODE & ALGOS', icon: '💻', theme: 't-code', qs: [
+                    { y: 1936, q: "Father of theoretical computer science.", a: "Alan Turing", w: ["Ada Lovelace", "Charles Babbage"] },
+                    { y: 1945, q: "First actual computer bug.", a: "Moth", w: ["Ant", "Fly"] },
+                    { y: 1957, q: "First high-level language.", a: "FORTRAN", w: ["COBOL", "BASIC"] },
+                    { y: 1972, q: "Language created by Dennis Ritchie.", a: "C", w: ["B", "D"] },
+                    { y: 1991, q: "Linux kernel was released by...", a: "Linus Torvalds", w: ["Steve Jobs", "Bill Gates"] },
+                    { y: 1995, q: "Programming language created in 10 days.", a: "JavaScript", w: ["Java", "Python"] },
+                    { y: 2004, q: "Google's email service launched on April 1st.", a: "Gmail", w: ["Hotmail", "Yahoo"] },
+                    { y: 2008, q: "GitHub was founded to host...", a: "Git Repos", w: ["SVN", "Mercurial"] },
+                    { y: 2009, q: "Language created by Google.", a: "Go", w: ["Rust", "Swift"] },
+                    { y: 2014, q: "HTML5 became a...", a: "Standard", w: ["Suggestion", "Law"] },
+                    { y: 1983, q: "C++ was released by...", a: "Stroustrup", w: ["Gosling", "Rossum"] },
+                    { y: 1991, q: "Python was released by...", a: "Guido van Rossum", w: ["Eich", "Wall"] },
+                    { y: 2010, q: "Rust was released by...", a: "Mozilla", w: ["Google", "Apple"] },
+                    { y: 2023, q: "AI model that changed coding.", a: "GPT-4", w: ["DeepBlue", "Watson"] },
+                    { y: 1969, q: "UNIX was developed at...", a: "Bell Labs", w: ["Xerox PARC", "MIT"] },
+                    { y: 1995, q: "Java slogan: Write Once...", a: "Run Anywhere", w: ["Run Fast", "Debug Everywhere"] },
+                    { y: 2001, q: "Agile Manifesto was...", a: "Signed", w: ["Rejected", "Lost"] },
+                    { y: 2015, q: "VS Code was released by...", a: "Microsoft", w: ["Apple", "Adobe"] },
+                    { y: 1989, q: "Python is named after...", a: "Monty Python", w: ["Snake", "Constrictor"] },
+                    { y: 2024, q: "Devin AI claimed to be...", a: "First AI Engineer", w: ["Fastest Coder", "Best Debugger"] }
+                ]
+            },
+            {
+                id: 'tech', name: 'FUTURE TECH', icon: '🤖', theme: 't-tech', qs: [
+                    { y: 1969, q: "Network that became the basis for the Internet.", a: "ARPANET", w: ["SKYNET", "INTRANET"] },
+                    { y: 1984, q: "Apple launched Macintosh with...", a: "1984 Ad", w: ["Think Different", "Hello"] },
+                    { y: 2007, q: "Device that combined phone, ipod, and communicator.", a: "iPhone", w: ["Blackberry", "Palm Pilot"] },
+                    { y: 2016, q: "AI that defeated the Go world champion.", a: "AlphaGo", w: ["DeepBlue", "Watson"] },
+                    { y: 2023, q: "Large Language Model released by OpenAI.", a: "GPT-4", w: ["Bard", "Llama"] },
+                    { y: 2024, q: "Apple's Spatial Computer.", a: "Vision Pro", w: ["Oculus", "Hololens"] },
+                    { y: 1977, q: "First complete personal computer.", a: "Apple II", w: ["Altair", "Commodore"] },
+                    { y: 1998, q: "Google was founded in a...", a: "Garage", w: ["Dorm", "Office"] },
+                    { y: 2001, q: "Wikipedia was launched by...", a: "Jimmy Wales", w: ["Assange", "Snowden"] },
+                    { y: 2011, q: "Siri was integrated into...", a: "iPhone 4S", w: ["iPhone 3G", "iPhone 5"] },
+                    { y: 1989, q: "World Wide Web invented by...", a: "Tim Berners-Lee", w: ["Al Gore", "Vint Cerf"] },
+                    { y: 2004, q: "Firefox 1.0 challenged...", a: "Internet Explorer", w: ["Netscape", "Opera"] },
+                    { y: 2012, q: "Google Glass was a...", a: "Flop", w: ["Hit", "Standard"] },
+                    { y: 2020, q: "Zoom became the standard for...", a: "Meetings", w: ["Gaming", "Dating"] },
+                    { y: 1990, q: "Photoshop 1.0 released for...", a: "Macintosh", w: ["Windows", "Linux"] },
+                    { y: 2006, q: "Tesla Roadster revealed.", a: "Electric Car", w: ["Hybrid", "Hydrogen"] },
+                    { y: 2015, q: "OpenAI was founded.", a: "Non-Profit", w: ["For-Profit", "Gov Org"] },
+                    { y: 1979, q: "Sony Walkman changed...", a: "Music", w: ["Video", "Gaming"] },
+                    { y: 2022, q: "DALL-E 2 generated...", a: "Images", w: ["Video", "Music"] },
+                    { y: 2025, q: "The Singularity is...", a: "Near", w: ["Far", "Impossible"] }
+                ]
+            },
+            {
+                id: 'social', name: 'SOCIAL MEDIA', icon: '📱', theme: 't-social', qs: [
+                    { y: 2004, q: "The Facebook started at...", a: "Harvard", w: ["Yale", "Stanford"] },
+                    { y: 2006, q: "Twitter's original character limit.", a: "140", w: ["280", "100"] },
+                    { y: 2010, q: "Instagram launched for...", a: "iOS Only", w: ["Android", "Web"] },
+                    { y: 2011, q: "Snapchat's key feature.", a: "Disappearing", w: ["Filters", "Stories"] },
+                    { y: 2016, q: "TikTok original name.", a: "Douyin", w: ["Musical.ly", "Vine"] },
+                    { y: 2003, q: "First major social network.", a: "MySpace", w: ["Friendster", "Hi5"] },
+                    { y: 2005, q: "YouTube's first video.", a: "Me at the zoo", w: ["Cat video", "Dance"] },
+                    { y: 2012, q: "Facebook bought Instagram for...", a: "$1 Billion", w: ["$500 Million", "$10 Billion"] },
+                    { y: 2013, q: "Vine introduced...", a: "6 sec videos", w: ["Stories", "Live"] },
+                    { y: 2018, q: "Cambridge Analytica scandal hit...", a: "Facebook", w: ["Twitter", "Google"] },
+                    { y: 2022, q: "Elon Musk bought Twitter for...", a: "$44 Billion", w: ["$20 Billion", "$100 Billion"] },
+                    { y: 2007, q: "Hashtags were invented on...", a: "Twitter", w: ["Instagram", "Facebook"] },
+                    { y: 2020, q: "BeReal encouraged...", a: "Authenticity", w: ["Filters", "Ads"] },
+                    { y: 2011, q: "Google+ was a...", a: "Failure", w: ["Success", "Standard"] },
+                    { y: 2014, q: "Amazon bought Twitch.", a: "Streaming", w: ["Shopping", "Gaming"] },
+                    { y: 2004, q: "Digg was a news...", a: "Aggregator", w: ["Creator", "Paper"] },
+                    { y: 2010, q: "Pinterest launched for...", a: "Moodboards", w: ["Dating", "Jobs"] },
+                    { y: 2016, q: "Pokemon GO was...", a: "Social AR", w: ["VR", "Console"] },
+                    { y: 2023, q: "Threads challenged...", a: "Twitter", w: ["Reddit", "TikTok"] },
+                    { y: 2008, q: "Spotify launched in...", a: "Europe", w: ["USA", "Asia"] }
+                ]
+            },
+            {
+                id: 'space', name: 'COSMIC FRONTIER', icon: '🚀', theme: 't-space', qs: [
+                    { y: 1957, q: "First satellite in orbit.", a: "Sputnik 1", w: ["Explorer", "Vostok"] },
+                    { y: 1969, q: "Apollo 11 landed on...", a: "The Moon", w: ["Mars", "Venus"] },
+                    { y: 1990, q: "Telescope launched into orbit.", a: "Hubble", w: ["Webb", "Kepler"] },
+                    { y: 2015, q: "SpaceX landed a...", a: "Rocket Booster", w: ["Shuttle", "Capsule"] },
+                    { y: 2022, q: "Successor to Hubble.", a: "James Webb", w: ["Galileo", "Copernicus"] },
+                    { y: 1961, q: "First human in space.", a: "Yuri Gagarin", w: ["Shepard", "Glenn"] },
+                    { y: 1986, q: "Challenger disaster involved...", a: "O-Rings", w: ["Engine", "Fuel"] },
+                    { y: 2012, q: "Curiosity Rover landed on...", a: "Mars", w: ["Moon", "Titan"] },
+                    { y: 1977, q: "Voyager probes carry...", a: "Golden Record", w: ["CD", "Map"] },
+                    { y: 1998, q: "ISS construction...", a: "Began", w: ["Ended", "Failed"] },
+                    { y: 2003, q: "Columbia disaster on...", a: "Re-entry", w: ["Launch", "Orbit"] },
+                    { y: 2020, q: "SpaceX launched humans to...", a: "ISS", w: ["Moon", "Mars"] },
+                    { y: 1969, q: "Armstrong's first word.", a: "Houston", w: ["Eagle", "Step"] },
+                    { y: 2019, q: "First image of a...", a: "Black Hole", w: ["Quasar", "Pulsar"] },
+                    { y: 1958, q: "NASA was...", a: "Founded", w: ["Ended", "Merged"] },
+                    { y: 2021, q: "Perseverance landed with...", a: "Helicopter", w: ["Bike", "Boat"] },
+                    { y: 1972, q: "Last moon landing.", a: "Apollo 17", w: ["Apollo 11", "Apollo 13"] },
+                    { y: 2006, q: "Pluto was...", a: "Demoted", w: ["Discovered", "Exploded"] },
+                    { y: 2024, q: "Artemis mission targets...", a: "Moon", w: ["Mars", "Asteroid"] },
+                    { y: 2030, q: "Goal for Mars...", a: "Landing", w: ["Colony", "Flyby"] }
+                ]
+            },
+            {
+                id: 'gaming', name: 'GAMING HISTORY', icon: '🎮', theme: 't-gaming', qs: [
+                    { y: 1985, q: "Nintendo saved the industry with...", a: "NES", w: ["Atari", "Sega"] },
+                    { y: 1993, q: "FPS that caused controversy.", a: "DOOM", w: ["Quake", "Halo"] },
+                    { y: 1996, q: "Mario went...", a: "3D", w: ["VR", "Online"] },
+                    { y: 2004, q: "WoW defined...", a: "MMORPGs", w: ["FPS", "RTS"] },
+                    { y: 2011, q: "Minecraft officially...", a: "Released", w: ["Beta", "Alpha"] },
+                    { y: 1980, q: "Pac-Man was created by...", a: "Namco", w: ["Nintendo", "Sega"] },
+                    { y: 1989, q: "Game Boy launched with...", a: "Tetris", w: ["Mario", "Zelda"] },
+                    { y: 1991, q: "Sonic challenged...", a: "Mario", w: ["Zelda", "Link"] },
+                    { y: 1997, q: "Final Fantasy VII on...", a: "PlayStation", w: ["N64", "Saturn"] },
+                    { y: 2000, q: "PS2 became the...", a: "Best Seller", w: ["Worst", "Average"] },
+                    { y: 2001, q: "Halo launched with...", a: "Xbox", w: ["PS2", "GameCube"] },
+                    { y: 2006, q: "Wii introduced...", a: "Motion", w: ["VR", "4K"] },
+                    { y: 2013, q: "GTA V broke...", a: "Sales Records", w: ["Consoles", "Laws"] },
+                    { y: 2017, q: "Switch combined...", a: "Home & Handheld", w: ["VR & AR", "PC & Console"] },
+                    { y: 2020, q: "Cyberpunk 2077 had a...", a: "Rough Launch", w: ["Perfect Launch", "Delay"] },
+                    { y: 1972, q: "Pong was the...", a: "First Hit", w: ["Last Hit", "Flop"] },
+                    { y: 1998, q: "Ocarina of Time set...", a: "Standards", w: ["Records", "Traps"] },
+                    { y: 2007, q: "Portal introduced...", a: "Portals", w: ["Guns", "Zombies"] },
+                    { y: 2018, q: "Fortnite popularized...", a: "Battle Royale", w: ["FPS", "RPG"] },
+                    { y: 2022, q: "Elden Ring won...", a: "GOTY", w: ["Nothing", "Indie"] }
+                ]
+            },
+            {
+                id: 'cyber', name: 'CYBER SECURITY', icon: '🔒', theme: 't-cyber', qs: [
+                    { y: 1988, q: "The Morris Worm was the...", a: "First Worm", w: ["Virus", "Trojan"] },
+                    { y: 2010, q: "Stuxnet targeted...", a: "Iran Nuclear", w: ["US Banks", "Russia"] },
+                    { y: 2013, q: "Snowden revealed...", a: "NSA Spying", w: ["CIA Plots", "FBI"] },
+                    { y: 2017, q: "WannaCry was...", a: "Ransomware", w: ["Spyware", "Adware"] },
+                    { y: 2020, q: "SolarWinds hack affected...", a: "US Gov", w: ["Facebook", "Google"] },
+                    { y: 1995, q: "Kevin Mitnick was...", a: "Arrested", w: ["Hired", "Found"] },
+                    { y: 2000, q: "ILOVEYOU virus spread via...", a: "Email", w: ["USB", "Web"] },
+                    { y: 2014, q: "Mt. Gox lost...", a: "Bitcoin", w: ["Dollars", "Gold"] },
+                    { y: 2011, q: "PSN was...", a: "Hacked", w: ["Upgraded", "Sold"] },
+                    { y: 2016, q: "Mirai Botnet used...", a: "IoT Devices", w: ["PCs", "Phones"] },
+                    { y: 2019, q: "Capital One breach via...", a: "Firewall", w: ["Phishing", "Physical"] },
+                    { y: 2021, q: "Colonial Pipeline paid...", a: "Ransom", w: ["Taxes", "Nothing"] },
+                    { y: 2022, q: "Lapsus$ hacked...", a: "Nvidia", w: ["AMD", "Intel"] },
+                    { y: 2008, q: "Conficker worm infected...", a: "Millions", w: ["Thousands", "Hundreds"] },
+                    { y: 2015, q: "Ashley Madison data...", a: "Leaked", w: ["Saved", "Lost"] },
+                    { y: 2018, q: "GDPR enacted for...", a: "Privacy", w: ["Speed", "Security"] },
+                    { y: 2023, q: "MGM Resorts...", a: "Hacked", w: ["Closed", "Sold"] },
+                    { y: 1999, q: "Melissa Virus was a...", a: "Macro", w: ["Micro", "Nano"] },
+                    { y: 2012, q: "LinkedIn passwords...", a: "Stolen", w: ["Reset", "Sold"] },
+                    { y: 2024, q: "AI Phishing is...", a: "Rising", w: ["Falling", "Stable"] }
+                ]
+            },
+            {
+                id: 'mobile', name: 'MOBILE PHONES', icon: '📵', theme: 't-mobile', qs: [
+                    { y: 1973, q: "First mobile call by...", a: "Motorola", w: ["Nokia", "Bell"] },
+                    { y: 1983, q: "Motorola DynaTAC price.", a: "$4000", w: ["$1000", "$500"] },
+                    { y: 2000, q: "The indestructible phone.", a: "Nokia 3310", w: ["Razr", "Ericsson"] },
+                    { y: 2007, q: "iPhone introduced...", a: "Multi-touch", w: ["Stylus", "Keyboard"] },
+                    { y: 2008, q: "Android launched on...", a: "HTC Dream", w: ["Samsung", "Pixel"] },
+                    { y: 1992, q: "First Smartphone concept.", a: "IBM Simon", w: ["Apple Newton", "Palm"] },
+                    { y: 2004, q: "Moto Razr was a...", a: "Fashion Icon", w: ["Smart Phone", "Brick"] },
+                    { y: 2010, q: "iPhone 4 scandal.", a: "Antennagate", w: ["Bendgate", "Battery"] },
+                    { y: 2016, q: "Samsung Note 7...", a: "Exploded", w: ["Cracked", "Lost"] },
+                    { y: 1999, q: "Blackberry introduced...", a: "Email", w: ["Games", "Music"] },
+                    { y: 2002, q: "Nokia 7650 had a...", a: "Camera", w: ["GPS", "Wifi"] },
+                    { y: 2017, q: "iPhone X removed...", a: "Home Button", w: ["Screen", "Cam"] },
+                    { y: 2009, q: "App Store slogan.", a: "There's an app", w: ["Download it", "Get it"] },
+                    { y: 2011, q: "Galaxy Note popularized...", a: "Phablets", w: ["Tablets", "Watches"] },
+                    { y: 2019, q: "Foldable phones...", a: "Returned", w: ["Died", "Exploded"] },
+                    { y: 2020, q: "5G rollout...", a: "Began", w: ["Ended", "Failed"] },
+                    { y: 1996, q: "StarTAC was the first...", a: "Clamshell", w: ["Slider", "Touch"] },
+                    { y: 2013, q: "Fingerprint sensor on...", a: "iPhone 5S", w: ["iPhone 5", "iPhone 6"] },
+                    { y: 2023, q: "USB-C on iPhone...", a: "15", w: ["14", "13"] },
+                    { y: 2005, q: "Google bought...", a: "Android", w: ["Nokia", "HTC"] }
+                ]
+            },
+            {
+                id: 'internet', name: 'INTERNET CULTURE', icon: '🌐', theme: 't-net', qs: [
+                    { y: 1993, q: "Eternal September began on...", a: "Usenet", w: ["Reddit", "Digg"] },
+                    { y: 1996, q: "Dancing Baby was a...", a: "Meme", w: ["Virus", "Game"] },
+                    { y: 2005, q: "First YouTube video.", a: "Me at zoo", w: ["Cats", "Shoes"] },
+                    { y: 2007, q: "Rickrolling uses...", a: "Never Gonna", w: ["Sandstorm", "Halo"] },
+                    { y: 2012, q: "Gangnam Style hit...", a: "1 Billion", w: ["1 Million", "1 Trillion"] },
+                    { y: 1998, q: "Hamster Dance was...", a: "Viral", w: ["Viral", "Dead"] },
+                    { y: 2004, q: "Numa Numa guy...", a: "Lip Synced", w: ["Danced", "Sang"] },
+                    { y: 2006, q: "Lonelygirl15 was...", a: "Fake", w: ["Real", "Alien"] },
+                    { y: 2011, q: "Nyan Cat is a...", a: "Pop Tart", w: ["Toast", "Bread"] },
+                    { y: 2013, q: "The Fox says...", a: "Ring Ding", w: ["Meow", "Woof"] },
+                    { y: 2015, q: "The Dress was...", a: "Blue/Black", w: ["Gold/White", "Red/Green"] },
+                    { y: 2016, q: "Harambe became a...", a: "Symbol", w: ["Pet", "Logo"] },
+                    { y: 2019, q: "Storm Area 51...", a: "Failed", w: ["Succeeded", "Happened"] },
+                    { y: 2009, q: "David After...", a: "Dentist", w: ["School", "Doctor"] },
+                    { y: 2010, q: "Bed Intruder...", a: "Song", w: ["Movie", "Book"] },
+                    { y: 2014, q: "Ice Bucket Challenge for...", a: "ALS", w: ["Cancer", "Flu"] },
+                    { y: 2018, q: "Tide Pods are not...", a: "Food", w: ["Soap", "Toys"] },
+                    { y: 2007, q: "Charlie bit my...", a: "Finger", w: ["Toe", "Ear"] },
+                    { y: 2020, q: "Coffin Dance...", a: "Meme", w: ["Song", "Dance"] },
+                    { y: 2012, q: "Overly Attached...", a: "Girlfriend", w: ["Boyfriend", "Mom"] }
+                ]
+            },
+            {
+                id: 'chips', name: 'HARDWARE', icon: '💾', theme: 't-hard', qs: [
+                    { y: 1965, q: "Moore's Law involves...", a: "Transistors", w: ["Heat", "Cost"] },
+                    { y: 1971, q: "First Microprocessor.", a: "Intel 4004", w: ["8086", "Pentium"] },
+                    { y: 1993, q: "Pentium processor by...", a: "Intel", w: ["AMD", "IBM"] },
+                    { y: 2006, q: "Core 2 Duo introduced...", a: "Multi-core", w: ["Speed", "Heat"] },
+                    { y: 2020, q: "Apple M1 chip used...", a: "ARM", w: ["x86", "RISC"] },
+                    { y: 1981, q: "IBM PC used...", a: "Intel 8088", w: ["Motorola", "Zilog"] },
+                    { y: 1999, q: "Nvidia invented the...", a: "GPU", w: ["CPU", "APU"] },
+                    { y: 2017, q: "Ryzen challenged...", a: "Intel", w: ["Nvidia", "Apple"] },
+                    { y: 1958, q: "Integrated Circuit...", a: "Invented", w: ["Lost", "Sold"] },
+                    { y: 1985, q: "Amiga used...", a: "Custom Chips", w: ["Standard", "None"] },
+                    { y: 2011, q: "Raspberry Pi is a...", a: "Tiny PC", w: ["Cake", "Toy"] },
+                    { y: 2000, q: "USB drives replaced...", a: "Floppies", w: ["CDs", "DVDs"] },
+                    { y: 2012, q: "SSD prices...", a: "Dropped", w: ["Rose", "Stalled"] },
+                    { y: 1995, q: "3dfx Voodoo was for...", a: "Graphics", w: ["Sound", "Net"] },
+                    { y: 2022, q: "RTX 4090 requires...", a: "Power", w: ["Water", "Air"] },
+                    { y: 2005, q: "Xbox 360 used...", a: "PowerPC", w: ["x86", "ARM"] },
+                    { y: 1991, q: "Sound Blaster...", a: "Audio", w: ["Video", "Net"] },
+                    { y: 2015, q: "USB-C introduced...", a: "Reversibility", w: ["Speed", "Power"] },
+                    { y: 1976, q: "Cray-1 was a...", a: "Supercomputer", w: ["Laptop", "Phone"] },
+                    { y: 2024, q: "Chips Act boosts...", a: "US Fab", w: ["China", "EU"] }
+                ]
+            },
+            {
+                id: 'os', name: 'OPERATING SYS', icon: '💿', theme: 't-os', qs: [
+                    { y: 1981, q: "MS-DOS launched with...", a: "IBM PC", w: ["Apple", "Compaq"] },
+                    { y: 1984, q: "MacOS introduced...", a: "GUI", w: ["CLI", "Touch"] },
+                    { y: 1995, q: "Windows 95 brought...", a: "Start Menu", w: ["Tiles", "Dock"] },
+                    { y: 2001, q: "Windows XP was...", a: "Beloved", w: ["Hated", "Ignored"] },
+                    { y: 2015, q: "Windows 10 was the...", a: "Last Version", w: ["First", "Best"] },
+                    { y: 1991, q: "Linux Kernel...", a: "Released", w: ["Sold", "Closed"] },
+                    { y: 1985, q: "Windows 1.0 was a...", a: "Shell", w: ["OS", "App"] },
+                    { y: 2007, q: "iOS was based on...", a: "OS X", w: ["Linux", "Windows"] },
+                    { y: 2009, q: "Windows 7 fixed...", a: "Vista", w: ["XP", "98"] },
+                    { y: 2001, q: "Mac OS X used...", a: "Unix", w: ["DOS", "Linux"] },
+                    { y: 2012, q: "Windows 8 removed...", a: "Start Btn", w: ["Desktop", "Mouse"] },
+                    { y: 1969, q: "Unix created at...", a: "Bell Labs", w: ["MIT", "Stanford"] },
+                    { y: 1990, q: "Windows 3.0 was a...", a: "Hit", w: ["Flop", "Bug"] },
+                    { y: 2004, q: "Ubuntu made Linux...", a: "Easy", w: ["Hard", "Fast"] },
+                    { y: 2008, q: "Android is based on...", a: "Linux", w: ["Java", "Windows"] },
+                    { y: 2021, q: "Windows 11 centered...", a: "Taskbar", w: ["Windows", "Icons"] },
+                    { y: 1993, q: "Windows NT was...", a: "32-bit", w: ["16-bit", "64-bit"] },
+                    { y: 1987, q: "OS/2 was by...", a: "IBM/MS", w: ["Apple", "Dell"] },
+                    { y: 2011, q: "ChromeOS runs...", a: "Web Apps", w: ["Exe", "Dmg"] },
+                    { y: 2000, q: "Windows ME was...", a: "Unstable", w: ["Great", "Fast"] }
+                ]
+            },
+            {
+                id: 'crypto', name: 'CRYPTO & WEB3', icon: '⛓️', theme: 't-crypto', qs: [
+                    { y: 2009, q: "Bitcoin Genesis Block.", a: "Jan 3", w: ["Dec 25", "Jan 1"] },
+                    { y: 2015, q: "Ethereum launched...", a: "Smart Contracts", w: ["NFTs", "Mining"] },
+                    { y: 2013, q: "Dogecoin started as...", a: "Joke", w: ["Scam", "Bank"] },
+                    { y: 2017, q: "ICO Boom raised...", a: "Billions", w: ["Millions", "Trillions"] },
+                    { y: 2022, q: "The Merge moved ETH to...", a: "Proof of Stake", w: ["Work", "History"] },
+                    { y: 2010, q: "Bitcoin Pizza cost...", a: "10k BTC", w: ["100 BTC", "1k BTC"] },
+                    { y: 2014, q: "Mt Gox hack lost...", a: "850k BTC", w: ["100k", "1M"] },
+                    { y: 2021, q: "Beeple NFT sold for...", a: "$69M", w: ["$1M", "$100k"] },
+                    { y: 2011, q: "Silk Road used...", a: "Bitcoin", w: ["Cash", "Card"] },
+                    { y: 2016, q: "The DAO was...", a: "Hacked", w: ["Success", "Sold"] },
+                    { y: 2022, q: "Terra Luna...", a: "Crashed", w: ["Mooned", "Stayed"] },
+                    { y: 2008, q: "Whitepaper by...", a: "Satoshi", w: ["Vitalik", "CZ"] },
+                    { y: 2020, q: "DeFi Summer...", a: "Exploded", w: ["Failed", "Stopped"] },
+                    { y: 2017, q: "CryptoKitties clogged...", a: "Ethereum", w: ["Bitcoin", "Solana"] },
+                    { y: 2021, q: "El Salvador adopted...", a: "Bitcoin", w: ["ETH", "Doge"] },
+                    { y: 2018, q: "Crypto Winter...", a: "Froze", w: ["Heated", "Melted"] },
+                    { y: 2024, q: "Bitcoin ETF...", a: "Approved", w: ["Denied", "Pending"] },
+                    { y: 2019, q: "Facebook Libra...", a: "Failed", w: ["Launched", "Succeeded"] },
+                    { y: 2021, q: "Bored Apes...", a: "Minted", w: ["Sold", "Lost"] },
+                    { y: 2013, q: "Vitalik proposed...", a: "Ethereum", w: ["Bitcoin 2", "Solana"] }
+                ]
+            },
+            {
+                id: 'vr', name: 'VR & AR', icon: '🥽', theme: 't-vr', qs: [
+                    { y: 2012, q: "Oculus Kickstarter.", a: "Palmer Luckey", w: ["Zuckerberg", "Carmack"] },
+                    { y: 2016, q: "HTC Vive used...", a: "Lighthouses", w: ["Cameras", "Lasers"] },
+                    { y: 2014, q: "Facebook bought Oculus.", a: "$2B", w: ["$1B", "$500M"] },
+                    { y: 2019, q: "Oculus Quest was...", a: "Standalone", w: ["PC Only", "Phone"] },
+                    { y: 2024, q: "Apple Vision Pro.", a: "Spatial", w: ["Virtual", "Augmented"] },
+                    { y: 1995, q: "Virtual Boy was...", a: "Red", w: ["Blue", "Green"] },
+                    { y: 2016, q: "PSVR launched for...", a: "PS4", w: ["PS3", "PS5"] },
+                    { y: 2020, q: "Half-Life: Alyx...", a: "VR Only", w: ["PC", "Console"] },
+                    { y: 2011, q: "Ready Player One...", a: "Book", w: ["Movie", "Game"] },
+                    { y: 2015, q: "Google Cardboard...", a: "Cheap", w: ["Expensive", "Complex"] },
+                    { y: 2021, q: "Metaverse hype...", a: "Peaked", w: ["Died", "Started"] },
+                    { y: 1968, q: "Sword of Damocles...", a: "First HMD", w: ["Game", "Movie"] },
+                    { y: 2018, q: "Beat Saber...", a: "Hit", w: ["Miss", "Flop"] },
+                    { y: 2016, q: "Pokemon GO is...", a: "AR", w: ["VR", "MR"] },
+                    { y: 2013, q: "Google Glass...", a: "Failed", w: ["Won", "Stayed"] },
+                    { y: 2022, q: "Meta Quest Pro...", a: "Expensive", w: ["Cheap", "Free"] },
+                    { y: 1992, q: "Lawnmower Man...", a: "Movie", w: ["Game", "Book"] },
+                    { y: 2019, q: "Valve Index...", a: "Finger Tracking", w: ["Eye", "Body"] },
+                    { y: 2023, q: "Quest 3...", a: "Mixed Reality", w: ["VR", "AR"] },
+                    { y: 1990, q: "Virtuality Arcade...", a: "Machines", w: ["Consoles", "PCs"] }
+                ]
+            },
+            {
+                id: 'ai', name: 'AI REVOLUTION', icon: '🧠', theme: 't-ai', qs: [
+                    { y: 2022, q: "ChatGPT launch.", a: "Nov 30", w: ["Jan 1", "Dec 25"] },
+                    { y: 2016, q: "AlphaGo beat...", a: "Lee Sedol", w: ["Kasparov", "Carlsen"] },
+                    { y: 1950, q: "Turing Test...", a: "Proposed", w: ["Solved", "Failed"] },
+                    { y: 1997, q: "Deep Blue beat...", a: "Kasparov", w: ["Sedol", "Fischer"] },
+                    { y: 2023, q: "GPT-4 release.", a: "Multimodal", w: ["Text", "Image"] },
+                    { y: 2011, q: "Watson won...", a: "Jeopardy", w: ["Chess", "Go"] },
+                    { y: 2012, q: "AlexNet breakthrough.", a: "Vision", w: ["Text", "Audio"] },
+                    { y: 2017, q: "Transformer paper.", a: "Attention", w: ["Memory", "Speed"] },
+                    { y: 2021, q: "DALL-E generated...", a: "Images", w: ["Video", "Text"] },
+                    { y: 2014, q: "GANs invented by...", a: "Goodfellow", w: ["Hinton", "LeCun"] },
+                    { y: 2020, q: "GPT-3 released.", a: "175B Params", w: ["100B", "1T"] },
+                    { y: 1956, q: "Dartmouth Workshop.", a: "AI Born", w: ["AI Died", "AI Peak"] },
+                    { y: 1966, q: "ELIZA chatbot.", a: "Therapist", w: ["Friend", "Enemy"] },
+                    { y: 2015, q: "OpenAI founded.", a: "Non-profit", w: ["For-profit", "Gov"] },
+                    { y: 2024, q: "Sora generates...", a: "Video", w: ["Audio", "Code"] },
+                    { y: 2018, q: "BERT model by...", a: "Google", w: ["Meta", "OpenAI"] },
+                    { y: 2006, q: "Deep Learning...", a: "Rebranded", w: ["Invented", "Lost"] },
+                    { y: 2023, q: "Bard became...", a: "Gemini", w: ["Bing", "Chat"] },
+                    { y: 1980, q: "Expert Systems...", a: "Peak", w: ["Start", "End"] },
+                    { y: 2025, q: "AGI is...", a: "Prediction", w: ["Here", "Gone"] }
+                ]
+            },
+            {
+                id: 'founder', name: 'TECH FOUNDERS', icon: '👔', theme: 't-founder', qs: [
+                    { y: 1976, q: "Jobs & Wozniak founded...", a: "Apple", w: ["Microsoft", "IBM"] },
+                    { y: 1975, q: "Gates & Allen founded...", a: "Microsoft", w: ["Apple", "Intel"] },
+                    { y: 1994, q: "Bezos founded...", a: "Amazon", w: ["eBay", "PayPal"] },
+                    { y: 1998, q: "Page & Brin founded...", a: "Google", w: ["Yahoo", "Bing"] },
+                    { y: 2004, q: "Zuckerberg founded...", a: "Facebook", w: ["Twitter", "Snap"] },
+                    { y: 2002, q: "Musk founded...", a: "SpaceX", w: ["Tesla", "PayPal"] },
+                    { y: 1968, q: "Moore & Noyce...", a: "Intel", w: ["AMD", "Nvidia"] },
+                    { y: 1993, q: "Jensen Huang...", a: "Nvidia", w: ["ATI", "Intel"] },
+                    { y: 1984, q: "Michael Dell...", a: "Dell", w: ["HP", "Compaq"] },
+                    { y: 2006, q: "Jack Dorsey...", a: "Twitter", w: ["Square", "Vine"] },
+                    { y: 2008, q: "Brian Chesky...", a: "Airbnb", w: ["Uber", "Lyft"] },
+                    { y: 2009, q: "Travis Kalanick...", a: "Uber", w: ["Lyft", "Grab"] },
+                    { y: 2011, q: "Evan Spiegel...", a: "Snapchat", w: ["Insta", "FB"] },
+                    { y: 1977, q: "Larry Ellison...", a: "Oracle", w: ["SAP", "Salesforce"] },
+                    { y: 2012, q: "Vitalik Buterin...", a: "Ethereum", w: ["Bitcoin", "Solana"] },
+                    { y: 1995, q: "Pierre Omidyar...", a: "eBay", w: ["Amazon", "Craigslist"] },
+                    { y: 2007, q: "Reed Hastings...", a: "Netflix", w: ["Hulu", "Disney"] },
+                    { y: 2010, q: "Kevin Systrom...", a: "Instagram", w: ["Vine", "TikTok"] },
+                    { y: 1939, q: "Hewlett & Packard...", a: "HP", w: ["IBM", "Dell"] },
+                    { y: 2005, q: "Sam Altman...", a: "Y Combinator", w: ["OpenAI", "Reddit"] }
+                ]
+            },
+            {
+                id: 'phys', name: 'PHYSICS', icon: '⚛️', theme: 't-phys', qs: [
+                    { y: 1905, q: "Einstein's...", a: "Annus Mirabilis", w: ["Year", "Day"] },
+                    { y: 1915, q: "General Relativity...", a: "Published", w: ["Written", "Lost"] },
+                    { y: 1945, q: "Trinity Test...", a: "Atomic Bomb", w: ["H-Bomb", "TNT"] },
+                    { y: 1964, q: "Higgs mechanism...", a: "Proposed", w: ["Found", "Lost"] },
+                    { y: 2012, q: "Higgs Boson...", a: "Discovered", w: ["Lost", "Hidden"] },
+                    { y: 1927, q: "Solvay Conference...", a: "Quantum", w: ["Relativity", "Light"] },
+                    { y: 1986, q: "Chernobyl...", a: "Meltdown", w: ["Test", "Fire"] },
+                    { y: 2015, q: "Gravitational Waves...", a: "Detected", w: ["Seen", "Heard"] },
+                    { y: 1990, q: "Webb construction...", a: "Began", w: ["Ended", "Launched"] },
+                    { y: 1965, q: "Cosmic Background...", a: "Found", w: ["Lost", "Hidden"] },
+                    { y: 1935, q: "Schrodinger's...", a: "Cat", w: ["Dog", "Rat"] },
+                    { y: 1954, q: "CERN established.", a: "Geneva", w: ["Paris", "London"] },
+                    { y: 2019, q: "Black Hole...", a: "Imaged", w: ["Found", "Lost"] },
+                    { y: 1974, q: "Hawking Radiation...", a: "Proposed", w: ["Found", "Seen"] },
+                    { y: 1911, q: "Superconductivity...", a: "Discovered", w: ["Invented", "Lost"] },
+                    { y: 2022, q: "Fusion Ignition...", a: "Achieved", w: ["Failed", "Tried"] },
+                    { y: 1900, q: "Planck's...", a: "Constant", w: ["Variable", "Number"] },
+                    { y: 1924, q: "Hubble found...", a: "Galaxies", w: ["Stars", "Planets"] },
+                    { y: 1995, q: "Top Quark...", a: "Found", w: ["Lost", "Hidden"] },
+                    { y: 2011, q: "Neutrinos...", a: "Faster?", w: ["Slower", "Same"] }
+                ]
+            },
+            {
+                id: 'startup', name: 'TECH HUSTLE', icon: '💼', theme: 't-startup', qs: [
+                    { y: 2000, q: "Dot Com...", a: "Bubble", w: ["Boom", "Bang"] },
+                    { y: 2008, q: "Airbnb founded during...", a: "Recession", w: ["Boom", "War"] },
+                    { y: 2010, q: "WeWork founded.", a: "Coworking", w: ["Living", "Eating"] },
+                    { y: 2019, q: "WeWork IPO...", a: "Failed", w: ["Soared", "Okay"] },
+                    { y: 2022, q: "Theranos founder...", a: "Convicted", w: ["Freed", "Hired"] },
+                    { y: 2009, q: "Uber founded as...", a: "UberCab", w: ["Taxi", "Lyft"] },
+                    { y: 2011, q: "Zoom founded.", a: "Video", w: ["Chat", "Phone"] },
+                    { y: 2013, q: "Slack launched.", a: "Messaging", w: ["Email", "Video"] },
+                    { y: 2005, q: "Y Combinator...", a: "Started", w: ["Ended", "Sold"] },
+                    { y: 2012, q: "Coinbase founded.", a: "Crypto", w: ["Bank", "Stock"] },
+                    { y: 2014, q: "Magic Leap...", a: "Hype", w: ["Real", "Fake"] },
+                    { y: 2020, q: "Snowflake IPO.", a: "Cloud", w: ["Data", "Web"] },
+                    { y: 2021, q: "Rivian IPO.", a: "EV", w: ["Gas", "Hybrid"] },
+                    { y: 2006, q: "Spotify founded.", a: "Music", w: ["Video", "Pod"] },
+                    { y: 2015, q: "Juicero...", a: "Failed", w: ["Won", "Sold"] },
+                    { y: 2003, q: "Tesla founded.", a: "EVs", w: ["Gas", "Solar"] },
+                    { y: 2016, q: "Quibi...", a: "Short", w: ["Long", "Med"] },
+                    { y: 2020, q: "Quibi...", a: "Died", w: ["Lived", "Sold"] },
+                    { y: 1999, q: "Pets.com...", a: "Icon", w: ["Store", "Site"] },
+                    { y: 2018, q: "Robinhood...", a: "Trading", w: ["Bank", "Loan"] }
+                ]
+            },
+            {
+                id: 'bio', name: 'BIOTECH & FUTURE', icon: '🧬', theme: 't-bio', qs: [
+                    { y: 1953, q: "Watson and Crick famously discovered the double helix structure of what?", a: "DNA", w: ["RNA", "Proteins"] },
+                    { y: 1996, q: "Dolly became the first mammal cloned from an adult cell. What animal was she?", a: "Sheep", w: ["Cow", "Goat"] },
+                    { y: 2003, q: "The Human Genome Project completed the sequencing of what?", a: "Human DNA", w: ["Monkey DNA", "Virus DNA"] },
+                    { y: 2012, q: "CRISPR-Cas9 technology was developed to perform what function?", a: "Gene Editing", w: ["Cloning", "Sequencing"] },
+                    { y: 2020, q: "Pfizer and Moderna released vaccines for COVID-19 using which technology?", a: "mRNA", w: ["Viral Vector", "Inactivated Virus"] },
+                    { y: 1978, q: "Louise Brown was the first human born via which method?", a: "IVF", w: ["Surrogacy", "Cloning"] },
+                    { y: 1990, q: "The Human Genome Project began. How much did it initially cost?", a: "$3 Billion", w: ["$3 Million", "$300 Billion"] },
+                    { y: 2006, q: "23andMe was founded to provide what service to consumers?", a: "Genetic Testing", w: ["Ancestry Books", "Medical Advice"] },
+                    { y: 2018, q: "Scientist He Jiankui was condemned for creating the first...", a: "Gene-Edited Babies", w: ["Cloned Humans", "Super Soldiers"] },
+                    { y: 1928, q: "Alexander Fleming discovered Penicillin, which is what type of drug?", a: "Antibiotic", w: ["Painkiller", "Antiviral"] },
+                    { y: 1983, q: "PCR technology allowed scientists to amplify what?", a: "DNA Segments", w: ["Blood Cells", "Neurons"] },
+                    { y: 2024, q: "Neuralink successfully implanted its device in a human. What does it do?", a: "Brain-Computer Interface", w: ["Memory Erasure", "Vision Restoration"] },
+                    { y: 2013, q: "The first lab-grown burger was eaten in London. What was its price tag?", a: "$330,000", w: ["$3,300", "$33"] },
+                    { y: 2001, q: "One week after 9/11, letters containing which deadly spores were mailed?", a: "Anthrax", w: ["Smallpox", "Ricin"] },
+                    { y: 1951, q: "The immortal 'HeLa' cells were taken without consent from whom?", a: "Henrietta Lacks", w: ["Rosa Parks", "Marie Curie"] },
+                    { y: 2022, q: "Surgeons successfully transplanted a heart from which animal into a human?", a: "Pig", w: ["Chimpanzee", "Cow"] },
+                    { y: 1997, q: "The film 'Gattaca' explored a future society based on what?", a: "Eugenics", w: ["Robotics", "Virtual Reality"] },
+                    { y: 2015, q: "Elizabeth Holmes was exposed for fraud regarding her company, Theranos. What did it promise?", a: "Blood Testing", w: ["Anti-Aging", "Brain Uploading"] },
+                    { y: 1980, q: "The Supreme Court ruled that man-made organisms could be...", a: "Patented", w: ["Released", "Taxed"] },
+                    { y: 2025, q: "Biohacking involves altering one's own biology. What is a common method?", a: "Implanting Chips", w: ["Drinking Bleach", "Laser Eyes"] }
+                ]
+            },
+            {
+                id: 'energy', name: 'ENERGY & AUTO', icon: '⚡', theme: 't-energy', qs: [
+                    { y: 2008, q: "Tesla Motors released its first production vehicle. What was it called?", a: "Roadster", w: ["Model S", "Cybertruck"] },
+                    { y: 2011, q: "A tsunami caused a nuclear meltdown at which power plant in Japan?", a: "Fukushima Daiichi", w: ["Chernobyl", "Three Mile Island"] },
+                    { y: 1886, q: "Karl Benz patented what is typically regarded as the first...", a: "Automobile", w: ["Bicycle", "Steam Engine"] },
+                    { y: 1908, q: "Henry Ford revolutionized the industry with the mass production of which car?", a: "Model T", w: ["Mustang", "F-150"] },
+                    { y: 2020, q: "Tesla became the most valuable car company, surpassing which giant?", a: "Toyota", w: ["Ford", "Volkswagen"] },
+                    { y: 2015, q: "Volkswagen was caught cheating on emissions tests in a scandal known as...", a: "Dieselgate", w: ["Fuelgate", "Smogcheck"] },
+                    { y: 1973, q: "Which organization effectively caused an oil crisis by proclaiming an embargo?", a: "OPEC", w: ["NATO", "UN"] },
+                    { y: 1986, q: "Where did the worst nuclear disaster in history occur?", a: "Chernobyl", w: ["Fukushima", "Kiev"] },
+                    { y: 2010, q: "The Deepwater Horizon rig explosion caused an oil spill in which body of water?", a: "Gulf of Mexico", w: ["Persian Gulf", "North Sea"] },
+                    { y: 1997, q: "Toyota launched the Prius, making it the first mass-produced...", a: "Hybrid Car", w: ["Electric Car", "Hydrogen Car"] },
+                    { y: 2012, q: "Tesla launched the Model S, proving electric cars could be...", a: "Desirable Luxury", w: ["Cheap", "Slow"] },
+                    { y: 2019, q: "Elon Musk unveiled the Cybertruck, during which what famously broke?", a: "The Window", w: ["The Wheel", "The Battery"] },
+                    { y: 1954, q: "Bell Labs demonstrated the first practical version of what energy technology?", a: "Solar Cell", w: ["Wind Turbine", "Nuclear Reactor"] },
+                    { y: 2006, q: "Al Gore starring in 'An Inconvenient Truth' raised awareness about what?", a: "Climate Change", w: ["Deforestation", "Ocean Plastic"] },
+                    { y: 2016, q: "The Paris Agreement was a global accord to limit...", a: "Temperature Rise", w: ["Plastic Waste", "Deforestation"] },
+                    { y: 2022, q: "Scientists at NIF achieved 'ignition' in which type of energy research?", a: "Nuclear Fusion", w: ["Fission", "Solar"] },
+                    { y: 1979, q: "The Three Mile Island accident halted nuclear growth in which country?", a: "USA", w: ["Russia", "France"] },
+                    { y: 2003, q: "Martin Eberhard and Marc Tarpenning founded which company?", a: "Tesla", w: ["Rivian", "Lucid"] },
+                    { y: 2025, q: "Many countries have set bans on the sale of new...", a: "Gasoline Cars", w: ["Electric Cars", "Hybrids"] },
+                    { y: 1900, q: "At the turn of the 20th century, 38% of American cars were powered by what?", a: "Electricity", w: ["Gasoline", "Steam"] }
+                ]
+            },
+            {
+                id: 'general', name: 'GENERAL FACTS', icon: '📚', theme: 't-gen', qs: [
+                    { y: 1939, q: "World War II officially began when Germany invaded which country?", a: "Poland", w: ["France", "Austria"] },
+                    { y: 1945, q: "World War II ended in the Pacific after the bombing of Hiroshima and...", a: "Nagasaki", w: ["Tokyo", "Kyoto"] },
+                    { y: 1963, q: "President John F. Kennedy was assassinated in which city?", a: "Dallas", w: ["Houston", "Austin"] },
+                    { y: 1989, q: "The fall of which barrier symbolized the end of the Cold War?", a: "Berlin Wall", w: ["Iron Curtain", "Great Wall"] },
+                    { y: 2001, q: "Which terrorist group was responsible for the September 11 attacks?", a: "Al-Qaeda", w: ["ISIS", "Taliban"] },
+                    { y: 1912, q: "The RMS Titanic sank after hitting an iceberg on its maiden voyage to...", a: "New York", w: ["Boston", "London"] },
+                    { y: 1969, q: "The Woodstock music festival took place in which US state?", a: "New York", w: ["California", "Texas"] },
+                    { y: 1991, q: "The Soviet Union officially dissolved on December 26 of this year.", a: "1991", w: ["1989", "1993"] },
+                    { y: 2020, q: "The WHO declared COVID-19 a global pandemic in which month?", a: "March", w: ["January", "June"] },
+                    { y: 2016, q: "The UK voted to leave the European Union. What was this termed?", a: "Brexit", w: ["ExitEU", "UK-Out"] },
+                    { y: 1953, q: "Edmund Hillary and Tenzing Norgay were the first to summit which peak?", a: "Mount Everest", w: ["K2", "Matterhorn"] },
+                    { y: 1977, q: "George Lucas released the first movie of which franchise?", a: "Star Wars", w: ["Star Trek", "Alien"] },
+                    { y: 1994, q: "Disney's The Lion King became the highest-grossing animated film of its time.", a: "True", w: ["False", "Maybe"] },
+                    { y: 2009, q: "James Cameron's Avatar popularized which film technology?", a: "3D", w: ["IMAX", "CGI"] },
+                    { y: 2019, q: "Avengers: Endgame briefly became the highest-grossing film ever.", a: "True", w: ["False", "Maybe"] },
+                    { y: 1980, q: "Which Beatle was tragically shot outside his apartment in New York?", a: "John Lennon", w: ["Paul McCartney", "George Harrison"] },
+                    { y: 1997, q: "Princess Diana died in a car crash in which city?", a: "Paris", w: ["London", "Rome"] },
+                    { y: 2011, q: "A series of anti-government protests across the Middle East was known as...", a: "Arab Spring", w: ["Desert Storm", "Cedar Revolution"] },
+                    { y: 2022, q: "Queen Elizabeth II passed away after reigning for how many years?", a: "70 Years", w: ["60 Years", "80 Years"] },
+                    { y: 1937, q: "Aviator Amelia Earhart disappeared while attempting to...", a: "Fly Around the World", w: ["Cross the Atlantic", "Fly to Antarctic"] }
+                ]
+            }
         ];
 
 
         // --- 2. AUDIO (Safe) ---
-        const AudioEngine={ctx:null,init(){try{this.ctx=new(window.AudioContext||window.webkitAudioContext)();}catch(e){}},resume(){if(this.ctx&&this.ctx.state==='suspended')this.ctx.resume();},playTone(f,t,d,v){if(!this.ctx)return;const o=this.ctx.createOscillator();const g=this.ctx.createGain();o.type=t;o.frequency.value=f;g.gain.value=0;g.gain.linearRampToValueAtTime(v,this.ctx.currentTime+0.01);g.gain.exponentialRampToValueAtTime(0.001,this.ctx.currentTime+d);o.connect(g);g.connect(this.ctx.destination);o.start();o.stop(this.ctx.currentTime+d);},sfx(t){if(!this.ctx)return;if(t=='win')this.playTone(440,'sine',0.2,0.2);if(t=='lose')this.playTone(80,'sawtooth',0.5,0.4);if(t=='spin')this.playTone(300,'square',0.05,0.05);if(t=='rewind')this.playTone(150,'triangle',0.8,0.2);if(t=='freeze')this.playTone(600,'sine',0.5,0.2);}};
+        const AudioEngine = { ctx: null, init() { try { this.ctx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { } }, resume() { if (this.ctx && this.ctx.state === 'suspended') this.ctx.resume(); }, playTone(f, t, d, v) { if (!this.ctx) return; const o = this.ctx.createOscillator(); const g = this.ctx.createGain(); o.type = t; o.frequency.value = f; g.gain.value = 0; g.gain.linearRampToValueAtTime(v, this.ctx.currentTime + 0.01); g.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + d); o.connect(g); g.connect(this.ctx.destination); o.start(); o.stop(this.ctx.currentTime + d); }, sfx(t) { if (!this.ctx) return; if (t == 'warn') this.playTone(100, 'sawtooth', 0.5, 0.3); if (t == 'win') { this.playTone(987, 'square', 0.1, 0.1); setTimeout(() => this.playTone(1318, 'square', 0.3, 0.1), 100); } if (t == 'lose') this.playTone(80, 'sawtooth', 0.5, 0.4); if (t == 'spin') this.playTone(300, 'square', 0.05, 0.05); if (t == 'rewind') this.playTone(150, 'triangle', 0.8, 0.2); if (t == 'freeze') this.playTone(600, 'sine', 0.5, 0.2); } };
 
         // --- 3. VISUALS ---
         // MOVED AFTER GAME DEFINITION to fix reference error loop but keeping logic here for structure
-        
+
         // --- 4. GAME LOGIC ---
         const Game = {
             active: false, score: 0, round: 0, maxTime: 8000, curr: 0, timer: null,
@@ -784,7 +1875,7 @@
             lives: 3, abilities: { freeze: true },
 
             startSequence() {
-                try { AudioEngine.init(); AudioEngine.resume(); } catch(e){}
+                try { AudioEngine.init(); AudioEngine.resume(); } catch (e) { }
                 this.switchScreen('s-title', 's-roulette');
                 this.startRoulette();
             },
@@ -794,7 +1885,7 @@
                 const acts = document.getElementById('roulette-actions');
                 acts.classList.add('hidden');
                 disp.classList.remove('locked-topic');
-                
+
                 let delay = 50; let count = 0;
                 const spin = () => {
                     const r = TOPICS[Math.floor(Math.random() * TOPICS.length)];
@@ -821,61 +1912,206 @@
 
             startGame(dir) {
                 this.qData = [...this.currentTopic.qs];
-                if(dir==='asc') this.qData.sort((a,b)=>a.y - b.y); else this.qData.sort((a,b)=>b.y - a.y);
-                
-                this.score=0; this.round=0; this.lives=3; this.abilities.freeze=true;
+                if (dir === 'asc') this.qData.sort((a, b) => a.y - b.y); else this.qData.sort((a, b) => b.y - a.y);
+
+                this.score = 0; this.round = 0; this.lives = 3; this.abilities.freeze = true;
+                this.streak = 0; this.multiplier = 1; this.anomaly = null;
+
                 document.getElementById('hud').classList.remove('hidden');
-                document.getElementById('hud-score').innerText="0";
-                
+                document.getElementById('hud-score').innerText = "0";
+                document.getElementById('hud-streak').innerText = "";
+
                 // Reset UI
                 document.getElementById('btn-freeze').classList.remove('used');
                 document.querySelectorAll('.life-pip').forEach(p => p.classList.remove('lost'));
 
-                window.onkeydown = (e) => { 
-                    if(e.code==='Space') this.triggerFreeze(); 
+                window.onkeydown = (e) => {
+                    if (e.code === 'Space') this.triggerFreeze();
+                    if (e.code === 'KeyR') this.triggerProactiveRewind();
                 };
-                
-                this.switchScreen('s-timeline', 's-game');
-                this.nextRound();
+
+                // TRIGGER HYPE SEQUENCE
+                this.switchScreen('s-timeline', 's-hype');
+                this.runHypeSequence();
+            },
+
+            runHypeSequence() {
+                const c = document.getElementById('hype-count');
+                const m = document.getElementById('hype-msg-cont');
+                m.classList.add('hidden'); m.innerHTML = '';
+
+                let num = 3;
+                c.innerText = num;
+                c.classList.remove('hidden'); // Ensure visible
+
+                // play sound
+                AudioEngine.sfx('spin'); // Reuse spin for beep-like
+
+                const step = () => {
+                    // Reset animation
+                    c.style.animation = 'none';
+                    c.offsetHeight; /* trigger reflow */
+                    c.style.animation = 'zoomFade 0.8s cubic-bezier(0.23, 1, 0.32, 1) forwards';
+
+                    c.innerText = num;
+                    AudioEngine.sfx('spin');
+
+                    if (num > 0) {
+                        num--;
+                        setTimeout(step, 800);
+                    } else {
+                        // GO! Show TEXT
+                        c.classList.add('hidden');
+                        m.classList.remove('hidden');
+                        AudioEngine.sfx('win'); // Win sound for start
+
+                        // Generate Letters
+                        const text = "READY TO REWIND TO WIN";
+                        const words = text.split(' ');
+
+                        words.forEach((word, wi) => {
+                            const wSpan = document.createElement('div');
+                            wSpan.style.display = "inline-block";
+                            wSpan.style.margin = "0 15px"; // Word spacing
+
+                            word.split('').forEach((char, ci) => {
+                                const s = document.createElement('span');
+                                s.className = 'hype-char';
+                                s.innerText = char;
+                                s.style.animationDelay = `${(wi * 2 + ci) * 0.05}s`;
+                                if (word === "WIN" || word === "REWIND") s.style.color = "var(--primary)";
+                                wSpan.appendChild(s);
+                            });
+                            m.appendChild(wSpan);
+                            // Break line after REWIND for better stacking
+                            if (word === "REWIND") {
+                                const br = document.createElement('div');
+                                br.style.flexBasis = "100%";
+                                br.style.height = "20px";
+                                m.appendChild(br);
+                            }
+                        });
+
+
+                        // EXIT ANIMATION
+                        setTimeout(() => {
+                            const chars = document.querySelectorAll('.hype-char');
+                            chars.forEach((char, i) => {
+                                char.classList.add('out');
+                                char.style.animationDelay = `${i * 0.02}s`;
+                            });
+
+                            // Switch screen after out anim
+                            setTimeout(() => {
+                                this.switchScreen('s-hype', 's-game');
+                                c.classList.remove('hidden');
+                                this.nextRound();
+                            }, 800);
+                        }, 2000); // Hold text for 2s
+                    }
+                };
+                step();
             },
 
             nextRound() {
-                if(this.round >= this.qData.length) { this.gameOver(); return; }
+                if (this.round >= this.qData.length) { this.gameOver(); return; }
                 const d = this.qData[this.round];
-                
+
                 document.getElementById('era-display').innerText = `YEAR: ${d.y}`;
                 document.getElementById('q-text').innerText = d.q;
-                
-                const gr = document.getElementById('opt-area'); gr.innerHTML="";
-                [d.a, ...d.w].sort(()=>Math.random()-0.5).forEach(txt => {
+
+                const gr = document.getElementById('opt-area'); gr.innerHTML = "";
+                [d.a, ...d.w].sort(() => Math.random() - 0.5).forEach(txt => {
                     const b = document.createElement('div');
-                    b.className="opt-btn"; b.innerText=txt;
+                    b.className = "opt-btn"; b.innerText = txt;
                     b.onclick = () => this.check(txt, d.a);
                     gr.appendChild(b);
                 });
-                
-                this.active = true; this.startTimer();
+
+                this.active = true;
+
+                // ANOMALY SYSTEM (The "Changing of Time" Theme)
+                // 30% chance to trigger a time distortion
+                document.body.classList.remove('anomaly-mirror', 'anomaly-fast');
+                this.anomaly = null;
+
+                if (Math.random() < 0.3 && this.round > 2) {
+                    const type = Math.random() > 0.5 ? 'mirror' : 'fast';
+                    this.anomaly = type;
+
+                    const notif = document.createElement('div');
+                    notif.className = 'anomaly-alert';
+
+                    if (type === 'mirror') {
+                        document.body.classList.add('anomaly-mirror');
+                        notif.innerText = "⚠ REALITY INVERSION DETECTED ⚠";
+                    } else {
+                        document.body.classList.add('anomaly-fast'); // Handled in timer
+                        notif.innerText = "⚠ CHRONO-ACCELERATION DETECTED ⚠";
+                    }
+                    document.body.appendChild(notif);
+                    setTimeout(() => notif.remove(), 2000);
+                    AudioEngine.sfx('warn');
+                }
+
+                this.startTimer();
             },
 
             startTimer() {
                 clearInterval(this.timer); this.curr = this.maxTime;
                 this.timer = setInterval(() => {
-                    if(this.freeze || !this.active) return;
-                    this.curr -= 20;
-                    document.getElementById('timer-bar').style.width = (this.curr/this.maxTime)*100+"%";
-                    if(this.curr<=0) { clearInterval(this.timer); this.showFailState(); }
+                    if (this.freeze || !this.active) return;
+
+                    let drop = 20;
+                    if (this.anomaly === 'fast') drop = 40; // DOUBLE SPEED
+
+                    this.curr -= drop;
+                    document.getElementById('timer-bar').style.width = (this.curr / this.maxTime) * 100 + "%";
+                    if (this.anomaly === 'fast') document.getElementById('timer-bar').style.background = 'var(--danger)';
+                    else document.getElementById('timer-bar').style.background = 'var(--primary)';
+
+                    if (this.curr <= 0) { clearInterval(this.timer); this.showFailState(); }
                 }, 20);
             },
 
             check(ans, cor) {
-                if(!this.active) return;
+                if (!this.active) return;
                 clearInterval(this.timer);
-                if(ans===cor) {
+                if (ans === cor) {
                     AudioEngine.sfx('win');
-                    this.score += 100 + Math.ceil(this.curr/10);
+
+                    // STREAK LOGIC
+                    this.streak++;
+                    let multimsg = "";
+                    if (this.streak > 1) {
+                        this.multiplier = Math.min(4, Math.ceil(this.streak / 2));
+                        multimsg = ` x${this.multiplier}`;
+                        document.getElementById('hud-streak').innerText = "STREAK " + this.streak + multimsg;
+                        document.getElementById('hud-streak').classList.add('pulse-text');
+                    }
+
+                    // Sparkle with Multiplier
+                    const hud = document.getElementById('hud-score');
+                    const rect = hud.getBoundingClientRect();
+                    const el = document.createElement('div');
+                    el.className = 'score-sparkle';
+                    let baseVal = 100 + Math.ceil(this.curr / 10);
+                    let finalVal = baseVal * this.multiplier;
+                    el.innerText = `+${finalVal}${multimsg}`;
+                    el.style.left = (rect.left + Math.random() * 20) + 'px';
+                    el.style.top = rect.top + 'px';
+                    document.body.appendChild(el);
+                    setTimeout(() => el.remove(), 1000);
+
+                    this.score += finalVal;
                     document.getElementById('hud-score').innerText = this.score;
                     this.round++; this.nextRound();
-                } else { this.showFailState(); }
+                } else {
+                    this.streak = 0;
+                    this.multiplier = 1;
+                    document.getElementById('hud-streak').innerText = "";
+                    this.showFailState();
+                }
             },
 
             showFailState() {
@@ -886,41 +2122,58 @@
             },
 
             triggerRewind() {
-                if(this.lives <= 0) return;
-                
+                if (this.lives <= 0) return;
+
                 // Deduct Life
                 this.lives--;
                 const pips = document.querySelectorAll('.life-pip');
-                if(pips[this.lives]) pips[this.lives].classList.add('lost');
+                if (pips[this.lives]) pips[this.lives].classList.add('lost');
 
                 // Hide Modal
                 document.getElementById('fail-modal').classList.remove('active');
                 document.body.classList.remove('paradox-hit');
 
+                this.performRewindAction();
+            },
+
+            triggerProactiveRewind() {
+                if (!this.active || this.lives <= 0 || this.rewinding) return;
+
+                this.lives--;
+                const pips = document.querySelectorAll('.life-pip');
+                if (pips[this.lives]) pips[this.lives].classList.add('lost');
+
+                this.performRewindAction();
+            },
+
+            performRewindAction() {
                 // FX
                 AudioEngine.sfx('rewind');
                 this.rewinding = true;
                 document.body.classList.add('is-rewinding');
-                
+
                 setTimeout(() => {
                     this.rewinding = false;
                     document.body.classList.remove('is-rewinding');
                     this.maxTime += 1500; // Bonus time
-                    this.nextRound(); // Restart current question
+                    // If proactive, we might just be resetting the timer or undoing a wrong choice.
+                    // For now, it restarts the CURRENT question with full time.
+                    this.active = true;
+                    this.startTimer();
                 }, 1000);
             },
 
             triggerFreeze() {
-                if(!this.active || !this.abilities.freeze) return;
+                if (!this.active || !this.abilities.freeze) return;
                 this.abilities.freeze = false;
-                
+
                 const btn = document.getElementById('btn-freeze');
-                btn.classList.add('used'); 
+                btn.classList.add('used');
 
                 AudioEngine.sfx('freeze');
                 this.freeze = true;
                 document.body.classList.add('is-frozen');
-                
+
                 setTimeout(() => {
                     this.freeze = false;
                     document.body.classList.remove('is-frozen');
@@ -930,9 +2183,75 @@
             gameOver() {
                 this.active = false; AudioEngine.sfx('lose');
                 document.getElementById('fail-modal').classList.remove('active');
-                document.getElementById('final-score').innerText = this.score;
-                this.switchScreen('s-game', 's-over');
+                document.body.classList.add('power-off-anim');
+
+                // Hide HUD immediately
                 document.getElementById('hud').classList.add('hidden');
+                document.getElementById('s-game').classList.add('hidden');
+
+                setTimeout(() => {
+                    document.body.classList.remove('power-off-anim');
+                    // START OUTRO SEQUENCE instead of direct game over screen
+                    this.runOutroSequence();
+                }, 700);
+            },
+
+            runOutroSequence() {
+                const s = document.getElementById('s-outro');
+                const t1 = document.getElementById('outro-t1');
+                const t2 = document.getElementById('outro-t2');
+                const t3 = document.getElementById('outro-t3');
+                const fin = document.getElementById('outro-final');
+                const wRes = document.getElementById('word-restart');
+                const wRew = document.getElementById('word-rewind');
+
+                // Reset & SHOW
+                s.classList.remove('hidden');
+                setTimeout(() => s.classList.add('active'), 10); // Ensure fade in
+
+                [t1, t2, t3].forEach(el => { el.className = 'outro-text'; el.style.opacity = '0'; });
+                fin.classList.add('hidden');
+                wRes.style.opacity = '0.5'; wRes.style.textDecoration = "none";
+                wRew.style.display = 'none';
+
+                const play = (el, delay, dur) => {
+                    setTimeout(() => { el.classList.add('anim-in'); AudioEngine.sfx('spin'); }, delay);
+                    setTimeout(() => { el.classList.remove('anim-in'); el.classList.add('anim-out'); }, delay + dur);
+                };
+
+                // Sequence
+                play(t1, 500, 1000); // Thanks
+                play(t2, 1800, 1000); // For Playing
+                play(t3, 3100, 1500); // My Game
+
+                // The Rewrite
+                setTimeout(() => {
+                    fin.classList.remove('hidden'); // Show container
+                    fin.style.opacity = 1; // FIX: Ensure container is visible
+                    wRes.style.opacity = 1;
+
+                    setTimeout(() => {
+                        // CROSS OUT
+                        wRes.style.textDecoration = 'line-through';
+                        wRes.style.textDecorationColor = 'var(--danger)';
+                        AudioEngine.sfx('lose'); // scratch sound
+
+                        setTimeout(() => {
+                            // SHOW REWIND
+                            wRew.style.display = 'inline-block';
+                            wRew.style.animation = 'glitchText 0.3s infinite';
+                            AudioEngine.sfx('rewind');
+
+                            // Final transition
+                            setTimeout(() => {
+                                s.classList.add('hidden');
+                                document.getElementById('final-score').innerText = this.score;
+                                document.getElementById('s-over').classList.remove('hidden');
+                                setTimeout(() => document.getElementById('s-over').classList.add('active'), 50);
+                            }, 2000);
+                        }, 800);
+                    }, 800);
+                }, 5000);
             },
 
             switchScreen(from, to) {
@@ -944,30 +2263,50 @@
         };
 
         // --- VISUALS (Placed After Game Logic to Prevent ReferenceError) ---
-        const Canvas={el:document.getElementById('c'),ctx:document.getElementById('c').getContext('2d'),w:0,h:0,stars:[],init(){this.resize();window.addEventListener('resize',()=>this.resize());for(let i=0;i<200;i++)this.stars.push({x:Math.random()*window.innerWidth,y:Math.random()*window.innerHeight,z:Math.random()*2});this.loop();},resize(){this.w=this.el.width=window.innerWidth;this.h=this.el.height=window.innerHeight;},loop(){
-            let bg = getComputedStyle(document.body).getPropertyValue('--bg-color');
-            this.ctx.fillStyle=bg; this.ctx.fillRect(0,0,this.w,this.h);
-            let col = getComputedStyle(document.body).getPropertyValue('--particle-col');
-            let spd = (typeof Game !== 'undefined' && Game.active) ? 2 : 0.5;
-            if(typeof Game !== 'undefined' && Game.rewinding) spd = -5;
-            this.stars.forEach(s=>{
-                s.z-=spd*0.01; if(s.z<=0){s.z=2;s.x=Math.random()*this.w;s.y=Math.random()*this.h;}
-                const sx=(s.x-this.w/2)/s.z+this.w/2;const sy=(s.y-this.h/2)/s.z+this.h/2;
-                if(sx>0&&sx<this.w&&sy>0&&sy<this.h){let a=1-s.z/2;this.ctx.fillStyle=`rgba(255,255,255,${a})`;this.ctx.fillRect(sx,sy,2,2);}
-            });
-            requestAnimationFrame(()=>this.loop());
-        }};
+        const Canvas = {
+            el: document.getElementById('c'), ctx: document.getElementById('c').getContext('2d'), w: 0, h: 0, particles: [], init() { this.resize(); window.addEventListener('resize', () => this.resize()); for (let i = 0; i < 400; i++)this.particles.push({ x: (Math.random() - 0.5) * window.innerWidth, y: (Math.random() - 0.5) * window.innerHeight, z: Math.random() * 2000 }); this.loop(); }, resize() { this.w = this.el.width = window.innerWidth; this.h = this.el.height = window.innerHeight; this.cx = this.w / 2; this.cy = this.h / 2; }, loop() {
+                let bg = getComputedStyle(document.body).getPropertyValue('--bg-color');
+                this.ctx.fillStyle = bg; this.ctx.fillRect(0, 0, this.w, this.h);
+
+                let col = getComputedStyle(document.body).getPropertyValue('--particle-col');
+                this.ctx.fillStyle = col;
+
+                let spd = (typeof Game !== 'undefined' && Game.active) ? 20 : 5;
+                if (typeof Game !== 'undefined' && Game.rewinding) spd = -40;
+
+                this.particles.forEach(p => {
+                    p.z -= spd;
+                    if (p.z <= 0) { p.z = 2000; p.x = (Math.random() - 0.5) * this.w * 2; p.y = (Math.random() - 0.5) * this.h * 2; }
+                    if (p.z > 2000) { p.z = 10; } // Loop back if rewinding
+
+                    let scale = 500 / p.z;
+                    let x2d = this.cx + p.x * scale;
+                    let y2d = this.cy + p.y * scale;
+
+                    // Draw Streak
+                    let size = Math.max(0.5, 3 * scale);
+                    if (x2d > 0 && x2d < this.w && y2d > 0 && y2d < this.h) {
+                        // Opacity based on depth
+                        this.ctx.globalAlpha = Math.min(1, scale);
+                        this.ctx.fillRect(x2d, y2d, size, size);
+                    }
+                });
+                this.ctx.globalAlpha = 1;
+                requestAnimationFrame(() => this.loop());
+            }
+        };
 
         function toggleTheme() { document.body.classList.toggle('light-mode'); }
         function updateName(v) { document.getElementById('final-name').innerText = v.toUpperCase() || "UNKNOWN"; }
 
         // STARTUP
         Canvas.init();
-        
+
         // EVENT LISTENER BINDING
         document.getElementById('init-btn').addEventListener('click', () => {
             Game.startSequence();
         });
     </script>
 </body>
+
 </html>
