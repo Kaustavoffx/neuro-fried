@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>NEURO-FRIED: SURVIVAL PROTOCOL</title>
+    <title>NEURO-FRIED: FINAL SURVIVAL</title>
     <style>
         /* =========================================
            1. CORE CONFIGURATION
@@ -19,7 +19,7 @@
             --secondary: #0077ff;     
             --accent: #ffffff;
             --danger: #ff003c;
-            --green: #39ff14; /* THE AGENT GREEN */
+            --green: #39ff14; 
             --text-main: #ffffff;
             --particle-col: #ffffff;
 
@@ -87,7 +87,6 @@
             border: var(--glass-border); border-radius: 8px;
             box-shadow: var(--glass-shadow); transition: 0.3s;
         }
-        /* Top Right: Stats */
         .hud-top-right { top: 90px; right: 40px; border-right: 4px solid var(--primary); text-align: right; }
         
         .stat-label { font-size: 0.8rem; color: var(--text-main); margin-bottom: 5px; letter-spacing: 2px; font-weight: bold; opacity: 0.7; }
@@ -153,6 +152,19 @@
         .tech-btn { position: relative; z-index: 10000; background: rgba(0, 243, 255, 0.05); color: var(--primary); border: 1px solid var(--primary); padding: 20px 50px; font-family: var(--f-title); font-size: 1.2rem; cursor: pointer; text-transform: uppercase; transition: 0.3s; letter-spacing: 2px; border-radius: 4px; pointer-events: auto; }
         .tech-btn:hover { background: var(--primary); color: var(--bg-color); box-shadow: 0 0 40px var(--primary); }
 
+        /* MADE WITH LOVE ANIMATION */
+        .made-with-love {
+            position: absolute; bottom: 30px;
+            font-family: var(--f-mono); font-size: 2.9rem; color: #666;
+            width: 100%; text-align: center; pointer-events: none;
+            animation: heartbeat 2s infinite ease-in-out;
+            letter-spacing: 1px;
+        }
+        @keyframes heartbeat {
+            0%, 100% { opacity: 0.6; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.1); color: var(--danger); text-shadow: 0 0 10px var(--danger); }
+        }
+
         /* GAMEPLAY */
         .game-grid { width: 90%; max-width: 900px; display: flex; flex-direction: column; gap: 30px; }
         .timer-rail { width: 100%; height: 6px; background: rgba(128,128,128,0.2); border-radius:3px; overflow: hidden; }
@@ -204,6 +216,10 @@
     <div id="fail-modal" class="fail-modal">
         <div class="fail-title">TIMELINE FRACTURED</div>
         <div class="fail-sub">ANOMALY DETECTED. CHOOSE ACTION.</div>
+        <div style="font-family:var(--f-mono); opacity:0.6;">
+        EVERY REWIND ACCELERATES COLLAPSE.
+        </div>
+
         <div class="fail-btn-row">
             <button class="fail-btn btn-rewind" onclick="Game.triggerRewind()">REWIND<br><span style="font-size:0.8rem">COST: 1 LIFE</span></button>
             <button class="fail-btn btn-exit" onclick="Game.gameOver()">EXIT<br><span style="font-size:0.8rem">ACCEPT FATE</span></button>
@@ -246,6 +262,7 @@
             [4] <span style="color:var(--danger)">WARNING:</span> FAILURE REQUIRES REWIND OR EXIT.
         </div>
         <button class="tech-btn" id="init-btn">INITIALIZE SYSTEM</button>
+        <div class="made-with-love">MADE WITH CARE — KAUSTAV CHOWDHURY</div>
     </div>
 
     <div id="s-roulette" class="screen hidden">
@@ -285,6 +302,10 @@
 
     <div id="s-over" class="screen hidden">
         <h1 style="font-family:var(--f-title); font-size:4rem; color:var(--danger); margin-bottom:30px;">SIGNAL LOST</h1>
+        <div style="font-family:var(--f-mono); opacity:0.8; letter-spacing:2px; margin-bottom:20px;">
+            THE TIMELINE CONTINUES WITHOUT YOU.
+        </div>
+
         <div class="share-card">
             <img id="card-img" style="width:100%; height:100%; object-fit:cover; filter:grayscale(100%); opacity:0.6;" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%25' height='100%25'%3E%3Crect fill='%23111' width='100%25' height='100%25'/%3E%3Ctext x='50%25' y='50%25' fill='%23333' font-family='monospace' text-anchor='middle' dominant-baseline='middle'%3ENO IMAGE%3C/text%3E%3C/svg%3E">
             <div style="position:absolute; inset:0; background:linear-gradient(to top, black 20%, transparent 80%);"></div>
@@ -754,20 +775,8 @@
         const AudioEngine={ctx:null,init(){try{this.ctx=new(window.AudioContext||window.webkitAudioContext)();}catch(e){}},resume(){if(this.ctx&&this.ctx.state==='suspended')this.ctx.resume();},playTone(f,t,d,v){if(!this.ctx)return;const o=this.ctx.createOscillator();const g=this.ctx.createGain();o.type=t;o.frequency.value=f;g.gain.value=0;g.gain.linearRampToValueAtTime(v,this.ctx.currentTime+0.01);g.gain.exponentialRampToValueAtTime(0.001,this.ctx.currentTime+d);o.connect(g);g.connect(this.ctx.destination);o.start();o.stop(this.ctx.currentTime+d);},sfx(t){if(!this.ctx)return;if(t=='win')this.playTone(440,'sine',0.2,0.2);if(t=='lose')this.playTone(80,'sawtooth',0.5,0.4);if(t=='spin')this.playTone(300,'square',0.05,0.05);if(t=='rewind')this.playTone(150,'triangle',0.8,0.2);if(t=='freeze')this.playTone(600,'sine',0.5,0.2);}};
 
         // --- 3. VISUALS ---
-        const Canvas={el:document.getElementById('c'),ctx:document.getElementById('c').getContext('2d'),w:0,h:0,stars:[],init(){this.resize();window.addEventListener('resize',()=>this.resize());for(let i=0;i<200;i++)this.stars.push({x:Math.random()*window.innerWidth,y:Math.random()*window.innerHeight,z:Math.random()*2});this.loop();},resize(){this.w=this.el.width=window.innerWidth;this.h=this.el.height=window.innerHeight;},loop(){
-            let bg = getComputedStyle(document.body).getPropertyValue('--bg-color');
-            this.ctx.fillStyle=bg; this.ctx.fillRect(0,0,this.w,this.h);
-            let col = getComputedStyle(document.body).getPropertyValue('--particle-col');
-            let spd = (typeof Game !== 'undefined' && Game.active) ? 2 : 0.5;
-            if(typeof Game !== 'undefined' && Game.rewinding) spd = -5;
-            this.stars.forEach(s=>{
-                s.z-=spd*0.01; if(s.z<=0){s.z=2;s.x=Math.random()*this.w;s.y=Math.random()*this.h;}
-                const sx=(s.x-this.w/2)/s.z+this.w/2;const sy=(s.y-this.h/2)/s.z+this.h/2;
-                if(sx>0&&sx<this.w&&sy>0&&sy<this.h){let a=1-s.z/2;this.ctx.fillStyle=`rgba(255,255,255,${a})`;this.ctx.fillRect(sx,sy,2,2);}
-            });
-            requestAnimationFrame(()=>this.loop());
-        }};
-
+        // MOVED AFTER GAME DEFINITION to fix reference error loop but keeping logic here for structure
+        
         // --- 4. GAME LOGIC ---
         const Game = {
             active: false, score: 0, round: 0, maxTime: 8000, curr: 0, timer: null,
@@ -896,7 +905,7 @@
                 setTimeout(() => {
                     this.rewinding = false;
                     document.body.classList.remove('is-rewinding');
-                    this.maxTime += 1000; // Bonus time
+                    this.maxTime += 1500; // Bonus time
                     this.nextRound(); // Restart current question
                 }, 1000);
             },
@@ -934,12 +943,31 @@
             }
         };
 
+        // --- VISUALS (Placed After Game Logic to Prevent ReferenceError) ---
+        const Canvas={el:document.getElementById('c'),ctx:document.getElementById('c').getContext('2d'),w:0,h:0,stars:[],init(){this.resize();window.addEventListener('resize',()=>this.resize());for(let i=0;i<200;i++)this.stars.push({x:Math.random()*window.innerWidth,y:Math.random()*window.innerHeight,z:Math.random()*2});this.loop();},resize(){this.w=this.el.width=window.innerWidth;this.h=this.el.height=window.innerHeight;},loop(){
+            let bg = getComputedStyle(document.body).getPropertyValue('--bg-color');
+            this.ctx.fillStyle=bg; this.ctx.fillRect(0,0,this.w,this.h);
+            let col = getComputedStyle(document.body).getPropertyValue('--particle-col');
+            let spd = (typeof Game !== 'undefined' && Game.active) ? 2 : 0.5;
+            if(typeof Game !== 'undefined' && Game.rewinding) spd = -5;
+            this.stars.forEach(s=>{
+                s.z-=spd*0.01; if(s.z<=0){s.z=2;s.x=Math.random()*this.w;s.y=Math.random()*this.h;}
+                const sx=(s.x-this.w/2)/s.z+this.w/2;const sy=(s.y-this.h/2)/s.z+this.h/2;
+                if(sx>0&&sx<this.w&&sy>0&&sy<this.h){let a=1-s.z/2;this.ctx.fillStyle=`rgba(255,255,255,${a})`;this.ctx.fillRect(sx,sy,2,2);}
+            });
+            requestAnimationFrame(()=>this.loop());
+        }};
+
         function toggleTheme() { document.body.classList.toggle('light-mode'); }
         function updateName(v) { document.getElementById('final-name').innerText = v.toUpperCase() || "UNKNOWN"; }
 
         // STARTUP
         Canvas.init();
-        document.getElementById('init-btn').onclick = () => Game.startSequence();
+        
+        // EVENT LISTENER BINDING
+        document.getElementById('init-btn').addEventListener('click', () => {
+            Game.startSequence();
+        });
     </script>
 </body>
 </html>
