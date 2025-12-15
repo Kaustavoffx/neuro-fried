@@ -2542,11 +2542,11 @@
         // --- TIME POWERS ---
         const TimePowers = {
             freezeCharges: 1,
-            rewindCharges: 1,
+            rewindCharges: 3,
 
             reset() {
                 this.freezeCharges = 1;
-                this.rewindCharges = 1;
+                this.rewindCharges = 3;
                 this.updatePowerUI();
             },
 
@@ -3012,16 +3012,13 @@
 
             // Called from Fail Modal
             triggerRewind() {
-                // Check if already used this round
-                if (this.rewindUsedInRound) return;
-
-                // Use a charge if available
+                // Use a charge if available (Uncapped usage per round as requested)
                 if (TimePowers.rewindCharges > 0) {
                     TimePowers.rewindCharges--;
                     TimePowers.updatePowerUI();
 
-                    // Mark as used for this round
-                    this.rewindUsedInRound = true;
+                    // Mark as used for this round (Legacy: removed restriction)
+                    // this.rewindUsedInRound = true;
 
                     document.getElementById('fail-modal').classList.remove('active');
                     document.body.classList.remove('paradox-hit');
