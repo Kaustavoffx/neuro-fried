@@ -3062,7 +3062,8 @@
 
             check(ans, cor) {
                 if (!this.active) return;
-                this.active = false; // PREVENT DOUBLE CLICKS / FARMING
+                this.active = false; // LOCK INPUT
+
 
                 if (ans === cor) {
                     AudioSystem.playCorrect();
@@ -3090,7 +3091,7 @@
                         document.getElementById('hud-streak').classList.add('pulse-text');
 
                         // Show Streak Overlay
-                        this.showConditionOverlay('streak', `STREAK ${this.streak}x`);
+                        Game.showConditionOverlay('streak', `STREAK ${this.streak}x`);
                     }
 
                     // Sparkle
@@ -3197,6 +3198,16 @@
 
                 document.getElementById('fail-modal').classList.add('active');
                 document.body.classList.add('paradox-hit');
+            },
+
+            showConditionOverlay(type, text) {
+                const el = document.createElement('div');
+                el.className = 'anomaly-alert';
+                el.style.top = '20%';
+                el.style.color = type === 'streak' ? 'var(--green)' : 'var(--primary)';
+                el.innerHTML = text;
+                document.body.appendChild(el);
+                setTimeout(() => el.remove(), 1500);
             },
 
 
