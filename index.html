@@ -164,6 +164,12 @@
             backdrop-filter: grayscale(100%) blur(4px);
         }
 
+        /* Rewind Effect Logic */
+        body.is-rewinding .fx-rewind {
+            opacity: 1 !important;
+            animation: glitchEffect 0.2s infinite;
+        }
+
         /* UI FRAMEWORK */
         header {
             position: fixed;
@@ -1558,7 +1564,7 @@
                     style="font-family: var(--f-mono); font-size: 1.5rem; color: var(--danger);">1x</span>
             </div>
         </div>
-        <button class="tech-btn" onclick="location.reload()">REPLAY</button>
+        <button class="tech-btn" onclick="location.reload()">REBOOT</button>
     </div>
 
     <header>
@@ -1619,11 +1625,11 @@
         </div>
 
         <div class="freeze-container">
-            <button class="big-freeze-btn" id="btn-freeze" onclick="Game.triggerFreeze()">
+            <button class="big-freeze-btn" id="btn-freeze" onclick="TimePowers.useFreeze()">
                 FREEZE
                 <span>[SPACE]</span>
             </button>
-            <button class="big-freeze-btn btn-hud-rewind" id="btn-rewind-hud" onclick="Game.triggerProactiveRewind()">
+            <button class="big-freeze-btn btn-hud-rewind" id="btn-rewind-hud" onclick="TimePowers.useRewind()">
                 REWIND
                 <span>[R]</span>
             </button>
@@ -2539,7 +2545,7 @@
                 return true;
             },
 
-            // Rewind: Adds Time (Health)
+            // Rewind: Adds Time but ACCELERATES COLLAPSE
             useRewind() {
                 if (this.rewindCharges <= 0 || !Game.active) return false;
                 this.rewindCharges--;
@@ -2979,6 +2985,29 @@
                 this.showFailState();
             },
 
+            // Manual Rewind Effect (The "R" Key)
+            triggerRewindEffect() {
+                // 1. Visuals
+                AudioSystem.playRewind();
+                document.body.classList.add('is-rewinding');
+                setTimeout(() => document.body.classList.remove('is-rewinding'), 500);
+
+                // 2. Logic: Gain Time but Pay the Price
+                TimerSystem.addTime(10); // +10 Seconds
+                this.showTimeFeedback(10);
+
+                // 3. THE PRICE: Acceleration
+                DifficultySystem.level++;
+                const speed = DifficultySystem.getTickRate().toFixed(2);
+
+                // 4. Alert
+                const alert = document.createElement('div');
+                alert.className = 'anomaly-alert';
+                alert.innerHTML = `⚠️ CHRONO-ACCELERATION ⚠️<br>SPEED: ${speed}x`;
+                document.body.appendChild(alert);
+                setTimeout(() => alert.remove(), 2500);
+            },
+
             // Called from Fail Modal
             triggerRewind() {
                 // Use a charge if available (Uncapped usage per round as requested)
@@ -3003,9 +3032,21 @@
 
                         // Restart Round or Just Add Time?
                         // User expects to "continue".
-                        // Add +20s and Restart Timer
+                        // Add +15s (Reduced from 20s) and ACCELERATE
                         this.active = true;
-                        TimerSystem.addTime(20);
+                        TimerSystem.addTime(15);
+
+                        // --- THE COLLAPSE ACCELERATES ---
+                        DifficultySystem.level++;
+                        const speed = DifficultySystem.getTickRate().toFixed(2);
+
+                        // Visual Warning
+                        const alert = document.createElement('div');
+                        alert.className = 'anomaly-alert';
+                        alert.innerHTML = `⚠️ TIMELINE UNSTABLE ⚠️<br>SPEED INCREASED TO ${speed}x`;
+                        document.body.appendChild(alert);
+                        setTimeout(() => alert.remove(), 3000);
+
                         TimerSystem.start(TimerSystem.timeLeft);
 
                     }, 1000);
@@ -3021,6 +3062,7 @@
 
             check(ans, cor) {
                 if (!this.active) return;
+                this.active = false; // PREVENT DOUBLE CLICKS / FARMING
 
                 if (ans === cor) {
                     AudioSystem.playCorrect();
