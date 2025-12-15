@@ -1,51 +1,150 @@
-# NEURO-FRIED: TEMPORAL COLLAPSE
+<div align="center">
+
+# ⚡ NEURO-FRIED ⚡
+### *TEMPORAL COLLAPSE*
+
+[![Play Now](https://img.shields.io/badge/🎮%20PLAY%20NOW-00F3FF?style=for-the-badge&labelColor=0a0a0f)](https://neuro-fried.vercel.app)
+[![Made with](https://img.shields.io/badge/Made%20With-Vanilla%20JS-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
+[![CSS3](https://img.shields.io/badge/Styled%20With-CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/CSS)
+[![HTML5](https://img.shields.io/badge/Built%20On-HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/HTML)
 
 > **"The future is broken. You have 60 seconds to fix it."**
 
-## 🎮 Overview
+---
 
-**Neuro-Fried** is a high-octane cyberpunk trivia survival game. You play as a rogue archivist in a collapsing timeline, desperately trying to reorder history before the "Temporal Storm" erases existence.
+</div>
 
-**Goal:** Answer questions correctly to buy time. Survive as long as you can against accelerating time, glitches, and reality inversions.
+## 🌌 The Story
+
+You are a **Rogue Archivist** trapped in a collapsing timeline. Reality is fracturing around you. The only way to stabilize the temporal storm is to **remember** — answer questions from across the corrupted timeline before it erases you from existence.
+
+But here's the twist: **Every time you rewind, the collapse accelerates.**
 
 ---
 
-## ✨ Features
+## 🎮 Gameplay Loop
 
-*   **Temporal Mechanics:**
-    *   **Freeze [SPACE]:** Pause the timeline for 5 seconds to think.
-    *   **Rewind [R]:** Undo a mistake or gain time, but at a cost: **Every rewind accelerates the collapse.**
-*   **Dynamic Difficulty:** As you play, the "Tick Rate" increases. The better you do, the faster the game becomes.
-*   **Anomalies:** Random timeline corruptions including **Mirror Mode** (Inverted UI) and **Chrono-Acceleration** (2x Speed).
-*   **Visuals:** CRT scanlines, chromatic aberration, VHS glitches, and a reactive particle system.
-*   **Audio:** Self-hosted synthwave background music and generated sound effects.
+```
+┌─────────────────────────────────────────────────────────────┐
+│                                                             │
+│   ⏱️ 60 SECONDS  ──▶  ❓ QUESTION  ──▶  ✅ CORRECT (+5s)   │
+│         │                   │               │               │
+│         │                   │               ▼               │
+│         │                   │         🔥 STREAK++          │
+│         │                   │               │               │
+│         │                   ▼               ▼               │
+│         │              ❌ WRONG         💎 POWER CHARGE    │
+│         │                   │                               │
+│         ▼                   ▼                               │
+│      ☠️ GAME OVER ◀── ⏱️ TIME RUNS OUT                     │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## ✨ Core Features
+
+| Feature | Description |
+|:--------|:------------|
+| 🕐 **Global Timer** | You start with 60 seconds. It never stops. It only accelerates. |
+| ❄️ **Freeze Power** | Press `SPACE` to pause time for 5 seconds. Costs 1 charge. |
+| ⏪ **Rewind Power** | Press `R` to gain +10 seconds. **BUT: Game speed permanently increases.** |
+| 🔥 **Streak System** | Consecutive correct answers boost your score multiplier. |
+| 💎 **Power Charges** | Earn Freeze at 3-streak, Rewind at 5-streak. |
+| 🌀 **Anomalies** | Random events like *Mirror Mode* (UI flips) or *Chrono-Acceleration* (2x speed). |
+| 📈 **Dynamic Difficulty** | The longer you survive, the faster the game ticks. |
+
+---
 
 ## 🕹️ Controls
 
-| Action | Control | Description |
-| :--- | :--- | :--- |
-| **Select Answer** | `Mouse / Touch` | Click the correct option. |
-| **Freeze Time** | `SPACE` | Stop the timer for 5s (Costs 1 Charge). |
-| **Rewind** | `R` | Gain +10s (Costs 1 Charge + Increases Game Speed). |
+<div align="center">
 
-## 🛠️ How to Play
+| Action | Desktop | Mobile |
+|:------:|:-------:|:------:|
+| **Select Answer** | `Click` / `1-4` | `Tap` |
+| **Freeze Time** | `SPACE` | `FREEZE Button` |
+| **Rewind** | `R` | `REWIND Button` |
 
-1.  **Initialize:** Start the system.
-2.  **Survive:** You have 60 seconds. Correct answers add time (+5s). Wrong answers drain time (-5s).
-3.  **Streak:** Answer consecutive questions correctly to build your streak and earn **Score Multipliers** and **Power Charges**.
-4.  **Endgame:** If time runs out, the timeline collapses.
-
-## 🏗️ Technical Details
-
-Built purely with **Vanilla HTML/CSS/JS**.
-*   **No Frameworks:** No React, Vue, or bundled dependencies.
-*   **Canvas API:** Used for the background particle system.
-*   **LocalStorage:** Saves high scores locally.
-
-## 👨‍💻 Credits
-
-*   **Developer:** Kaustav Chowdhury
-*   **Play Online:** [https://neuro-fried.vercel.app](https://neuro-fried.vercel.app)
+</div>
 
 ---
-*Created for the disruption of the timeline.*
+
+## 🔧 Technical Stack
+
+<div align="center">
+
+| Technology | Usage |
+|:-----------|:------|
+| ![HTML5](https://img.shields.io/badge/-HTML5-E34F26?style=flat-square&logo=html5&logoColor=white) | Structure & Semantics |
+| ![CSS3](https://img.shields.io/badge/-CSS3-1572B6?style=flat-square&logo=css3&logoColor=white) | Animations, Glitches, CRT Effects |
+| ![JavaScript](https://img.shields.io/badge/-JavaScript-F7DF1E?style=flat-square&logo=javascript&logoColor=black) | Game Logic, Audio Synthesis |
+| ![Web Audio API](https://img.shields.io/badge/-Web%20Audio%20API-9B4DCA?style=flat-square) | Procedural Sound Effects |
+| ![Canvas API](https://img.shields.io/badge/-Canvas%20API-FF6F00?style=flat-square) | Background Particle System |
+
+</div>
+
+**Zero Dependencies.** No React. No Vue. No Webpack. Just raw browser power.
+
+---
+
+## 📚 Topics & Categories
+
+The game features **20 unique categories** with **400+ questions** spanning:
+
+- 💹 Finance & Markets
+- 💻 Code & Algorithms  
+- 🤖 Future Tech & AI
+- 📱 Social Media History
+- 🚀 Space Exploration
+- 🎮 Gaming History
+- 🔒 Cyber Security
+- 🧬 Biotech & Science
+- ⚡ Energy & Automotive
+- ...and more!
+
+---
+
+## � Visual Effects
+
+- **CRT Scanlines** — Authentic retro monitor feel
+- **Chromatic Aberration** — RGB split distortion
+- **VHS Glitch** — Triggered on rewind actions
+- **Particle Starfield** — Canvas-rendered background
+- **Neon Glow UI** — Cyberpunk aesthetic
+
+---
+
+## 🚀 Quick Start
+
+1. **Clone the repo**
+   ```bash
+   git clone https://github.com/Kaustavoffx/neuro-fried.git
+   ```
+
+2. **Open `index.html`** in your browser. That's it. No build step required.
+
+3. **Or play online:** [https://neuro-fried.vercel.app](https://neuro-fried.vercel.app)
+
+---
+
+## 👨‍💻 Developer
+
+<div align="center">
+
+**Kaustav Chowdhury**
+
+[![GitHub](https://img.shields.io/badge/GitHub-Kaustavoffx-181717?style=flat-square&logo=github)](https://github.com/Kaustavoffx)
+
+</div>
+
+---
+
+<div align="center">
+
+*Built for the Codédex December 2024 Game Jam*
+
+**⚠️ WARNING: TEMPORAL INSTABILITY DETECTED ⚠️**
+
+</div>
