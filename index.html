@@ -2317,8 +2317,35 @@
 
             stopBGM() {
                 this.bgmPlaying = false;
+            },
+
+            // UI Click - Soft interaction
+            playClick() {
+                if (!this.ctx) this.init(); this.resume();
+                if (!this.ctx) return;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(400, this.ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(100, this.ctx.currentTime + 0.1);
+                gain.gain.setValueAtTime(0.1, this.ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.1);
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start();
+                osc.stop(this.ctx.currentTime + 0.1);
             }
         };
+
+        // Global UI Click Sound
+        document.addEventListener('click', (e) => {
+            // Init audio on first interaction
+            if (AudioSystem.ctx && AudioSystem.ctx.state === 'suspended') AudioSystem.resume();
+
+            if (e.target.tagName === 'BUTTON' || e.target.closest('button') || e.target.classList.contains('opt-btn')) {
+                AudioSystem.playClick();
+            }
+        });
 
         // --- TIMER SYSTEM ---
         const TimerSystem = {
