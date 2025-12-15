@@ -1426,6 +1426,55 @@
             }
         }
 
+        /* DANGER STATE */
+        .time-bar.danger {
+            background: var(--danger) !important;
+            animation: timerPulse 0.3s infinite;
+        }
+
+        /* Screen Shake / Distortion for Low Time */
+        body.time-critical {
+            animation: screenShake 0.1s infinite;
+        }
+
+        body.time-critical .vignette {
+            background: radial-gradient(circle, transparent 20%, rgba(255, 0, 60, 0.4) 100%);
+        }
+
+        @keyframes screenShake {
+            0% {
+                transform: translate(1px, 1px);
+            }
+
+            25% {
+                transform: translate(-1px, 0px);
+            }
+
+            50% {
+                transform: translate(0px, -1px);
+            }
+
+            75% {
+                transform: translate(-1px, 1px);
+            }
+
+            100% {
+                transform: translate(1px, -1px);
+            }
+        }
+
+        @keyframes timerPulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.6;
+            }
+        }
+
         /* POWER POPUP */
         @keyframes powerPopup {
             0% {
@@ -1469,36 +1518,52 @@
 
         <div class="fail-btn-row">
             <button class="fail-btn btn-rewind" onclick="Game.triggerRewind()">REWIND<br><span
-                    style="font-size:0.8rem">COST: 1 LIFE</span></button>
+                    style="font-size:0.8rem">COST: 1 CHARGE</span></button>
             <button class="fail-btn btn-exit" onclick="Game.gameOver()">EXIT<br><span style="font-size:0.8rem">ACCEPT
                     FATE</span></button>
         </div>
     </div>
 
-    <div class="win-modal" id="winModal">
-        <div class="win-title">TIME MASTER</div>
-        <div class="win-subtitle">You've conquered the temporal storm</div>
-
-        <div class="stats-grid">
-            <div class="stat-box">
-                <div class="stat-label">FINAL SCORE</div>
-                <div class="stat-value" id="finalScore">0</div>
+    <div id="victory-screen" class="win-modal" style="display:none;">
+        <h1 class="glitch-title"
+            style="color: var(--green); text-shadow: 0 0 30px var(--green); transform: scale(0.8);">
+            NEURAL SYNC COMPLETE
+        </h1>
+        <div class="victory-stats" style="
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--primary);
+            border-radius: 12px;
+            padding: 30px 50px;
+            margin: 30px 0;
+            width: 80%;
+            max-width: 600px;
+        ">
+            <div class="stat-row"
+                style="display: flex; justify-content: space-between; margin: 15px 0; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px;">
+                <span class="stat-label" style="font-family: var(--f-ui); color: var(--text-muted);">FINAL SCORE</span>
+                <span class="stat-val" id="final-score"
+                    style="font-family: var(--f-mono); font-size: 1.5rem; color: var(--primary);">0</span>
             </div>
-            <div class="stat-box">
-                <div class="stat-label">TIME SURVIVED</div>
-                <div class="stat-value" id="timeSurvived">0:00</div>
+            <div class="stat-row" style="display: flex; justify-content: space-between; margin: 15px 0;">
+                <span class="stat-label" style="font-family: var(--f-ui); color: var(--text-muted);">TIME
+                    SURVIVED</span>
+                <span class="stat-val" id="time-survived"
+                    style="font-family: var(--f-mono); font-size: 1.5rem; color: var(--secondary);">0s</span>
             </div>
-            <div class="stat-box">
-                <div class="stat-label">BEST STREAK</div>
-                <div class="stat-value" id="bestStreak">0</div>
+            <div class="stat-row" style="display: flex; justify-content: space-between; margin: 15px 0;">
+                <span class="stat-label" style="font-family: var(--f-ui); color: var(--text-muted);">QUESTIONS
+                    CLEARED</span>
+                <span class="stat-val" id="questions-cleared"
+                    style="font-family: var(--f-mono); font-size: 1.5rem; color: var(--text-main);">0</span>
             </div>
-            <div class="stat-box">
-                <div class="stat-label">LEVEL REACHED</div>
-                <div class="stat-value" id="levelReached">1</div>
+            <div class="stat-row" style="display: flex; justify-content: space-between; margin: 15px 0;">
+                <span class="stat-label" style="font-family: var(--f-ui); color: var(--text-muted);">MAX SPEED</span>
+                <span class="stat-val" id="max-speed"
+                    style="font-family: var(--f-mono); font-size: 1.5rem; color: var(--danger);">1x</span>
             </div>
         </div>
-
-        <button class="tech-btn" onclick="location.reload()">PLAY AGAIN</button>
+        <button class="tech-btn" onclick="location.reload()">REPLAY</button>
     </div>
 
     <header>
@@ -1512,6 +1577,34 @@
     </header>
 
     <div id="hud" class="hidden">
+        <!-- New Left HUD Timer -->
+        <div class="hud-panel hud-top-left" style="
+            top: 90px;
+            left: 40px;
+            right: auto;
+            border-left: 4px solid var(--primary);
+            border-right: none;
+            text-align: left;
+        ">
+            <div class="stat-label">TIME REMAINING</div>
+            <div class="stat-val" id="time-display" style="font-size: 2.5rem; color: var(--primary);">60.0</div>
+            <div class="time-bar-container" style="
+                width: 150px;
+                height: 8px;
+                background: rgba(255,255,255,0.1);
+                border-radius: 4px;
+                margin-top: 10px;
+                overflow: hidden;
+            ">
+                <div class="time-bar" id="time-bar" style="
+                    height: 100%;
+                    width: 100%;
+                    background: linear-gradient(90deg, var(--danger), var(--primary));
+                    transition: width 0.1s linear;
+                    box-shadow: 0 0 10px var(--primary);
+                "></div>
+            </div>
+        </div>
         <div class="hud-panel hud-top-right">
             <div class="stat-label">SCORE</div>
             <div style="display:flex; align-items:center; justify-content:flex-end;">
@@ -1546,15 +1639,14 @@
         <h1 class="glitch-title">NEURO<br>FRIED</h1>
 
         <div class="protocol-container">
-            <div class="protocol-trigger">/// HOVER_FOR_SURVIVAL_PROTOCOL ///</div>
+            <div class="protocol-trigger">[ MISSION BRIEFING ]</div>
             <div class="mission-log">
-                <div class="protocol-line"><strong>MISSION PROTOCOL:</strong></div>
-                <div class="protocol-line">[1] INITIALIZE ARCHIVE ROULETTE.</div>
-                <div class="protocol-line">[2] LOCK ONTO A MEMORY STREAM.</div>
-                <div class="protocol-line">[3] YOU HAVE 3 TIMELINE ANCHORS (LIVES).</div>
-                <div class="protocol-line">[4] USE [R] OR HUD TO REWIND TIME (-1 LIFE).</div>
-                <div class="protocol-line"><span style="color:var(--danger)">WARNING:</span> FAILURE REQUIRES REWIND OR
-                    EXIT.</div>
+                <p class="protocol-line">◉ NEURAL COLLAPSE IMMINENT</p>
+                <p class="protocol-line">◉ YOUR MEMORIES ARE FRAGMENTING.</p>
+                <p class="protocol-line">◉ YOU HAVE <span style="color:var(--primary)">60 SECONDS</span> BEFORE TOTAL
+                    FAILURE.</p>
+                <p class="protocol-line">◉ ANSWER CORRECTLY TO BUY MORE TIME.</p>
+                <p class="protocol-line">◉ <span style="color:var(--danger)">TIME IS YOUR ONLY CURRENCY.</span></p>
             </div>
         </div>
 
@@ -2364,50 +2456,63 @@
                 this.interval = setInterval(() => {
                     if (this.frozen) return;
 
-                    this.timeLeft -= 0.1;
+                    // Apply difficulty multiplier to time drain
+                    let rate = 0.1 * DifficultySystem.getTickRate();
+
+                    // Anomaly: Fast
+                    if (document.body.classList.contains('anomaly-fast')) rate *= 2;
+
+                    this.timeLeft -= rate;
                     this.update();
 
-                    // Tick sound when low
-                    if (this.timeLeft <= 5 && this.timeLeft > 0) {
-                        if (Math.floor(this.timeLeft * 10) % 10 === 0) {
+                    // Tick sound when low (below 10s)
+                    if (this.timeLeft <= 10 && this.timeLeft > 0) {
+                        if (Math.floor(this.timeLeft * 5) % 5 === 0) { // Faster ticking
                             AudioSystem.playTick();
                         }
                     }
 
                     if (this.timeLeft <= 0) {
                         this.stop();
-                        Game.handleTimeOut();
+                        Game.gameOver(); // Time out = Game Over now
                     }
                 }, 100);
             },
 
             update() {
-                const progress = document.getElementById('timeProgress');
-                const text = document.getElementById('timeText');
+                const display = document.getElementById('time-display');
+                const bar = document.getElementById('time-bar');
+
+                // Ring (Keep legacy support if exists, or ignore)
                 const ring = document.getElementById('timeRing');
-                const bar = document.getElementById('timer-bar');
-
-                if (!progress || !text) return;
-
-                const percent = Math.max(0, this.timeLeft / this.maxTime);
-                const offset = 251 * (1 - percent);
-                progress.style.strokeDashoffset = offset;
-                text.textContent = Math.ceil(this.timeLeft);
-
-                // Update Legacy Linear Bar
-                if (bar) {
-                    bar.style.width = (percent * 100) + "%";
-                    if (this.timeLeft <= 5) bar.style.background = 'var(--danger)';
-                    else bar.style.background = 'var(--primary)';
+                const ringProg = document.getElementById('timeProgress');
+                if (ringProg) {
+                    const percent = Math.max(0, this.timeLeft / this.maxTime); // Relative to max?
+                    // Or relative to 60s base? Let's keep it relative to current Max for Ring
+                    const offset = 251 * (1 - percent);
+                    ringProg.style.strokeDashoffset = offset;
                 }
 
-                // Danger state when low
-                if (this.timeLeft <= 5) {
-                    progress.classList.add('danger');
-                    text.classList.add('danger');
+                if (!display || !bar) return;
+
+                display.textContent = this.timeLeft.toFixed(1);
+                // Bar is relative to 60s (Initial Max) visually, or dynamic?
+                // User snippet: (timeRemaining / 60 * 100) + '%'
+                // So bar clamps at 60s full.
+                let percent = (this.timeLeft / 60) * 100;
+                if (percent > 100) percent = 100;
+                bar.style.width = percent + '%';
+
+                // Danger state when under 15 seconds (User requested < 15)
+                if (this.timeLeft < 15) {
+                    bar.classList.add('danger');
+                    display.style.color = 'var(--danger)';
+                    // Visual Distortion Request
+                    document.body.classList.add('time-critical');
                 } else {
-                    progress.classList.remove('danger');
-                    text.classList.remove('danger');
+                    bar.classList.remove('danger');
+                    display.style.color = 'var(--primary)';
+                    document.body.classList.remove('time-critical');
                 }
             },
 
@@ -2465,24 +2570,29 @@
                 return true;
             },
 
-            // Rewind: Go back to previous question
+            // Rewind: Adds Time (Health)
             useRewind() {
                 if (this.rewindCharges <= 0 || !Game.active) return false;
                 this.rewindCharges--;
 
-                Game.triggerProactiveRewind();
-                this.updatePowerUI();
+                Game.triggerRewindEffect();
                 return true;
             },
 
             // Earn powers through streaks
             onStreak(streakCount) {
-                if (streakCount === 3) {
+                if (streakCount % 3 === 0) {
                     this.freezeCharges++;
                     this.showPowerGain('FREEZE +1');
-                } else if (streakCount === 5) {
-                    this.rewindCharges++;
-                    this.showPowerGain('REWIND +1');
+                }
+
+                if (streakCount % 5 === 0) {
+                    if (this.rewindCharges < 3) {
+                        this.rewindCharges++;
+                        this.showPowerGain('REWIND +1');
+                    } else {
+                        this.showPowerGain('MAX CHARGES');
+                    }
                 }
                 this.updatePowerUI();
             },
@@ -2523,19 +2633,40 @@
                     if (this.rewindCharges > 0) rewindBtn.classList.remove('used');
                     else rewindBtn.classList.add('used');
                 }
+
+                // Update Life Pips (Health Bar)
+                const pips = document.querySelectorAll('.life-pip');
+                pips.forEach((pip, i) => {
+                    // Show filled if index < charges
+                    if (i < this.rewindCharges) {
+                        pip.classList.add('filled');
+                        pip.style.background = 'var(--primary)';
+                        pip.style.boxShadow = '0 0 10px var(--primary)';
+                    } else {
+                        pip.classList.remove('filled');
+                        pip.style.background = 'rgba(255,255,255,0.1)';
+                        pip.style.boxShadow = 'none';
+                    }
+                });
             }
         };
 
+        // --- DIFFICULTY SYSTEM ---
         // --- DIFFICULTY SYSTEM ---
         const DifficultySystem = {
             level: 1,
             questionsAnswered: 0,
 
-            getTimeLimit() {
-                // Less time as you progress
-                const baseTime = 15;
-                const reduction = Math.min(this.level - 1, 5) * 1.5;
-                return Math.max(baseTime - reduction, 7);
+            reset() {
+                this.level = 1;
+                this.questionsAnswered = 0;
+            },
+
+            getTickRate() {
+                // User requested 0.25 increment per 5 questions (per level)
+                // Level 1 = 1x
+                // Level 2 = 1.25x
+                return 1 + (this.level - 1) * 0.25;
             },
 
             getScoreMultiplier() {
@@ -2548,36 +2679,17 @@
                 // Level up every 5 questions
                 if (this.questionsAnswered % 5 === 0) {
                     this.level++;
-                    this.showLevelUp();
+
+                    // Show Warning as requested
+                    const alert = document.createElement('div');
+                    alert.className = 'anomaly-alert';
+                    alert.innerHTML = '⚠️ TIME ACCELERATION ⚠️<br>Speed: ' + this.getTickRate().toFixed(2) + 'x';
+                    document.body.appendChild(alert);
+                    setTimeout(() => alert.remove(), 2000);
+
+                    AudioSystem.playWrong(); // Warning sound
                 }
             },
-
-            reset() {
-                this.level = 1;
-                this.questionsAnswered = 0;
-            },
-
-            showLevelUp() {
-                const popup = document.createElement('div');
-                popup.innerHTML = `
-                    <div style="font-size: 1rem; opacity: 0.7;">TIME ACCELERATES</div>
-                    <div style="font-size: 3rem;">LEVEL ${this.level}</div>
-                `;
-                popup.style.cssText = `
-                    position: fixed;
-                    top: 50%;
-                    left: 50%;
-                    transform: translate(-50%, -50%);
-                    font-family: var(--f-title);
-                    color: var(--primary);
-                    text-shadow: 0 0 30px var(--primary);
-                    text-align: center;
-                    z-index: 9999;
-                    animation: powerPopup 2s forwards;
-                `;
-                document.body.appendChild(popup);
-                setTimeout(() => popup.remove(), 2000);
-            }
         };
 
         // --- KEYBOARD SHORTCUTS ---
@@ -2612,7 +2724,10 @@
         const Game = {
             active: false, score: 0, round: 0, curr: 0,
             currentTopic: null, qData: [], rewinding: false,
-            lives: 3, streak: 0, multiplier: 1, anomaly: null,
+            active: false, score: 0, round: 0, curr: 0,
+            currentTopic: null, qData: [], rewinding: false,
+            streak: 0, multiplier: 1, anomaly: null,
+            rewindUsedInRound: false,
 
             startSequence() {
                 try { AudioSystem.init(); AudioSystem.resume(); AudioSystem.startBGM(); } catch (e) { }
@@ -2734,26 +2849,28 @@
             reroll() { this.startRoulette(); },
 
             startGame(dir) {
-                this.qData = [...this.currentTopic.qs];
-                if (dir === 'asc') this.qData.sort((a, b) => a.y - b.y); else this.qData.sort((a, b) => b.y - a.y);
+                try {
+                    this.qData = [...this.currentTopic.qs];
+                    if (dir === 'asc') this.qData.sort((a, b) => a.y - b.y); else this.qData.sort((a, b) => b.y - a.y);
 
-                this.score = 0; this.round = 0; this.lives = 3;
-                this.streak = 0; this.multiplier = 1; this.anomaly = null;
+                    this.score = 0; this.round = 0;
+                    this.streak = 0; this.multiplier = 1; this.anomaly = null;
 
-                DifficultySystem.reset();
-                TimePowers.reset();
-                TimerSystem.stop();
+                    DifficultySystem.reset();
+                    TimePowers.reset();
+                    // Ensure Timer is stopped before starting new
+                    TimerSystem.stop();
 
-                document.getElementById('hud').classList.remove('hidden');
-                document.getElementById('hud-score').innerText = "0";
-                document.getElementById('hud-streak').innerText = "";
+                    document.getElementById('hud').classList.remove('hidden');
+                    document.getElementById('hud-score').innerText = "0";
+                    document.getElementById('hud-streak').innerText = "";
 
-                // Reset UI
-                document.querySelectorAll('.life-pip').forEach(p => p.classList.remove('lost'));
+                    // Reset UI - No lives to reset
 
-                // TRIGGER HYPE SEQUENCE
-                this.switchScreen('s-timeline', 's-hype');
-                this.runHypeSequence();
+                    // TRIGGER HYPE SEQUENCE
+                    this.switchScreen('s-timeline', 's-hype');
+                    this.runHypeSequence();
+                } catch (e) { alert("Start Error: " + e.message); console.error(e); }
             },
 
             runHypeSequence() {
@@ -2833,6 +2950,7 @@
                 // Let's assume win after all questions in topic (20 questions).
 
                 const d = this.qData[this.round];
+                this.rewindUsedInRound = false; // Reset rewind availability for new question
 
                 document.getElementById('era-display').innerText = `YEAR: ${d.y}`;
                 document.getElementById('q-text').innerText = d.q;
@@ -2876,10 +2994,15 @@
                     AudioSystem.playWrong(); // Use harsh sound for warn
                 }
 
-                // Start Timer
-                let time = DifficultySystem.getTimeLimit();
-                if (this.anomaly === 'fast') time *= 0.6; // 40% less time for fast anomaly
-                TimerSystem.start(time);
+                // Start Timer ONLY if it's the first round (or we handle it in startGame)
+                // Actually, startGame calls nextRound. 
+                // We want Global Timer to start once.
+
+                if (this.round === 0) {
+                    TimerSystem.start(60); // 60s Start
+                }
+                // Do NOT call TimerSystem.start() every round anymore.
+
             },
 
             // Timeout Handler
@@ -2887,12 +3010,58 @@
                 this.showFailState();
             },
 
+            // Called from Fail Modal
+            triggerRewind() {
+                // Check if already used this round
+                if (this.rewindUsedInRound) return;
+
+                // Use a charge if available
+                if (TimePowers.rewindCharges > 0) {
+                    TimePowers.rewindCharges--;
+                    TimePowers.updatePowerUI();
+
+                    // Mark as used for this round
+                    this.rewindUsedInRound = true;
+
+                    document.getElementById('fail-modal').classList.remove('active');
+                    document.body.classList.remove('paradox-hit');
+
+                    // Recover with bonus time
+                    AudioSystem.playRewind();
+                    this.rewinding = true;
+                    document.body.classList.add('is-rewinding');
+
+                    setTimeout(() => {
+                        this.rewinding = false;
+                        document.body.classList.remove('is-rewinding');
+
+                        // Restart Round or Just Add Time?
+                        // User expects to "continue".
+                        // Add +20s and Restart Timer
+                        this.active = true;
+                        TimerSystem.addTime(20);
+                        TimerSystem.start(TimerSystem.timeLeft);
+
+                    }, 1000);
+
+                } else {
+                    // Feedback: No charges!
+                    const btn = document.querySelector('.btn-rewind');
+                    btn.classList.add('shake');
+                    setTimeout(() => btn.classList.remove('shake'), 400);
+                    AudioSystem.playWrong();
+                }
+            },
+
             check(ans, cor) {
                 if (!this.active) return;
-                TimerSystem.stop();
+                // TimerSystem.stop(); // REMOVED: Time keeps flowing!
 
                 if (ans === cor) {
                     AudioSystem.playCorrect();
+
+                    // Reset single-rewind flag on correct answer (redundant but safe)
+                    this.rewindUsedInRound = false;
 
                     // STREAK LOGIC
                     this.streak++;
@@ -2938,67 +3107,61 @@
                 this.active = false;
                 TimerSystem.stop();
                 AudioSystem.playWrong();
+
+                // Update Rewind Button Text
+                const btn = document.querySelector('.btn-rewind');
+                if (btn) {
+                    const count = TimePowers.rewindCharges;
+
+                    if (this.rewindUsedInRound) {
+                        btn.innerHTML = `LOCKED<br><span style="font-size:0.8rem">ALREADY REWOUND</span>`;
+                        btn.style.opacity = '0.5';
+                        btn.style.cursor = 'not-allowed';
+                        btn.disabled = true;
+                    } else if (count <= 0) {
+                        btn.innerHTML = `REWIND<br><span style="font-size:0.8rem">NO CHARGES</span>`;
+                        btn.style.opacity = '0.5';
+                        btn.style.cursor = 'not-allowed';
+                        btn.disabled = true;
+                    } else {
+                        btn.innerHTML = `REWIND<br><span style="font-size:0.8rem">CHARGES: ${count}</span>`;
+                        btn.style.opacity = '1';
+                        btn.style.cursor = 'pointer';
+                        btn.disabled = false;
+                    }
+                }
+
                 document.getElementById('fail-modal').classList.add('active');
                 document.body.classList.add('paradox-hit');
             },
 
-            // Called from Fail Modal (Costs Life)
-            triggerRewind() {
-                if (this.lives <= 0) return;
-                this.lives--;
-                this.updateLivesUI();
 
-                document.getElementById('fail-modal').classList.remove('active');
-                document.body.classList.remove('paradox-hit');
-
-                this.performRewindAction();
-            },
-
-            // Called from Power/Key (Charges handled by TimePowers, but this is the effect)
-            triggerProactiveRewind() {
-                // Check if it WAS a charge use? 
-                // TimePowers.useRewind() calls this. 
-                // If called directly via 'R' key without charge, it shouldn't work (TimePowers handles key).
-                // What if button clicked? Button should call TimePowers.useRewind().
-                // We will update the button onclick in HTML potentially, or just assume calls come from TimePowers.
-                this.performRewindAction();
-            },
-
-            updateLivesUI() {
-                const pips = document.querySelectorAll('.life-pip');
-                if (pips[this.lives]) pips[this.lives].classList.add('lost');
-            },
-
-            performRewindAction() {
-                AudioSystem.playRewind();
-                this.rewinding = true;
-                document.body.classList.add('is-rewinding');
-
-                setTimeout(() => {
-                    this.rewinding = false;
-                    document.body.classList.remove('is-rewinding');
-                    // Refund time? Or just restart?
-                    // Restart round with bonus time?
-                    // Old logic: maxTime += 1500;
-                    // New logic: Just restart the round.
-                    this.active = true;
-                    this.startTimer();
-                }, 1000);
-            },
 
             gameWin() {
                 this.active = false;
                 TimerSystem.stop();
-                AudioSystem.playCorrect(); // Big win sound?
+                AudioSystem.playCorrect(); // Victory Sound replacement for now
 
-                // Populate stats
-                document.getElementById('finalScore').innerText = this.score;
-                document.getElementById('timeSurvived').innerText = "FOREVER"; // Placeholder
-                document.getElementById('bestStreak').innerText = this.streak; // Or track max streak separately
-                document.getElementById('levelReached').innerText = DifficultySystem.level;
+                // Update stats
+                document.getElementById('final-score').textContent = this.score;
+                // Time survived calculation 
+                // We track total time passed? Or remaining? 
+                // User code: (60 - timeRemaining + questionsAnswered * 5).toFixed(1)
+                // But simplified: Just show time remaining as 'Time Health' or Difficulty.level
+                document.getElementById('time-survived').textContent = DifficultySystem.level + " LEVELS";
+                document.getElementById('questions-cleared').textContent = DifficultySystem.questionsAnswered;
+                document.getElementById('max-speed').textContent = DifficultySystem.getTickRate().toFixed(2) + 'x';
 
-                const winModal = document.getElementById('winModal');
-                if (winModal) winModal.classList.add('active');
+                // Show victory screen
+                const winModal = document.getElementById('victory-screen');
+                if (winModal) {
+                    winModal.style.display = 'flex'; // It was display:none
+                    winModal.classList.add('active'); // CSS anims
+                }
+
+                // Hide HUD
+                document.getElementById('hud').classList.add('hidden');
+                document.getElementById('s-game').classList.add('hidden');
             },
 
             gameOver() {
