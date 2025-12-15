@@ -34,11 +34,11 @@
             --text-main: #ffffff;
             --particle-col: #ffffff;
 
-            /* SLEEK GLASS */
-            --glass-bg: rgba(10, 15, 20, 0.9);
-            --glass-border: 1px solid rgba(0, 243, 255, 0.2);
-            --glass-blur: blur(25px);
-            --glass-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            /* SLEEK GLASS - DARKER MODE */
+            --glass-bg: rgba(5, 5, 8, 0.95);
+            --glass-border: 1px solid rgba(0, 243, 255, 0.1);
+            --glass-blur: blur(30px);
+            --glass-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
 
             /* FONTS */
             --f-title: 'Orbitron', sans-serif;
@@ -50,7 +50,7 @@
         body.t-finance {
             --primary: #ffd700;
             --secondary: #50c878;
-            --bg-color: #051005;
+            --bg-color: #020502;
             --text-main: #fff;
             --particle-col: #fff;
         }
@@ -58,7 +58,7 @@
         body.t-code {
             --primary: #00ff00;
             --secondary: #008f11;
-            --bg-color: #000;
+            --bg-color: #020502;
             --text-main: #fff;
             --particle-col: #0f0;
         }
@@ -66,7 +66,7 @@
         body.t-space {
             --primary: #9d00ff;
             --secondary: #e0b0ff;
-            --bg-color: #0d001a;
+            --bg-color: #05000a;
             --text-main: #fff;
             --particle-col: #fff;
         }
@@ -74,7 +74,7 @@
         body.t-social {
             --primary: #ff0055;
             --secondary: #ffcc00;
-            --bg-color: #1a0505;
+            --bg-color: #0f0202;
             --text-main: #fff;
             --particle-col: #fff;
         }
@@ -82,7 +82,7 @@
         body.t-gaming {
             --primary: #ff4400;
             --secondary: #ffee00;
-            --bg-color: #1a0a00;
+            --bg-color: #0d0500;
             --text-main: #fff;
             --particle-col: #fff;
         }
@@ -105,6 +105,17 @@
             justify-content: center;
             align-items: center;
             transition: background-color 0.8s ease, color 0.5s ease;
+            animation: bgPulse 10s infinite alternate;
+        }
+
+        @keyframes bgPulse {
+            0% {
+                box-shadow: inset 0 0 100px rgba(0, 0, 0, 0.8);
+            }
+
+            100% {
+                box-shadow: inset 0 0 200px rgba(0, 0, 0, 1);
+            }
         }
 
         /* LAYERS & VFX */
@@ -119,7 +130,8 @@
             inset: 0;
             pointer-events: none;
             z-index: 1;
-            background: radial-gradient(circle, transparent 40%, var(--bg-color) 100%);
+            /* STRONGER VIGNETTE */
+            background: radial-gradient(circle, transparent 30%, rgba(0, 0, 0, 0.9) 100%);
         }
 
         .scanlines {
@@ -745,23 +757,6 @@
             animation: zoomFade 0.8s cubic-bezier(0.23, 1, 0.32, 1) forwards;
             opacity: 0;
             transform: scale(3);
-        }
-
-        @keyframes zoomFade {
-            0% {
-                opacity: 0;
-                transform: scale(3);
-            }
-
-            50% {
-                opacity: 1;
-                transform: scale(1);
-            }
-
-            100% {
-                opacity: 0;
-                transform: scale(0.5);
-            }
         }
 
         .glitch-text {
@@ -1530,7 +1525,7 @@
             NEURAL SYNC COMPLETE
         </h1>
         <div class="victory-stats" style="
-            background: rgba(0,0,0,0.8);
+            background: rgba(53, 36, 36, 0.8);
             backdrop-filter: blur(10px);
             border: 1px solid var(--primary);
             border-radius: 12px;
@@ -2248,6 +2243,27 @@
         ];
 
 
+        // --- BACKGROUND MUSIC SYSTEM (Self Hosted) ---
+        const bgMusic = new Audio('https://raw.githubusercontent.com/Kaustavoffx/neuro-fried/main/bgm.mp3');
+        bgMusic.loop = true;
+        bgMusic.volume = 0.25;
+
+        function startBGM() {
+            bgMusic.play().catch(() => {
+                document.body.addEventListener('click', () => bgMusic.play(), { once: true });
+            });
+        }
+
+        function stopBGM() {
+            bgMusic.pause();
+            bgMusic.currentTime = 0;
+        }
+
+        function freezeMusicEffect() {
+            bgMusic.volume = 0.1;
+            setTimeout(() => bgMusic.volume = 0.25, 5000); // Updated to match new volume
+        }
+
         // --- 2. AUDIO (Safe) ---
         // --- 2. AUDIO SYSTEM ---
         const AudioSystem = {
@@ -2364,51 +2380,6 @@
                 gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.03);
                 osc.start();
                 osc.stop(this.ctx.currentTime + 0.03);
-            },
-
-            // Background ambient drone
-            startBGM() {
-                if (!this.ctx) this.init(); this.resume();
-                if (this.bgmPlaying) return;
-                this.bgmPlaying = true;
-
-                const playDrone = () => {
-                    if (!this.bgmPlaying || !this.ctx) return;
-                    const osc1 = this.ctx.createOscillator();
-                    const osc2 = this.ctx.createOscillator();
-                    const gain = this.ctx.createGain();
-                    const filter = this.ctx.createBiquadFilter();
-
-                    osc1.type = 'sine';
-                    osc2.type = 'sine';
-                    filter.type = 'lowpass';
-                    filter.frequency.value = 400;
-
-                    osc1.connect(filter);
-                    osc2.connect(filter);
-                    filter.connect(gain);
-                    gain.connect(this.ctx.destination);
-
-                    const baseFreq = 55; // Low A
-                    osc1.frequency.value = baseFreq;
-                    osc2.frequency.value = baseFreq * 1.5;
-
-                    gain.gain.setValueAtTime(0, this.ctx.currentTime);
-                    gain.gain.linearRampToValueAtTime(0.05, this.ctx.currentTime + 2);
-                    gain.gain.linearRampToValueAtTime(0, this.ctx.currentTime + 8);
-
-                    osc1.start();
-                    osc2.start();
-                    osc1.stop(this.ctx.currentTime + 8);
-                    osc2.stop(this.ctx.currentTime + 8);
-
-                    setTimeout(() => { if (this.bgmPlaying) playDrone(); }, 7000);
-                };
-                playDrone();
-            },
-
-            stopBGM() {
-                this.bgmPlaying = false;
             },
 
             // UI Click - Soft interaction
@@ -2556,9 +2527,7 @@
                 this.freezeCharges--;
 
                 TimerSystem.freeze(5);
-
-                // Visual effect
-                document.querySelector('.fx-freeze').style.opacity = '1';
+                freezeMusicEffect(); // BGM Effect             document.querySelector('.fx-freeze').style.opacity = '1';
                 setTimeout(() => {
                     document.querySelector('.fx-freeze').style.opacity = '0';
                 }, 5000);
@@ -2730,7 +2699,7 @@
             rewindUsedInRound: false,
 
             startSequence() {
-                try { AudioSystem.init(); AudioSystem.resume(); AudioSystem.startBGM(); } catch (e) { }
+                try { AudioSystem.init(); AudioSystem.resume(); startBGM(); } catch (e) { }
                 this.switchScreen('s-title', 's-roulette');
                 this.startRoulette();
             },
@@ -2851,7 +2820,7 @@
             startGame(dir) {
                 try {
                     this.qData = [...this.currentTopic.qs];
-                    if (dir === 'asc') this.qData.sort((a, b) => a.y - b.y); else this.qData.sort((a, b) => b.y - a.y);
+                    if (dir === 'asc') this.qData.sort((a, b) => a.y - b.y); else this.qData.sort((a, b) => b.y - b.y);
 
                     this.score = 0; this.round = 0;
                     this.streak = 0; this.multiplier = 1; this.anomaly = null;
@@ -3052,10 +3021,13 @@
 
             check(ans, cor) {
                 if (!this.active) return;
-                // TimerSystem.stop(); // REMOVED: Time keeps flowing!
 
                 if (ans === cor) {
                     AudioSystem.playCorrect();
+
+                    // GAIN TIME +5s
+                    TimerSystem.addTime(5);
+                    this.showTimeFeedback(5);
 
                     // Reset single-rewind flag on correct answer (redundant but safe)
                     this.rewindUsedInRound = false;
@@ -3074,6 +3046,9 @@
                         multimsg = ` x${this.multiplier.toFixed(1)}`;
                         document.getElementById('hud-streak').innerText = "STREAK " + this.streak + multimsg;
                         document.getElementById('hud-streak').classList.add('pulse-text');
+
+                        // Show Streak Overlay
+                        this.showConditionOverlay('streak', `STREAK ${this.streak}x`);
                     }
 
                     // Sparkle
@@ -3093,12 +3068,62 @@
                     document.getElementById('hud-score').innerText = this.score;
                     this.round++; this.nextRound();
                 } else {
+                    // WRONG ANSWER LOGIC
+                    AudioSystem.playWrong();
+
+                    // Lose Time (-5s)
+                    TimerSystem.addTime(-5);
+                    this.showTimeFeedback(-5);
+
+                    // Visual Feedback
+                    const btn = document.querySelector('.btn-rewind'); // Reuse shake logic or add new?
+                    document.body.classList.add('paradox-hit');
+                    setTimeout(() => document.body.classList.remove('paradox-hit'), 200);
+
                     this.streak = 0;
                     this.multiplier = 1;
                     document.getElementById('hud-streak').innerText = "";
-                    this.showFailState();
+
+                    // FATAL CHECK
+                    if (TimerSystem.timeLeft <= 0) {
+                        this.showFailState();
+                    } else {
+                        // CONTINUE (Not too change logic: Keeps game flowing)
+                        this.round++;
+                        this.nextRound();
+                    }
                 }
             },
+
+            showTimeFeedback(seconds) {
+                const indicator = document.createElement('div');
+                indicator.className = seconds > 0 ? 'time-indicator time-gain' : 'time-indicator time-loss';
+                indicator.textContent = (seconds > 0 ? '+' : '') + seconds + 's';
+
+                // Quick inline styling since CSS might be missing again
+                indicator.style.position = 'fixed';
+                indicator.style.top = '50%';
+                indicator.style.left = '50%';
+                indicator.style.transform = 'translate(-50%, -50%)';
+                indicator.style.fontSize = '4rem';
+                indicator.style.fontWeight = 'bold';
+                indicator.style.color = seconds > 0 ? '#00ff00' : '#ff003c';
+                indicator.style.zIndex = '10000';
+                indicator.style.pointerEvents = 'none';
+                indicator.style.textShadow = '0 0 20px currentColor';
+                indicator.style.animation = 'floatUp 1s forwards'; // Need keyframes or JS anim
+
+                // Add simple float animation if CSS keyframes missing
+                indicator.animate([
+                    { transform: 'translate(-50%, -50%) scale(1)', opacity: 1 },
+                    { transform: 'translate(-50%, -150%) scale(1.5)', opacity: 0 }
+                ], { duration: 1000, easing: 'ease-out' });
+
+                document.body.appendChild(indicator);
+                setTimeout(() => indicator.remove(), 1000);
+            },
+
+
 
             showFailState() {
                 this.active = false;
@@ -3137,6 +3162,7 @@
             gameWin() {
                 this.active = false;
                 TimerSystem.stop();
+                stopBGM(); // Stop BGM
                 AudioSystem.playCorrect(); // Victory Sound replacement for now
 
                 // Update stats
@@ -3163,6 +3189,7 @@
 
             gameOver() {
                 this.active = false; AudioSystem.playWrong();
+                stopBGM(); // Stop BGM
                 document.getElementById('fail-modal').classList.remove('active');
                 document.body.classList.add('power-off-anim');
 
