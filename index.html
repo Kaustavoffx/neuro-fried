@@ -1268,6 +1268,186 @@
                 transform-origin: bottom right;
             }
         }
+
+        /* COUNTDOWN TIMER - Add to your CSS */
+        .time-ring {
+            position: absolute;
+            top: 90px;
+            left: 40px;
+            width: 100px;
+            height: 100px;
+            z-index: 60;
+        }
+
+        .time-ring svg {
+            transform: rotate(-90deg);
+            width: 100%;
+            height: 100%;
+        }
+
+        .time-ring-bg {
+            fill: none;
+            stroke: rgba(255, 255, 255, 0.1);
+            stroke-width: 8;
+        }
+
+        .time-ring-progress {
+            fill: none;
+            stroke: var(--primary);
+            stroke-width: 8;
+            stroke-linecap: round;
+            stroke-dasharray: 251;
+            /* 2 * PI * 40 */
+            stroke-dashoffset: 0;
+            transition: stroke-dashoffset 0.1s linear, stroke 0.3s;
+            filter: drop-shadow(0 0 10px var(--primary));
+        }
+
+        .time-ring-progress.danger {
+            stroke: var(--danger);
+            filter: drop-shadow(0 0 15px var(--danger));
+            animation: pulseDanger 0.5s infinite;
+        }
+
+        @keyframes pulseDanger {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.6;
+            }
+        }
+
+        .time-ring-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: var(--f-title);
+            font-size: 1.8rem;
+            color: var(--primary);
+            text-shadow: 0 0 10px var(--primary);
+        }
+
+        .time-ring-text.danger {
+            color: var(--danger);
+            text-shadow: 0 0 15px var(--danger);
+            animation: shakeTimer 0.1s infinite;
+        }
+
+        @keyframes shakeTimer {
+
+            0%,
+            100% {
+                transform: translate(-50%, -50%) translateX(0);
+            }
+
+            50% {
+                transform: translate(-50%, -50%) translateX(2px);
+            }
+        }
+
+        /* WIN SCREEN */
+        .win-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 2000;
+            background: rgba(0, 20, 0, 0.95);
+            backdrop-filter: blur(20px);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: 0.5s;
+        }
+
+        .win-modal.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .win-title {
+            font-family: var(--f-title);
+            font-size: 5rem;
+            color: var(--green);
+            text-shadow: 0 0 50px var(--green);
+            animation: winPulse 2s infinite;
+            text-align: center;
+        }
+
+        .win-subtitle {
+            font-family: var(--f-mono);
+            font-size: 1.5rem;
+            color: white;
+            margin-bottom: 50px;
+            opacity: 0.8;
+            text-align: center;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .stat-box {
+            background: var(--glass-bg);
+            border: var(--glass-border);
+            padding: 25px 40px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .stat-box .stat-label {
+            margin-bottom: 10px;
+        }
+
+        .stat-box .stat-value {
+            font-family: var(--f-title);
+            font-size: 2.5rem;
+            color: var(--primary);
+        }
+
+        @keyframes winPulse {
+
+            0%,
+            100% {
+                text-shadow: 0 0 30px var(--green);
+            }
+
+            50% {
+                text-shadow: 0 0 60px var(--green), 0 0 100px var(--green);
+            }
+        }
+
+        /* POWER POPUP */
+        @keyframes powerPopup {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.5);
+            }
+
+            20% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1.2);
+            }
+
+            80% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+
+            100% {
+                opacity: 0;
+                transform: translate(-50%, -50%) translateY(-50px);
+            }
+        }
     </style>
 </head>
 
@@ -1293,6 +1473,32 @@
             <button class="fail-btn btn-exit" onclick="Game.gameOver()">EXIT<br><span style="font-size:0.8rem">ACCEPT
                     FATE</span></button>
         </div>
+    </div>
+
+    <div class="win-modal" id="winModal">
+        <div class="win-title">TIME MASTER</div>
+        <div class="win-subtitle">You've conquered the temporal storm</div>
+
+        <div class="stats-grid">
+            <div class="stat-box">
+                <div class="stat-label">FINAL SCORE</div>
+                <div class="stat-value" id="finalScore">0</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">TIME SURVIVED</div>
+                <div class="stat-value" id="timeSurvived">0:00</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">BEST STREAK</div>
+                <div class="stat-value" id="bestStreak">0</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">LEVEL REACHED</div>
+                <div class="stat-value" id="levelReached">1</div>
+            </div>
+        </div>
+
+        <button class="tech-btn" onclick="location.reload()">PLAY AGAIN</button>
     </div>
 
     <header>
@@ -1408,6 +1614,13 @@
     </div>
 
     <div id="s-game" class="screen hidden">
+        <div class="time-ring" id="timeRing">
+            <svg viewBox="0 0 100 100">
+                <circle class="time-ring-bg" cx="50" cy="50" r="40"></circle>
+                <circle class="time-ring-progress" id="timeProgress" cx="50" cy="50" r="40"></circle>
+            </svg>
+            <div class="time-ring-text" id="timeText">15</div>
+        </div>
         <div class="game-grid">
             <div class="timer-rail">
                 <div class="timer-fill" id="timer-bar"></div>
@@ -1944,19 +2157,438 @@
 
 
         // --- 2. AUDIO (Safe) ---
-        const AudioEngine = { ctx: null, init() { try { this.ctx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { } }, resume() { if (this.ctx && this.ctx.state === 'suspended') this.ctx.resume(); }, playTone(f, t, d, v) { if (!this.ctx) return; const o = this.ctx.createOscillator(); const g = this.ctx.createGain(); o.type = t; o.frequency.value = f; g.gain.value = 0; g.gain.linearRampToValueAtTime(v, this.ctx.currentTime + 0.01); g.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + d); o.connect(g); g.connect(this.ctx.destination); o.start(); o.stop(this.ctx.currentTime + d); }, sfx(t) { if (!this.ctx) return; if (t == 'warn') this.playTone(100, 'sawtooth', 0.5, 0.3); if (t == 'win') { this.playTone(987, 'square', 0.1, 0.1); setTimeout(() => this.playTone(1318, 'square', 0.3, 0.1), 100); } if (t == 'lose') this.playTone(80, 'sawtooth', 0.5, 0.4); if (t == 'spin') this.playTone(300, 'square', 0.05, 0.05); if (t == 'rewind') this.playTone(150, 'triangle', 0.8, 0.2); if (t == 'freeze') this.playTone(600, 'sine', 0.5, 0.2); } };
+        // --- 2. AUDIO SYSTEM ---
+        const AudioSystem = {
+            ctx: null,
+            bgmPlaying: false,
+
+            init() {
+                try {
+                    this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+                } catch (e) { console.error("Audio init failed", e); }
+            },
+
+            resume() {
+                if (this.ctx && this.ctx.state === 'suspended') this.ctx.resume();
+            },
+
+            // Correct Answer - Satisfying "ding"
+            playCorrect() {
+                if (!this.ctx) this.init(); this.resume();
+                if (!this.ctx) return;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.frequency.setValueAtTime(880, this.ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(1760, this.ctx.currentTime + 0.1);
+                gain.gain.setValueAtTime(0.3, this.ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.3);
+                osc.start();
+                osc.stop(this.ctx.currentTime + 0.3);
+            },
+
+            // Wrong Answer - Harsh buzz
+            playWrong() {
+                if (!this.ctx) this.init(); this.resume();
+                if (!this.ctx) return;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = 'sawtooth';
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.frequency.setValueAtTime(150, this.ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(50, this.ctx.currentTime + 0.4);
+                gain.gain.setValueAtTime(0.3, this.ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.4);
+                osc.start();
+                osc.stop(this.ctx.currentTime + 0.4);
+            },
+
+            // Freeze Time - Whoosh effect
+            playFreeze() {
+                if (!this.ctx) this.init(); this.resume();
+                if (!this.ctx) return;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                const filter = this.ctx.createBiquadFilter();
+                filter.type = 'lowpass';
+                osc.type = 'sine';
+                osc.connect(filter);
+                filter.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.frequency.setValueAtTime(2000, this.ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(100, this.ctx.currentTime + 0.8);
+                filter.frequency.setValueAtTime(3000, this.ctx.currentTime);
+                filter.frequency.exponentialRampToValueAtTime(200, this.ctx.currentTime + 0.8);
+                gain.gain.setValueAtTime(0.2, this.ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.8);
+                osc.start();
+                osc.stop(this.ctx.currentTime + 0.8);
+            },
+
+            // Rewind - Reverse tape effect
+            playRewind() {
+                if (!this.ctx) this.init(); this.resume();
+                if (!this.ctx) return;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = 'square';
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.frequency.setValueAtTime(100, this.ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(800, this.ctx.currentTime + 0.5);
+                gain.gain.setValueAtTime(0.15, this.ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.5);
+                osc.start();
+                osc.stop(this.ctx.currentTime + 0.5);
+            },
+
+            // Tick sound for timer (tension!)
+            playTick() {
+                if (!this.ctx) this.init(); this.resume();
+                if (!this.ctx) return;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.frequency.setValueAtTime(1000, this.ctx.currentTime);
+                gain.gain.setValueAtTime(0.1, this.ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.05);
+                osc.start();
+                osc.stop(this.ctx.currentTime + 0.05);
+            },
+
+            // Roulette spinning
+            playRouletteClick() {
+                if (!this.ctx) this.init(); this.resume();
+                if (!this.ctx) return;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.frequency.setValueAtTime(600 + Math.random() * 200, this.ctx.currentTime);
+                gain.gain.setValueAtTime(0.08, this.ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.03);
+                osc.start();
+                osc.stop(this.ctx.currentTime + 0.03);
+            },
+
+            // Background ambient drone
+            startBGM() {
+                if (!this.ctx) this.init(); this.resume();
+                if (this.bgmPlaying) return;
+                this.bgmPlaying = true;
+
+                const playDrone = () => {
+                    if (!this.bgmPlaying || !this.ctx) return;
+                    const osc1 = this.ctx.createOscillator();
+                    const osc2 = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+                    const filter = this.ctx.createBiquadFilter();
+
+                    osc1.type = 'sine';
+                    osc2.type = 'sine';
+                    filter.type = 'lowpass';
+                    filter.frequency.value = 400;
+
+                    osc1.connect(filter);
+                    osc2.connect(filter);
+                    filter.connect(gain);
+                    gain.connect(this.ctx.destination);
+
+                    const baseFreq = 55; // Low A
+                    osc1.frequency.value = baseFreq;
+                    osc2.frequency.value = baseFreq * 1.5;
+
+                    gain.gain.setValueAtTime(0, this.ctx.currentTime);
+                    gain.gain.linearRampToValueAtTime(0.05, this.ctx.currentTime + 2);
+                    gain.gain.linearRampToValueAtTime(0, this.ctx.currentTime + 8);
+
+                    osc1.start();
+                    osc2.start();
+                    osc1.stop(this.ctx.currentTime + 8);
+                    osc2.stop(this.ctx.currentTime + 8);
+
+                    setTimeout(() => { if (this.bgmPlaying) playDrone(); }, 7000);
+                };
+                playDrone();
+            },
+
+            stopBGM() {
+                this.bgmPlaying = false;
+            }
+        };
+
+        // --- TIMER SYSTEM ---
+        const TimerSystem = {
+            timeLeft: 15,
+            maxTime: 15,
+            interval: null,
+            frozen: false,
+
+            start(seconds = 15) {
+                this.maxTime = seconds;
+                this.timeLeft = seconds;
+                this.frozen = false;
+                this.update();
+
+                if (this.interval) clearInterval(this.interval);
+                this.interval = setInterval(() => {
+                    if (this.frozen) return;
+
+                    this.timeLeft -= 0.1;
+                    this.update();
+
+                    // Tick sound when low
+                    if (this.timeLeft <= 5 && this.timeLeft > 0) {
+                        if (Math.floor(this.timeLeft * 10) % 10 === 0) {
+                            AudioSystem.playTick();
+                        }
+                    }
+
+                    if (this.timeLeft <= 0) {
+                        this.stop();
+                        Game.handleTimeOut();
+                    }
+                }, 100);
+            },
+
+            update() {
+                const progress = document.getElementById('timeProgress');
+                const text = document.getElementById('timeText');
+                const ring = document.getElementById('timeRing');
+                const bar = document.getElementById('timer-bar');
+
+                if (!progress || !text) return;
+
+                const percent = Math.max(0, this.timeLeft / this.maxTime);
+                const offset = 251 * (1 - percent);
+                progress.style.strokeDashoffset = offset;
+                text.textContent = Math.ceil(this.timeLeft);
+
+                // Update Legacy Linear Bar
+                if (bar) {
+                    bar.style.width = (percent * 100) + "%";
+                    if (this.timeLeft <= 5) bar.style.background = 'var(--danger)';
+                    else bar.style.background = 'var(--primary)';
+                }
+
+                // Danger state when low
+                if (this.timeLeft <= 5) {
+                    progress.classList.add('danger');
+                    text.classList.add('danger');
+                } else {
+                    progress.classList.remove('danger');
+                    text.classList.remove('danger');
+                }
+            },
+
+            freeze(duration = 5) {
+                this.frozen = true;
+                AudioSystem.playFreeze();
+                document.body.classList.add('is-frozen');
+                setTimeout(() => {
+                    this.frozen = false;
+                    document.body.classList.remove('is-frozen');
+                }, duration * 1000);
+            },
+
+            addTime(seconds) {
+                this.timeLeft = Math.min(this.timeLeft + seconds, this.maxTime);
+                this.update();
+            },
+
+            stop() {
+                if (this.interval) {
+                    clearInterval(this.interval);
+                    this.interval = null;
+                }
+            }
+        };
+
+        // --- TIME POWERS ---
+        const TimePowers = {
+            freezeCharges: 1,
+            rewindCharges: 1,
+
+            reset() {
+                this.freezeCharges = 1;
+                this.rewindCharges = 1;
+                this.updatePowerUI();
+            },
+
+            // Freeze: Pause timer for 5 seconds
+            useFreeze() {
+                if (this.freezeCharges <= 0 || TimerSystem.frozen || !Game.active) return false;
+                this.freezeCharges--;
+
+                TimerSystem.freeze(5);
+
+                // Visual effect
+                document.querySelector('.fx-freeze').style.opacity = '1';
+                setTimeout(() => {
+                    document.querySelector('.fx-freeze').style.opacity = '0';
+                }, 5000);
+
+                const btn = document.getElementById('btn-freeze');
+                if (btn) btn.classList.add('used');
+
+                this.updatePowerUI();
+                return true;
+            },
+
+            // Rewind: Go back to previous question
+            useRewind() {
+                if (this.rewindCharges <= 0 || !Game.active) return false;
+                this.rewindCharges--;
+
+                Game.triggerProactiveRewind();
+                this.updatePowerUI();
+                return true;
+            },
+
+            // Earn powers through streaks
+            onStreak(streakCount) {
+                if (streakCount === 3) {
+                    this.freezeCharges++;
+                    this.showPowerGain('FREEZE +1');
+                } else if (streakCount === 5) {
+                    this.rewindCharges++;
+                    this.showPowerGain('REWIND +1');
+                }
+                this.updatePowerUI();
+            },
+
+            showPowerGain(text) {
+                const popup = document.createElement('div');
+                popup.className = 'power-popup'; // Ensure CSS exists
+                popup.textContent = text;
+                popup.style.cssText = `
+                    position: fixed;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    font-family: var(--f-title);
+                    font-size: 2rem;
+                    color: var(--green);
+                    text-shadow: 0 0 20px var(--green);
+                    z-index: 9999;
+                    animation: powerPopup 1.5s forwards;
+                `;
+                document.body.appendChild(popup);
+                setTimeout(() => popup.remove(), 1500);
+            },
+
+            updatePowerUI() {
+                // Update freeze button
+                const freezeBtn = document.querySelector('.big-freeze-btn');
+                if (freezeBtn) {
+                    freezeBtn.querySelector('span').textContent = `×${this.freezeCharges} [SPACE]`;
+                    if (this.freezeCharges > 0) freezeBtn.classList.remove('used');
+                    else freezeBtn.classList.add('used');
+                }
+
+                // Update rewind button
+                const rewindBtn = document.querySelector('.btn-hud-rewind');
+                if (rewindBtn) {
+                    rewindBtn.querySelector('span').textContent = `×${this.rewindCharges} [R]`;
+                    if (this.rewindCharges > 0) rewindBtn.classList.remove('used');
+                    else rewindBtn.classList.add('used');
+                }
+            }
+        };
+
+        // --- DIFFICULTY SYSTEM ---
+        const DifficultySystem = {
+            level: 1,
+            questionsAnswered: 0,
+
+            getTimeLimit() {
+                // Less time as you progress
+                const baseTime = 15;
+                const reduction = Math.min(this.level - 1, 5) * 1.5;
+                return Math.max(baseTime - reduction, 7);
+            },
+
+            getScoreMultiplier() {
+                return 1 + (this.level - 1) * 0.25;
+            },
+
+            onCorrectAnswer() {
+                this.questionsAnswered++;
+
+                // Level up every 5 questions
+                if (this.questionsAnswered % 5 === 0) {
+                    this.level++;
+                    this.showLevelUp();
+                }
+            },
+
+            reset() {
+                this.level = 1;
+                this.questionsAnswered = 0;
+            },
+
+            showLevelUp() {
+                const popup = document.createElement('div');
+                popup.innerHTML = `
+                    <div style="font-size: 1rem; opacity: 0.7;">TIME ACCELERATES</div>
+                    <div style="font-size: 3rem;">LEVEL ${this.level}</div>
+                `;
+                popup.style.cssText = `
+                    position: fixed;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    font-family: var(--f-title);
+                    color: var(--primary);
+                    text-shadow: 0 0 30px var(--primary);
+                    text-align: center;
+                    z-index: 9999;
+                    animation: powerPopup 2s forwards;
+                `;
+                document.body.appendChild(popup);
+                setTimeout(() => popup.remove(), 2000);
+            }
+        };
+
+        // --- KEYBOARD SHORTCUTS ---
+        document.addEventListener('keydown', (e) => {
+            // Prevent interference with input fields
+            if (e.target.tagName === 'INPUT') return;
+
+            switch (e.key.toLowerCase()) {
+                case ' ': // Spacebar = Freeze
+                    e.preventDefault();
+                    TimePowers.useFreeze();
+                    break;
+                case 'r': // R = Rewind
+                    TimePowers.useRewind();
+                    break;
+                case '1':
+                case '2':
+                case '3':
+                case '4':
+                    // Quick answer selection
+                    const optBtns = document.querySelectorAll('.opt-btn');
+                    const idx = parseInt(e.key) - 1;
+                    if (optBtns[idx]) optBtns[idx].click();
+                    break;
+            }
+        });
 
         // --- 3. VISUALS ---
         // MOVED AFTER GAME DEFINITION to fix reference error loop but keeping logic here for structure
 
         // --- 4. GAME LOGIC ---
         const Game = {
-            active: false, score: 0, round: 0, maxTime: 8000, curr: 0, timer: null,
-            currentTopic: null, qData: [], rewinding: false, freeze: false,
-            lives: 3, abilities: { freeze: true },
+            active: false, score: 0, round: 0, curr: 0,
+            currentTopic: null, qData: [], rewinding: false,
+            lives: 3, streak: 0, multiplier: 1, anomaly: null,
 
             startSequence() {
-                try { AudioEngine.init(); AudioEngine.resume(); } catch (e) { }
+                try { AudioSystem.init(); AudioSystem.resume(); AudioSystem.startBGM(); } catch (e) { }
                 this.switchScreen('s-title', 's-roulette');
                 this.startRoulette();
             },
@@ -1967,14 +2599,12 @@
 
                 track.innerHTML = "";
                 acts.classList.add('hidden');
-
-                // Reset transform safely
                 track.style.transform = "translateX(0px)";
 
                 // 1. GENERATE ITEMS 
                 const itemCount = 50;
                 const targetIndex = 35;
-                const itemWidth = 200; // 180px + 20px margin
+                const itemWidth = 200;
 
                 let targetTopic = null;
                 const items = [];
@@ -1987,7 +2617,6 @@
                     track.appendChild(el);
 
                     if (i === targetIndex) targetTopic = t;
-                    // Center of item i is at i * itemWidth + itemWidth/2
                     items.push({ el, cx: i * itemWidth + itemWidth / 2 });
                 }
 
@@ -1999,9 +2628,9 @@
                 // Physics
                 let scrollX = 0;
                 let speed = 0;
-                const maxSpeed = 50; // Faster top speed
-                const accelRate = 1.5; // Quicker accel
-                const decelDist = 2000; // Shorter brake distance
+                const maxSpeed = 50;
+                const accelRate = 1.5;
+                const decelDist = 2000;
                 const minSpeed = 0.5;
 
                 let state = 'accel';
@@ -2012,7 +2641,7 @@
                     if (distRemaining > decelDist) {
                         if (speed < maxSpeed) speed += accelRate;
                     } else if (distRemaining > 0.5) {
-                        let targetSpeed = distRemaining * 0.03; // Braking slightly harder
+                        let targetSpeed = distRemaining * 0.03;
                         if (targetSpeed > maxSpeed) targetSpeed = maxSpeed;
                         if (targetSpeed < minSpeed) targetSpeed = minSpeed;
                         speed += (targetSpeed - speed) * 0.1;
@@ -2025,54 +2654,34 @@
                     scrollX += speed;
                     track.style.transform = `translateX(-${scrollX}px)`;
 
-                    // DYNAMIC SCALE (CAROUSEL EFFECT)
-                    // Viewport Center relative to track origin (0) matches scrollX value
-                    // because of the padding-left: 50% trick.
+                    // DYNAMIC SCALE 
                     const viewCenter = scrollX;
-
-                    // Optimization: visible range is roughly +/- 1000px?
                     const visRange = 1000;
 
                     items.forEach((it) => {
                         const dist = it.cx - viewCenter;
-
-                        // Culling for performance (optional but good practice)
                         if (Math.abs(dist) > visRange) {
-                            // Just keep them small/hidden logic if needed, or skip style updates
-                            // But let's ensure they stay consistent just in case
                             it.el.style.transform = 'scale(0.5)';
                             it.el.style.opacity = '0';
                             return;
                         }
 
-                        // Curve Formula
-                        // dist = 0 -> scale 1.3, opacity 1
-                        // dist = 200 (neighbor) -> scale 0.9, opacity 0.5
-                        // dist = 400 (outer) -> scale 0.6, opacity 0.2
-
-                        const normDist = Math.abs(dist) / itemWidth; // 0, 1, 2...
-
-                        // Scale: Peak at 1.4, drop off
+                        const normDist = Math.abs(dist) / itemWidth;
                         let scale = Math.max(0.6, 1.4 - (normDist * 0.4));
-
-                        // Opacity: Peak at 1, sharp drop
                         let opacity = Math.max(0.1, 1 - (normDist * 0.6));
-
-                        // Blur: 0 at center, increasing out
                         let blur = Math.min(10, normDist * 3);
 
-                        // Apply
                         it.el.style.transform = `scale(${scale})`;
                         it.el.style.opacity = opacity;
                         it.el.style.filter = `blur(${blur}px)`;
-                        it.el.style.zIndex = Math.floor(100 - normDist); // Center on top
+                        it.el.style.zIndex = Math.floor(100 - normDist);
                     });
 
                     // Audio Tick
                     if (speed > 1) {
                         const currIdx = Math.floor(scrollX / itemWidth);
                         const prevIdx = Math.floor((scrollX - speed) / itemWidth);
-                        if (currIdx !== prevIdx) AudioEngine.sfx('spin');
+                        if (currIdx !== prevIdx) AudioSystem.playRouletteClick();
                     }
 
                     if (state !== 'done') {
@@ -2082,8 +2691,7 @@
                         items[targetIndex].el.classList.add('locked');
                         items[targetIndex].el.style.transform = 'scale(1.5)';
                         items[targetIndex].el.style.opacity = '1';
-                        // Keep blur 0
-                        AudioEngine.sfx('win');
+                        AudioSystem.playCorrect(); // Win sound replacement
                         acts.classList.remove('hidden');
                     }
                 };
@@ -2102,21 +2710,19 @@
                 this.qData = [...this.currentTopic.qs];
                 if (dir === 'asc') this.qData.sort((a, b) => a.y - b.y); else this.qData.sort((a, b) => b.y - a.y);
 
-                this.score = 0; this.round = 0; this.lives = 3; this.abilities.freeze = true;
+                this.score = 0; this.round = 0; this.lives = 3;
                 this.streak = 0; this.multiplier = 1; this.anomaly = null;
+
+                DifficultySystem.reset();
+                TimePowers.reset();
+                TimerSystem.stop();
 
                 document.getElementById('hud').classList.remove('hidden');
                 document.getElementById('hud-score').innerText = "0";
                 document.getElementById('hud-streak').innerText = "";
 
                 // Reset UI
-                document.getElementById('btn-freeze').classList.remove('used');
                 document.querySelectorAll('.life-pip').forEach(p => p.classList.remove('lost'));
-
-                window.onkeydown = (e) => {
-                    if (e.code === 'Space') this.triggerFreeze();
-                    if (e.code === 'KeyR') this.triggerProactiveRewind();
-                };
 
                 // TRIGGER HYPE SEQUENCE
                 this.switchScreen('s-timeline', 's-hype');
@@ -2130,37 +2736,33 @@
 
                 let num = 3;
                 c.innerText = num;
-                c.classList.remove('hidden'); // Ensure visible
+                c.classList.remove('hidden');
 
-                // play sound
-                AudioEngine.sfx('spin'); // Reuse spin for beep-like
+                AudioSystem.playRouletteClick(); // Beep
 
                 const step = () => {
-                    // Reset animation
                     c.style.animation = 'none';
-                    c.offsetHeight; /* trigger reflow */
+                    c.offsetHeight;
                     c.style.animation = 'zoomFade 0.8s cubic-bezier(0.23, 1, 0.32, 1) forwards';
 
                     c.innerText = num;
-                    AudioEngine.sfx('spin');
+                    AudioSystem.playRouletteClick();
 
                     if (num > 0) {
                         num--;
                         setTimeout(step, 800);
                     } else {
-                        // GO! Show TEXT
                         c.classList.add('hidden');
                         m.classList.remove('hidden');
-                        AudioEngine.sfx('win'); // Win sound for start
+                        AudioSystem.playCorrect();
 
-                        // Generate Letters
                         const text = "READY TO REWIND TO WIN";
                         const words = text.split(' ');
 
                         words.forEach((word, wi) => {
                             const wSpan = document.createElement('div');
                             wSpan.style.display = "inline-block";
-                            wSpan.style.margin = "0 15px"; // Word spacing
+                            wSpan.style.margin = "0 15px";
 
                             word.split('').forEach((char, ci) => {
                                 const s = document.createElement('span');
@@ -2171,7 +2773,6 @@
                                 wSpan.appendChild(s);
                             });
                             m.appendChild(wSpan);
-                            // Break line after REWIND for better stacking
                             if (word === "REWIND") {
                                 const br = document.createElement('div');
                                 br.style.flexBasis = "100%";
@@ -2181,7 +2782,6 @@
                         });
 
 
-                        // EXIT ANIMATION
                         setTimeout(() => {
                             const chars = document.querySelectorAll('.hype-char');
                             chars.forEach((char, i) => {
@@ -2189,20 +2789,22 @@
                                 char.style.animationDelay = `${i * 0.02}s`;
                             });
 
-                            // Switch screen after out anim
                             setTimeout(() => {
                                 this.switchScreen('s-hype', 's-game');
                                 c.classList.remove('hidden');
                                 this.nextRound();
                             }, 800);
-                        }, 2000); // Hold text for 2s
+                        }, 2000);
                     }
                 };
                 step();
             },
 
             nextRound() {
-                if (this.round >= this.qData.length) { this.gameOver(); return; }
+                if (this.round >= this.qData.length) { this.gameWin(); return; } // Check for win?
+                // Wait, endless mode or win? User said "Win Screen". 
+                // Let's assume win after all questions in topic (20 questions).
+
                 const d = this.qData[this.round];
 
                 document.getElementById('era-display').innerText = `YEAR: ${d.y}`;
@@ -2218,8 +2820,7 @@
 
                 this.active = true;
 
-                // ANOMALY SYSTEM (The "Changing of Time" Theme)
-                // 30% chance to trigger a time distortion
+                // ANOMALY SYSTEM 
                 document.body.classList.remove('anomaly-mirror', 'anomaly-fast');
                 this.anomaly = null;
 
@@ -2234,58 +2835,62 @@
                         document.body.classList.add('anomaly-mirror');
                         notif.innerText = "⚠ REALITY INVERSION DETECTED ⚠";
                     } else {
-                        document.body.classList.add('anomaly-fast'); // Handled in timer
+                        // Fast mode handling
+                        // TimerSystem will need to know about this? 
+                        // Or we just reduce the start time?
+                        // The old code reduced time *rate* (drop = 40 instead of 20).
+                        // I will set TimerSystem total time to be less? Or I need to tell TimerSystem to tick faster?
+                        // Simpler: Just reduce the initial time by half for this round or set a flag.
+                        // I'll set a flag in TimerSystem or just act like 'fast' = less time.
                         notif.innerText = "⚠ CHRONO-ACCELERATION DETECTED ⚠";
                     }
                     document.body.appendChild(notif);
                     setTimeout(() => notif.remove(), 2000);
-                    AudioEngine.sfx('warn');
+                    AudioSystem.playWrong(); // Use harsh sound for warn
                 }
 
-                this.startTimer();
+                // Start Timer
+                let time = DifficultySystem.getTimeLimit();
+                if (this.anomaly === 'fast') time *= 0.6; // 40% less time for fast anomaly
+                TimerSystem.start(time);
             },
 
-            startTimer() {
-                clearInterval(this.timer); this.curr = this.maxTime;
-                this.timer = setInterval(() => {
-                    if (this.freeze || !this.active) return;
-
-                    let drop = 20;
-                    if (this.anomaly === 'fast') drop = 40; // DOUBLE SPEED
-
-                    this.curr -= drop;
-                    document.getElementById('timer-bar').style.width = (this.curr / this.maxTime) * 100 + "%";
-                    if (this.anomaly === 'fast') document.getElementById('timer-bar').style.background = 'var(--danger)';
-                    else document.getElementById('timer-bar').style.background = 'var(--primary)';
-
-                    if (this.curr <= 0) { clearInterval(this.timer); this.showFailState(); }
-                }, 20);
+            // Timeout Handler
+            handleTimeOut() {
+                this.showFailState();
             },
 
             check(ans, cor) {
                 if (!this.active) return;
-                clearInterval(this.timer);
+                TimerSystem.stop();
+
                 if (ans === cor) {
-                    AudioEngine.sfx('win');
+                    AudioSystem.playCorrect();
 
                     // STREAK LOGIC
                     this.streak++;
+                    DifficultySystem.onCorrectAnswer();
+                    TimePowers.onStreak(this.streak); // Check for power gains
+
                     let multimsg = "";
+                    this.multiplier = DifficultySystem.getScoreMultiplier(); // Base multiplier from difficulty
+
                     if (this.streak > 1) {
-                        this.multiplier = Math.min(4, Math.ceil(this.streak / 2));
-                        multimsg = ` x${this.multiplier}`;
+                        // Add streak bonus to multiplier
+                        this.multiplier += Math.min(4, Math.ceil(this.streak / 2));
+                        multimsg = ` x${this.multiplier.toFixed(1)}`;
                         document.getElementById('hud-streak').innerText = "STREAK " + this.streak + multimsg;
                         document.getElementById('hud-streak').classList.add('pulse-text');
                     }
 
-                    // Sparkle with Multiplier
+                    // Sparkle
                     const hud = document.getElementById('hud-score');
                     const rect = hud.getBoundingClientRect();
                     const el = document.createElement('div');
                     el.className = 'score-sparkle';
-                    let baseVal = 100 + Math.ceil(this.curr / 10);
-                    let finalVal = baseVal * this.multiplier;
-                    el.innerText = `+${finalVal}${multimsg}`;
+                    let baseVal = 100 + Math.ceil(TimerSystem.timeLeft * 10);
+                    let finalVal = Math.floor(baseVal * this.multiplier);
+                    el.innerText = `+${finalVal}`;
                     el.style.left = (rect.left + Math.random() * 20) + 'px';
                     el.style.top = rect.top + 'px';
                     document.body.appendChild(el);
@@ -2304,85 +2909,80 @@
 
             showFailState() {
                 this.active = false;
-                AudioEngine.sfx('lose');
+                TimerSystem.stop();
+                AudioSystem.playWrong();
                 document.getElementById('fail-modal').classList.add('active');
                 document.body.classList.add('paradox-hit');
             },
 
+            // Called from Fail Modal (Costs Life)
             triggerRewind() {
                 if (this.lives <= 0) return;
-
-                // Deduct Life
                 this.lives--;
-                const pips = document.querySelectorAll('.life-pip');
-                if (pips[this.lives]) pips[this.lives].classList.add('lost');
+                this.updateLivesUI();
 
-                // Hide Modal
                 document.getElementById('fail-modal').classList.remove('active');
                 document.body.classList.remove('paradox-hit');
 
                 this.performRewindAction();
             },
 
+            // Called from Power/Key (Charges handled by TimePowers, but this is the effect)
             triggerProactiveRewind() {
-                if (!this.active || this.lives <= 0 || this.rewinding) return;
-
-                this.lives--;
-                const pips = document.querySelectorAll('.life-pip');
-                if (pips[this.lives]) pips[this.lives].classList.add('lost');
-
+                // Check if it WAS a charge use? 
+                // TimePowers.useRewind() calls this. 
+                // If called directly via 'R' key without charge, it shouldn't work (TimePowers handles key).
+                // What if button clicked? Button should call TimePowers.useRewind().
+                // We will update the button onclick in HTML potentially, or just assume calls come from TimePowers.
                 this.performRewindAction();
             },
 
+            updateLivesUI() {
+                const pips = document.querySelectorAll('.life-pip');
+                if (pips[this.lives]) pips[this.lives].classList.add('lost');
+            },
+
             performRewindAction() {
-                // FX
-                AudioEngine.sfx('rewind');
+                AudioSystem.playRewind();
                 this.rewinding = true;
                 document.body.classList.add('is-rewinding');
 
                 setTimeout(() => {
                     this.rewinding = false;
                     document.body.classList.remove('is-rewinding');
-                    this.maxTime += 1500; // Bonus time
-                    // If proactive, we might just be resetting the timer or undoing a wrong choice.
-                    // For now, it restarts the CURRENT question with full time.
+                    // Refund time? Or just restart?
+                    // Restart round with bonus time?
+                    // Old logic: maxTime += 1500;
+                    // New logic: Just restart the round.
                     this.active = true;
                     this.startTimer();
                 }, 1000);
             },
 
-            triggerFreeze() {
-                if (!this.active || !this.abilities.freeze) return;
-                this.abilities.freeze = false;
+            gameWin() {
+                this.active = false;
+                TimerSystem.stop();
+                AudioSystem.playCorrect(); // Big win sound?
 
-                const btn = document.getElementById('btn-freeze');
-                btn.classList.add('used');
+                // Populate stats
+                document.getElementById('finalScore').innerText = this.score;
+                document.getElementById('timeSurvived').innerText = "FOREVER"; // Placeholder
+                document.getElementById('bestStreak').innerText = this.streak; // Or track max streak separately
+                document.getElementById('levelReached').innerText = DifficultySystem.level;
 
-                AudioEngine.sfx('freeze');
-                this.freeze = true;
-                document.body.classList.add('is-frozen');
-
-                setTimeout(() => {
-                    this.freeze = false;
-                    document.body.classList.remove('is-frozen');
-                }, 3000);
+                const winModal = document.getElementById('winModal');
+                if (winModal) winModal.classList.add('active');
             },
 
             gameOver() {
-                this.active = false; AudioEngine.sfx('lose');
+                this.active = false; AudioSystem.playWrong();
                 document.getElementById('fail-modal').classList.remove('active');
                 document.body.classList.add('power-off-anim');
 
-                // Don't hide UI yet! Let it squash.
-
                 setTimeout(() => {
                     document.body.classList.remove('power-off-anim');
-
-                    // Now hide UI
                     document.getElementById('hud').classList.add('hidden');
                     document.getElementById('s-game').classList.add('hidden');
-
-                    // START OUTRO SEQUENCE
                     this.runOutroSequence();
                 }, 700);
             },
@@ -2396,9 +2996,8 @@
                 const wRes = document.getElementById('word-restart');
                 const wRew = document.getElementById('word-rewind');
 
-                // Reset & SHOW
                 s.classList.remove('hidden');
-                setTimeout(() => s.classList.add('active'), 10); // Ensure fade in
+                setTimeout(() => s.classList.add('active'), 10);
 
                 [t1, t2, t3].forEach(el => { el.className = 'outro-text'; el.style.opacity = '0'; });
                 fin.classList.add('hidden');
@@ -2406,34 +3005,29 @@
                 wRew.style.display = 'none';
 
                 const play = (el, delay, dur) => {
-                    setTimeout(() => { el.classList.add('anim-in'); AudioEngine.sfx('spin'); }, delay);
+                    setTimeout(() => { el.classList.add('anim-in'); AudioSystem.playRouletteClick(); }, delay);
                     setTimeout(() => { el.classList.remove('anim-in'); el.classList.add('anim-out'); }, delay + dur);
                 };
 
-                // Sequence
-                play(t1, 500, 1000); // Thanks
-                play(t2, 1800, 1000); // For Playing
-                play(t3, 3100, 1500); // My Game
+                play(t1, 500, 1000);
+                play(t2, 1800, 1000);
+                play(t3, 3100, 1500);
 
-                // The Rewrite
                 setTimeout(() => {
-                    fin.classList.remove('hidden'); // Show container
-                    fin.style.opacity = 1; // FIX: Ensure container is visible
+                    fin.classList.remove('hidden');
+                    fin.style.opacity = 1;
                     wRes.style.opacity = 1;
 
                     setTimeout(() => {
-                        // CROSS OUT
                         wRes.style.textDecoration = 'line-through';
                         wRes.style.textDecorationColor = 'var(--danger)';
-                        AudioEngine.sfx('lose'); // scratch sound
+                        AudioSystem.playWrong();
 
                         setTimeout(() => {
-                            // SHOW REWIND
                             wRew.style.display = 'inline-block';
                             wRew.style.animation = 'glitchText 0.3s infinite';
-                            AudioEngine.sfx('rewind');
+                            AudioSystem.playRewind();
 
-                            // Final transition
                             setTimeout(() => {
                                 s.classList.add('hidden');
                                 document.getElementById('final-score').innerText = this.score;
