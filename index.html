@@ -24,21 +24,25 @@
         @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&display=swap');
 
         :root {
-            /* DEFAULT: DARK BLUE FOCUS */
-            --bg-color: #020205;
-            --primary: #00f3ff;
-            --secondary: #0077ff;
+            /* INDIGO DARK THEME - Rich Blue Palette */
+            --bg-color: #000005;
+            --bg-dark: #000002;
+            --primary: #4f46e5;
+            --primary-light: #818cf8;
+            --secondary: #a5b4fc;
+            --dark-blue: #1e1b4b;
             --accent: #ffffff;
             --danger: #ff003c;
             --green: #39ff14;
             --text-main: #ffffff;
+            --text-dim: #94a3b8;
             --particle-col: #ffffff;
 
-            /* SLEEK GLASS - DARKER MODE */
-            --glass-bg: rgba(5, 5, 8, 0.95);
-            --glass-border: 1px solid rgba(0, 243, 255, 0.1);
+            /* DEEP BLACK GLASS - Darker & Richer */
+            --glass-bg: rgba(0, 0, 5, 0.98);
+            --glass-border: 1px solid rgba(79, 70, 229, 0.2);
             --glass-blur: blur(30px);
-            --glass-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+            --glass-shadow: 0 25px 60px rgba(0, 0, 0, 0.95);
 
             /* FONTS */
             --f-title: 'Orbitron', sans-serif;
@@ -526,23 +530,146 @@
         }
 
         /* LANDING */
-        h1.glitch-title {
+        .glitch-title {
             font-family: var(--f-title);
             font-size: 8vw;
             color: var(--text-main);
             margin: 0;
             text-transform: uppercase;
             text-shadow: 0 0 30px var(--primary);
-            animation: float 4s ease-in-out infinite;
+            animation: float 4s ease-in-out infinite, titleGlitch 8s infinite;
+            position: relative;
+        }
+
+        /* Chromatic aberration layers */
+        .glitch-title::before,
+        .glitch-title::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.5;
+        }
+
+        .glitch-title::before {
+            color: #ff4d6d;
+            animation: glitchLeft 3s infinite;
+            clip-path: polygon(0 0, 100% 0, 100% 35%, 0 35%);
+            transform: translateX(-2px);
+            text-shadow: 0 0 8px rgba(255, 77, 109, 0.4);
+        }
+
+        .glitch-title::after {
+            color: #60a5fa;
+            animation: glitchRight 2.5s infinite;
+            clip-path: polygon(0 65%, 100% 65%, 100% 100%, 0 100%);
+            transform: translateX(2px);
+            text-shadow: 0 0 8px rgba(96, 165, 250, 0.4);
         }
 
         @keyframes float {
-            0% {
+
+            0%,
+            100% {
                 transform: translateY(0);
             }
 
             50% {
                 transform: translateY(-10px);
+            }
+        }
+
+        @keyframes titleGlitch {
+
+            0%,
+            90%,
+            100% {
+                opacity: 1;
+                filter: none;
+            }
+
+            91% {
+                opacity: 0.8;
+                filter: blur(1px);
+                transform: translateY(-10px) skewX(2deg);
+            }
+
+            92% {
+                opacity: 1;
+                filter: none;
+                transform: translateY(-10px) skewX(0);
+            }
+
+            93% {
+                opacity: 0.9;
+                transform: translateY(-10px) skewX(-1deg);
+            }
+
+            94% {
+                opacity: 1;
+                transform: translateY(-10px);
+            }
+        }
+
+        @keyframes glitchLeft {
+
+            0%,
+            94%,
+            100% {
+                transform: translateX(-2px);
+                opacity: 0;
+            }
+
+            95% {
+                transform: translateX(-5px);
+                opacity: 0.7;
+            }
+
+            96% {
+                transform: translateX(-2px);
+                opacity: 0.4;
+            }
+
+            97% {
+                transform: translateX(-8px);
+                opacity: 0.6;
+            }
+
+            98% {
+                transform: translateX(-2px);
+                opacity: 0;
+            }
+        }
+
+        @keyframes glitchRight {
+
+            0%,
+            92%,
+            100% {
+                transform: translateX(2px);
+                opacity: 0;
+            }
+
+            93% {
+                transform: translateX(6px);
+                opacity: 0.6;
+            }
+
+            94% {
+                transform: translateX(2px);
+                opacity: 0.3;
+            }
+
+            95% {
+                transform: translateX(10px);
+                opacity: 0.5;
+            }
+
+            96% {
+                transform: translateX(2px);
+                opacity: 0;
             }
         }
 
@@ -567,22 +694,106 @@
             z-index: 10000;
             background: rgba(0, 243, 255, 0.05);
             color: var(--primary);
-            border: 1px solid var(--primary);
-            padding: 20px 50px;
+            border: 2px solid var(--primary);
+            padding: 22px 55px;
             font-family: var(--f-title);
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             cursor: pointer;
             text-transform: uppercase;
-            transition: 0.3s;
-            letter-spacing: 2px;
+            transition: all 0.3s ease;
+            letter-spacing: 3px;
             border-radius: 4px;
             pointer-events: auto;
+            overflow: hidden;
+            animation: btnPulse 2s infinite;
+            box-shadow: 0 0 20px rgba(79, 70, 229, 0.3), inset 0 0 20px rgba(79, 70, 229, 0.1);
+        }
+
+        /* Scanning line effect */
+        .tech-btn::before {
+            content: '';
+            position: absolute;
+            top: -100%;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(transparent, rgba(79, 70, 229, 0.4), transparent);
+            animation: btnScan 2s linear infinite;
+        }
+
+        .tech-btn::after {
+            content: '';
+            position: absolute;
+            inset: 2px;
+            background: transparent;
+            border: 1px solid rgba(79, 70, 229, 0.3);
+            border-radius: 2px;
+        }
+
+        @keyframes btnPulse {
+
+            0%,
+            100% {
+                box-shadow: 0 0 20px rgba(79, 70, 229, 0.3), inset 0 0 20px rgba(79, 70, 229, 0.1);
+            }
+
+            50% {
+                box-shadow: 0 0 40px rgba(79, 70, 229, 0.6), inset 0 0 30px rgba(79, 70, 229, 0.2);
+            }
+        }
+
+        @keyframes btnScan {
+            0% {
+                top: -100%;
+            }
+
+            100% {
+                top: 100%;
+            }
         }
 
         .tech-btn:hover {
             background: var(--primary);
             color: var(--bg-color);
-            box-shadow: 0 0 40px var(--primary);
+            box-shadow: 0 0 60px var(--primary), 0 0 100px rgba(79, 70, 229, 0.5);
+            transform: scale(1.05);
+            text-shadow: 0 0 10px var(--bg-color);
+        }
+
+        .tech-btn:hover::before {
+            animation: none;
+            opacity: 0;
+        }
+
+        /* Danger variant buttons (REROLL, etc) - red effects */
+        .tech-btn[style*="danger"] {
+            box-shadow: 0 0 20px rgba(255, 0, 60, 0.3), inset 0 0 20px rgba(255, 0, 60, 0.1);
+            animation: btnPulseDanger 2s infinite;
+        }
+
+        .tech-btn[style*="danger"]::before {
+            background: linear-gradient(transparent, rgba(255, 0, 60, 0.4), transparent);
+        }
+
+        .tech-btn[style*="danger"]::after {
+            border: 1px solid rgba(255, 0, 60, 0.3);
+        }
+
+        @keyframes btnPulseDanger {
+
+            0%,
+            100% {
+                box-shadow: 0 0 20px rgba(255, 0, 60, 0.3), inset 0 0 20px rgba(255, 0, 60, 0.1);
+            }
+
+            50% {
+                box-shadow: 0 0 40px rgba(255, 0, 60, 0.6), inset 0 0 30px rgba(255, 0, 60, 0.2);
+            }
+        }
+
+        .tech-btn[style*="danger"]:hover {
+            background: var(--danger);
+            box-shadow: 0 0 60px var(--danger), 0 0 100px rgba(255, 0, 60, 0.5);
         }
 
         /* MADE WITH LOVE ANIMATION */
@@ -1490,6 +1701,27 @@
             }
         }
 
+        /* GAME OVER SCREEN - Enhanced Gradient Background */
+        #s-over {
+            background:
+                radial-gradient(ellipse at 50% 0%, rgba(79, 70, 229, 0.25) 0%, transparent 45%),
+                radial-gradient(ellipse at 100% 100%, rgba(30, 27, 75, 0.5) 0%, transparent 50%),
+                radial-gradient(ellipse at 0% 100%, rgba(79, 70, 229, 0.2) 0%, transparent 45%),
+                radial-gradient(ellipse at 50% 100%, rgba(30, 58, 138, 0.3) 0%, transparent 40%),
+                linear-gradient(180deg, #000008 0%, #0c0a20 25%, #0f0d28 50%, #080618 75%, #000005 100%) !important;
+            position: relative;
+        }
+
+        #s-over::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(circle at 50% 30%, transparent 0%, rgba(0, 0, 5, 0.5) 100%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
         /* DANGER STATE */
         .time-bar.danger {
             background: var(--danger) !important;
@@ -1539,7 +1771,6 @@
             }
         }
 
-        /* POWER POPUP */
         @keyframes powerPopup {
             0% {
                 opacity: 0;
@@ -1559,6 +1790,286 @@
             100% {
                 opacity: 0;
                 transform: translate(-50%, -50%) translateY(-50px);
+            }
+        }
+
+        /* Heartbeat edge pulse - syncs with audio */
+        .heartbeat-vignette {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 1050;
+            border: 0 solid rgba(255, 0, 60, 0);
+            box-shadow: inset 0 0 0 rgba(255, 0, 60, 0);
+        }
+
+        .heartbeat-vignette.pulse {
+            animation: heartbeatVignettePulse var(--heartbeat-speed, 0.43s) ease-out forwards;
+        }
+
+        @keyframes heartbeatVignettePulse {
+            0% {
+                border-width: 0;
+                box-shadow: inset 0 0 0 rgba(255, 0, 60, 0);
+            }
+
+            15% {
+                border-width: 10px;
+                border-color: rgba(255, 0, 60, 0.9);
+                box-shadow: inset 0 0 120px rgba(255, 0, 60, 0.5);
+            }
+
+            30% {
+                border-width: 5px;
+                border-color: rgba(255, 0, 60, 0.6);
+                box-shadow: inset 0 0 70px rgba(255, 0, 60, 0.3);
+            }
+
+            45% {
+                border-width: 8px;
+                border-color: rgba(255, 0, 60, 0.7);
+                box-shadow: inset 0 0 90px rgba(255, 0, 60, 0.4);
+            }
+
+            100% {
+                border-width: 0;
+                box-shadow: inset 0 0 0 rgba(255, 0, 60, 0);
+            }
+        }
+
+        /* Last Breath effect - that clutch moment */
+        body.deaths-door {
+            filter: grayscale(1) contrast(1.4) brightness(0.7);
+            transition: filter 0.1s ease-out;
+        }
+
+        body.deaths-door * {
+            animation-play-state: paused !important;
+        }
+
+        body.deaths-door .opt-btn {
+            animation-play-state: running !important;
+            transition: all 0.1s !important;
+        }
+
+        body.deaths-door .vignette {
+            background: radial-gradient(circle, transparent 0%, rgba(0, 0, 0, 0.98) 70%) !important;
+        }
+
+        body.deaths-door::before {
+            content: '⏳ LAST BREATH ⏳';
+            position: fixed;
+            top: 12%;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: var(--f-title);
+            font-size: 3.5rem;
+            color: rgba(255, 0, 60, 1);
+            text-shadow: 0 0 40px rgba(255, 0, 60, 0.9), 0 0 80px rgba(255, 0, 60, 0.6);
+            z-index: 2500;
+            animation: lastBreathText 0.5s ease-out forwards;
+            letter-spacing: 8px;
+            pointer-events: none;
+        }
+
+        @keyframes lastBreathText {
+            0% {
+                opacity: 0;
+                transform: translateX(-50%) scale(2.5);
+            }
+
+            40% {
+                opacity: 1;
+                transform: translateX(-50%) scale(1);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateX(-50%) scale(1);
+            }
+        }
+
+        /* CLUTCH SAVE Celebration */
+        .clutch-save-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 2600;
+            pointer-events: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+        }
+
+        .clutch-save-overlay.active {
+            animation: clutchFlash 1.5s ease-out forwards;
+        }
+
+        .clutch-save-text {
+            font-family: var(--f-title);
+            font-size: 5rem;
+            color: var(--green);
+            text-shadow: 0 0 50px var(--green), 0 0 100px var(--green), 0 0 150px var(--green);
+            letter-spacing: 8px;
+            animation: clutchTextPop 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        @keyframes clutchFlash {
+            0% {
+                opacity: 0;
+                background: rgba(57, 255, 20, 0);
+            }
+
+            15% {
+                opacity: 1;
+                background: rgba(57, 255, 20, 0.4);
+            }
+
+            40% {
+                background: rgba(57, 255, 20, 0.15);
+            }
+
+            100% {
+                opacity: 0;
+                background: rgba(57, 255, 20, 0);
+            }
+        }
+
+        @keyframes clutchTextPop {
+            0% {
+                opacity: 0;
+                transform: scale(0.2) rotate(-10deg);
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(1.3) rotate(3deg);
+            }
+
+            75% {
+                transform: scale(0.9) rotate(-2deg);
+            }
+
+            100% {
+                opacity: 1;
+                transform: scale(1) rotate(0deg);
+            }
+        }
+
+        /* Screen crack when you lose an anchor */
+        .screen-crack-overlay {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 1100;
+            opacity: 0;
+            background:
+                radial-gradient(ellipse at 30% 40%, transparent 0%, transparent 20%, rgba(255, 0, 60, 0.1) 21%, transparent 22%),
+                radial-gradient(ellipse at 70% 60%, transparent 0%, transparent 15%, rgba(255, 0, 60, 0.1) 16%, transparent 17%),
+                linear-gradient(45deg, transparent 48%, rgba(255, 255, 255, 0.1) 49%, rgba(255, 255, 255, 0.1) 51%, transparent 52%),
+                linear-gradient(-45deg, transparent 48%, rgba(255, 255, 255, 0.08) 49%, rgba(255, 255, 255, 0.08) 51%, transparent 52%),
+                linear-gradient(30deg, transparent 45%, rgba(255, 255, 255, 0.05) 46%, transparent 54%);
+            background-size: 100% 100%, 100% 100%, 200% 200%, 200% 200%, 300% 300%;
+            transition: opacity 0.3s;
+        }
+
+        .screen-crack-overlay.cracked {
+            opacity: 1;
+            animation: crackAppear 0.5s ease-out forwards;
+        }
+
+        @keyframes crackAppear {
+            0% {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(1.02);
+            }
+
+            100% {
+                opacity: 0.7;
+                transform: scale(1);
+            }
+        }
+
+        /* Floating archive cards - looks sick on hover */
+        .roulette-item {
+            animation: floatDrift 4s ease-in-out infinite;
+            animation-delay: calc(var(--float-delay, 0) * 0.3s);
+        }
+
+        .roulette-item:nth-child(odd) {
+            animation-duration: 4.5s;
+            animation-direction: alternate-reverse;
+        }
+
+        .roulette-item:hover {
+            animation: none !important;
+            transform: scale(1.5) !important;
+            opacity: 1 !important;
+            filter: blur(0) brightness(1.3) !important;
+            border-color: var(--primary) !important;
+            background: rgba(0, 243, 255, 0.3) !important;
+            box-shadow: 0 0 50px var(--primary), 0 0 100px rgba(0, 243, 255, 0.5) !important;
+            z-index: 200 !important;
+            transition: all 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+        }
+
+        @keyframes floatDrift {
+
+            0%,
+            100% {
+                transform: translateY(0) scale(var(--item-scale, 0.7));
+            }
+
+            50% {
+                transform: translateY(-8px) scale(var(--item-scale, 0.7));
+            }
+        }
+
+        /* The dramatic stamp that slams on at the end */
+        .kia-stamp {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(3) rotate(-15deg);
+            font-family: var(--f-title);
+            font-size: 3rem;
+            color: rgba(255, 0, 60, 0.9);
+            text-shadow: 0 0 10px rgba(255, 0, 60, 0.5);
+            border: 4px solid rgba(255, 0, 60, 0.9);
+            padding: 10px 25px;
+            letter-spacing: 10px;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        .kia-stamp.stamped {
+            animation: stampSlam 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        @keyframes stampSlam {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(4) rotate(-25deg);
+            }
+
+            60% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(0.9) rotate(-12deg);
+            }
+
+            80% {
+                transform: translate(-50%, -50%) scale(1.05) rotate(-14deg);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1) rotate(-15deg);
             }
         }
 
@@ -1853,6 +2364,14 @@
     <div class="fx-overlay fx-rewind"></div>
     <div class="fx-overlay fx-freeze"></div>
 
+    <div class="heartbeat-vignette" id="heartbeat-vignette"></div>
+
+    <div class="clutch-save-overlay" id="clutch-save-overlay">
+        <div class="clutch-save-text">⚡ CLUTCH SAVE ⚡</div>
+    </div>
+
+    <div class="screen-crack-overlay" id="screen-crack-overlay"></div>
+
     <div id="fail-modal" class="fail-modal">
         <div class="fail-title">TIMELINE FRACTURED</div>
         <div class="fail-sub">ANOMALY DETECTED. CHOOSE ACTION.</div>
@@ -1950,14 +2469,14 @@
             </div>
         </div>
         <div class="hud-panel hud-top-right">
-            <div class="stat-label">SCORE</div>
+            <div class="stat-label">TIMELINES SAVED</div>
             <div style="display:flex; align-items:center; justify-content:flex-end;">
                 <div class="coin-cont">
                     <div class="retro-coin"></div>
                 </div>
                 <div class="stat-val" id="hud-score">0</div>
             </div>
-            <div class="stat-label" style="margin-top:10px;">ANCHORS</div>
+            <div class="stat-label" style="margin-top:10px;">REALITY ANCHORS</div>
             <div id="hud-streak"
                 style="font-family:var(--f-mono); color:var(--green); font-size:1.2rem; min-height:1.5rem;"></div>
             <div class="lives-container" id="lives-container">
@@ -1980,7 +2499,7 @@
     </div>
 
     <div id="s-title" class="screen active">
-        <h1 class="glitch-title">NEURO<br>FRIED</h1>
+        <h1 class="glitch-title" data-text="NEURO FRIED">NEURO<br>FRIED</h1>
 
         <div class="protocol-container">
             <div class="protocol-trigger">[ MISSION BRIEFING ]</div>
@@ -2070,7 +2589,8 @@
     </div>
 
     <div id="s-over" class="screen hidden">
-        <h1 style="font-family:var(--f-title); font-size:4rem; color:var(--danger); margin-bottom:10px;">SIGNAL LOST
+        <h1 id="game-over-headline"
+            style="font-family:var(--f-title); font-size:4rem; color:var(--danger); margin-bottom:10px;">SIGNAL LOST
         </h1>
 
         <div class="game-over-container">
@@ -2095,6 +2615,7 @@
                         <div style="color:white; font-family:var(--f-title); font-size:1.5rem; letter-spacing:3px;"
                             id="final-name">UNKNOWN</div>
                     </div>
+                    <div class="kia-stamp" id="kia-stamp">K.I.A.</div>
                 </div>
             </div>
 
@@ -2107,9 +2628,9 @@
                         oninput="document.getElementById('final-name').innerText=this.value.toUpperCase()||'UNKNOWN'">
                 </div>
 
-                <!-- Upload Photo -->
+
                 <label class="control-btn upload-btn">
-                    📷 UPLOAD PHOTO
+                    🪪 MINT AGENT ID
                     <input type="file" hidden accept="image/*"
                         onchange="if(this.files[0]){let r=new FileReader();r.onload=e=>document.getElementById('card-img').src=e.target.result;r.readAsDataURL(this.files[0]);}" />
                 </label>
@@ -3592,28 +4113,26 @@
                 this.active = false;
                 TimerSystem.stop();
                 stopBGM(); // Stop BGM
-                AudioSystem.playCorrect(); // Victory Sound replacement for now
+                AudioSystem.playCorrect(); // Victory Sound
 
-                // Update stats
-                document.getElementById('final-score').textContent = this.score;
-                // Time survived calculation 
-                // We track total time passed? Or remaining? 
-                // User code: (60 - timeRemaining + questionsAnswered * 5).toFixed(1)
-                // But simplified: Just show time remaining as 'Time Health' or Difficulty.level
-                document.getElementById('time-survived').textContent = DifficultySystem.level + " LEVELS";
-                document.getElementById('questions-cleared').textContent = DifficultySystem.questionsAnswered;
-                document.getElementById('max-speed').textContent = DifficultySystem.getTickRate().toFixed(2) + 'x';
-
-                // Show victory screen
-                const winModal = document.getElementById('victory-screen');
-                if (winModal) {
-                    winModal.style.display = 'flex'; // It was display:none
-                    winModal.classList.add('active'); // CSS anims
+                // Set victory headline before showing game over screen
+                this.isWin = true;
+                const headline = document.getElementById('game-over-headline');
+                if (headline) {
+                    headline.textContent = 'NEURAL SYNC COMPLETE';
+                    headline.style.color = 'var(--green)';
+                    headline.style.textShadow = '0 0 30px var(--green)';
                 }
 
-                // Hide HUD
+                // Update final score for display
+                document.getElementById('final-aura-score').textContent = this.score;
+
+                // Hide HUD and game screen
                 document.getElementById('hud').classList.add('hidden');
                 document.getElementById('s-game').classList.add('hidden');
+
+                // Use the same outro sequence as game over
+                this.runOutroSequence();
             },
 
             gameOver() {
@@ -3621,6 +4140,15 @@
                 stopBGM(); // Stop BGM
                 document.getElementById('fail-modal').classList.remove('active');
                 document.body.classList.add('power-off-anim');
+
+                // Reset headline to SIGNAL LOST for game over
+                this.isWin = false;
+                const headline = document.getElementById('game-over-headline');
+                if (headline) {
+                    headline.textContent = 'SIGNAL LOST';
+                    headline.style.color = 'var(--danger)';
+                    headline.style.textShadow = '0 0 30px var(--danger)';
+                }
 
                 setTimeout(() => {
                     document.body.classList.remove('power-off-anim');
@@ -3769,6 +4297,392 @@
             }
         `;
         document.head.appendChild(shakeStyle);
+
+        // Extra visual polish stuff
+
+        // Heartbeat visual sync
+        const HeartbeatVignetteSystem = {
+            vignetteEl: null,
+
+            init() {
+                this.vignetteEl = document.getElementById('heartbeat-vignette');
+            },
+
+            pulse(bpm) {
+                if (!this.vignetteEl) this.init();
+                if (!this.vignetteEl) return;
+
+                // Calculate animation speed from BPM (faster BPM = faster pulse)
+                const speed = 60000 / bpm / 1000; // Convert to seconds
+                this.vignetteEl.style.setProperty('--heartbeat-speed', speed + 's');
+
+                // Trigger pulse animation
+                this.vignetteEl.classList.remove('pulse');
+                void this.vignetteEl.offsetWidth; // Force reflow
+                this.vignetteEl.classList.add('pulse');
+            },
+
+            stop() {
+                if (this.vignetteEl) {
+                    this.vignetteEl.classList.remove('pulse');
+                }
+            }
+        };
+
+        // Override HeartbeatSystem.playBeat to sync vignette
+        if (typeof HeartbeatSystem !== 'undefined') {
+            const originalPlayBeat = HeartbeatSystem.playBeat;
+            HeartbeatSystem.playBeat = function () {
+                originalPlayBeat.call(this);
+                // Sync vignette pulse with audio heartbeat
+                if (this.currentBPM > 0) {
+                    HeartbeatVignetteSystem.pulse(this.currentBPM);
+                }
+            };
+
+            const originalStop = HeartbeatSystem.stop;
+            HeartbeatSystem.stop = function () {
+                originalStop.call(this);
+                HeartbeatVignetteSystem.stop();
+            };
+        }
+
+        // Last breath clutch mechanic - gives you half a second to save yourself
+        const DeathsDoorSystem = {
+            active: false,
+            timeout: null,
+
+            enter() {
+                if (this.active) return;
+                this.active = true;
+
+                // Stop all sounds except allow answer clicks
+                if (typeof bgMusic !== 'undefined') bgMusic.pause();
+                if (typeof HeartbeatSystem !== 'undefined') HeartbeatSystem.stop();
+
+                // Apply death's door visual
+                document.body.classList.add('deaths-door');
+
+                // Allow 500ms window for clutch save
+                this.timeout = setTimeout(() => {
+                    this.exit(false); // No clutch save
+                }, 500);
+            },
+
+            exit(clutchSave = false) {
+                if (!this.active) return;
+                this.active = false;
+
+                if (this.timeout) {
+                    clearTimeout(this.timeout);
+                    this.timeout = null;
+                }
+
+                document.body.classList.remove('deaths-door');
+
+                if (clutchSave) {
+                    this.celebrateClutchSave();
+                } else {
+                    // Proceed to game over
+                    if (typeof Game !== 'undefined') {
+                        Game.gameOver();
+                    }
+                }
+            },
+
+            celebrateClutchSave() {
+                // Show clutch save overlay
+                const overlay = document.getElementById('clutch-save-overlay');
+                if (overlay) {
+                    overlay.classList.add('active');
+                    setTimeout(() => overlay.classList.remove('active'), 1500);
+                }
+
+                // Award bonus points
+                if (typeof Game !== 'undefined') {
+                    Game.score += 500;
+                    document.getElementById('hud-score').innerText = Game.score;
+
+                    // Show bonus feedback
+                    const bonus = document.createElement('div');
+                    bonus.className = 'anomaly-alert';
+                    bonus.style.color = 'var(--green)';
+                    bonus.innerHTML = '⚡ +500 CLUTCH BONUS ⚡';
+                    document.body.appendChild(bonus);
+                    setTimeout(() => bonus.remove(), 2000);
+                }
+
+                // Resume timer with small bonus
+                if (typeof TimerSystem !== 'undefined') {
+                    TimerSystem.timeLeft = 5; // Give 5 seconds
+                    TimerSystem.update();
+                    TimerSystem.frozen = false;
+                }
+
+                // Play celebration sound
+                if (typeof AudioSystem !== 'undefined') AudioSystem.playCorrect();
+
+                // Resume music
+                if (typeof bgMusic !== 'undefined') {
+                    bgMusic.play().catch(() => { });
+                }
+
+                // Continue to next question
+                if (typeof Game !== 'undefined') {
+                    Game.active = true;
+                    Game.round++;
+                    Game.nextRound();
+                }
+            },
+
+            // Check if an answer was clicked during death's door
+            checkClutch(isCorrect) {
+                if (this.active && isCorrect) {
+                    this.exit(true); // Clutch save!
+                    return true;
+                }
+                return false;
+            }
+        };
+
+        // Override TimerSystem to trigger death's door instead of immediate game over
+        if (typeof TimerSystem !== 'undefined') {
+            const originalTimerInterval = TimerSystem.start;
+            TimerSystem.start = function (seconds = 15) {
+                this.maxTime = seconds;
+                this.timeLeft = seconds;
+                this.frozen = false;
+                this.update();
+
+                if (this.interval) clearInterval(this.interval);
+                this.interval = setInterval(() => {
+                    if (this.frozen) return;
+
+                    let rate = 0.1 * (typeof DifficultySystem !== 'undefined' ? DifficultySystem.getTickRate() : 1);
+                    if (document.body.classList.contains('anomaly-fast')) rate *= 2;
+
+                    this.timeLeft -= rate;
+                    this.update();
+
+                    if (this.timeLeft <= 10 && this.timeLeft > 0) {
+                        if (Math.floor(this.timeLeft * 5) % 5 === 0) {
+                            if (typeof AudioSystem !== 'undefined') AudioSystem.playTick();
+                        }
+                    }
+
+                    // LAST BREATH: Instead of immediate game over, trigger death's door
+                    if (this.timeLeft <= 0) {
+                        this.stop();
+                        DeathsDoorSystem.enter();
+                    }
+                }, 100);
+            };
+        }
+
+        // Override Game.check to support clutch saves
+        if (typeof Game !== 'undefined') {
+            const originalGameCheck = Game.check;
+            Game.check = function (ans, cor) {
+                // Check if in death's door and this is a correct answer
+                if (DeathsDoorSystem.active) {
+                    if (ans === cor) {
+                        DeathsDoorSystem.checkClutch(true);
+                    } else {
+                        DeathsDoorSystem.exit(false); // Wrong answer during death's door = game over
+                    }
+                    return;
+                }
+
+                // Normal answer check
+                originalGameCheck.call(this, ans, cor);
+            };
+        }
+
+        // Screen crack effect on anchor loss
+        const ScreenCrackSystem = {
+            crackEl: null,
+            crackCount: 0,
+
+            init() {
+                this.crackEl = document.getElementById('screen-crack-overlay');
+            },
+
+            showCrack() {
+                if (!this.crackEl) this.init();
+                if (!this.crackEl) return;
+
+                this.crackCount++;
+                this.crackEl.classList.add('cracked');
+
+                // Fade out after delay
+                setTimeout(() => {
+                    if (this.crackEl) this.crackEl.classList.remove('cracked');
+                }, 2000);
+            },
+
+            reset() {
+                this.crackCount = 0;
+                if (this.crackEl) this.crackEl.classList.remove('cracked');
+            }
+        };
+
+        // Override TimePowers.useRewind to trigger screen crack
+        if (typeof TimePowers !== 'undefined') {
+            const originalUseRewind = TimePowers.useRewind;
+            TimePowers.useRewind = function () {
+                const hadCharges = this.rewindCharges > 0;
+                const result = originalUseRewind.call(this);
+
+                // Show screen crack when losing an anchor
+                if (hadCharges && result) {
+                    ScreenCrackSystem.showCrack();
+                }
+
+                return result;
+            };
+        }
+
+        // Stamp system for game over card
+        const KIAStampSystem = {
+            stampEl: null,
+
+            init() {
+                this.stampEl = document.getElementById('kia-stamp');
+            },
+
+            triggerStamp() {
+                if (!this.stampEl) this.init();
+                if (!this.stampEl) return;
+
+                // Check if this is a win or loss
+                const isWin = typeof Game !== 'undefined' && Game.isWin;
+
+                // Update stamp text and color based on win/loss
+                if (isWin) {
+                    this.stampEl.textContent = 'SYNCED';
+                    this.stampEl.style.color = 'rgba(57, 255, 20, 0.9)';
+                    this.stampEl.style.borderColor = 'rgba(57, 255, 20, 0.9)';
+                    this.stampEl.style.textShadow = '0 0 10px rgba(57, 255, 20, 0.5)';
+                } else {
+                    this.stampEl.textContent = 'K.I.A.';
+                    this.stampEl.style.color = 'rgba(255, 0, 60, 0.9)';
+                    this.stampEl.style.borderColor = 'rgba(255, 0, 60, 0.9)';
+                    this.stampEl.style.textShadow = '0 0 10px rgba(255, 0, 60, 0.5)';
+                }
+
+                // Add dramatic delay then slam stamp
+                setTimeout(() => {
+                    if (this.stampEl) {
+                        this.stampEl.classList.add('stamped');
+                        // Play appropriate sound
+                        if (typeof AudioSystem !== 'undefined') {
+                            if (isWin) {
+                                AudioSystem.playCorrect();
+                            } else {
+                                AudioSystem.playWrong();
+                            }
+                        }
+                    }
+                }, 500);
+            },
+
+            reset() {
+                if (this.stampEl) {
+                    this.stampEl.classList.remove('stamped');
+                }
+            }
+        };
+
+        // Override Game.runOutroSequence to trigger KIA stamp
+        if (typeof Game !== 'undefined') {
+            const originalRunOutroSequence = Game.runOutroSequence;
+            Game.runOutroSequence = function () {
+                // Reset stamp before showing
+                KIAStampSystem.reset();
+
+                // Call original
+                originalRunOutroSequence.call(this);
+
+                // Trigger stamp when game over screen appears
+                setTimeout(() => {
+                    KIAStampSystem.triggerStamp();
+                }, 5500); // After outro sequence completes
+            };
+        }
+
+        // Canvas glitch effects when time gets low
+        if (typeof Canvas !== 'undefined') {
+            const originalCanvasLoop = Canvas.loop;
+            Canvas.loop = function () {
+                let bg = getComputedStyle(document.body).getPropertyValue('--bg-color');
+                this.ctx.fillStyle = bg;
+                this.ctx.fillRect(0, 0, this.w, this.h);
+
+                let col = getComputedStyle(document.body).getPropertyValue('--particle-col');
+                this.ctx.fillStyle = col;
+
+                let spd = (typeof Game !== 'undefined' && Game.active) ? 20 : 5;
+                if (typeof Game !== 'undefined' && Game.rewinding) spd = -40;
+
+                // FEATURE 3: Calculate stability for world decay effects
+                let stability = 100;
+                if (typeof TimerSystem !== 'undefined' && typeof Game !== 'undefined' && Game.active) {
+                    stability = Math.max(0, (TimerSystem.timeLeft / 60) * 100);
+                }
+
+                this.particles.forEach((p, i) => {
+                    p.z -= spd;
+                    if (p.z <= 0) { p.z = 2000; p.x = (Math.random() - 0.5) * this.w * 2; p.y = (Math.random() - 0.5) * this.h * 2; }
+                    if (p.z > 2000) { p.z = 10; }
+
+                    let scale = 500 / p.z;
+                    let x2d = this.cx + p.x * scale;
+                    let y2d = this.cy + p.y * scale;
+
+                    // FEATURE 3: Add jitter at low stability
+                    if (stability < 50) {
+                        const jitterAmount = (50 - stability) / 10;
+                        x2d += (Math.random() - 0.5) * jitterAmount;
+                        y2d += (Math.random() - 0.5) * jitterAmount;
+                    }
+
+                    let size = Math.max(0.5, 3 * scale);
+                    if (x2d > 0 && x2d < this.w && y2d > 0 && y2d < this.h) {
+                        this.ctx.globalAlpha = Math.min(1, scale);
+
+                        // FEATURE 3: Color shift at very low stability
+                        if (stability < 20 && Math.random() < 0.1) {
+                            this.ctx.fillStyle = Math.random() > 0.5 ? '#ff003c' : '#00f3ff';
+                        }
+
+                        this.ctx.fillRect(x2d, y2d, size, size);
+                        this.ctx.fillStyle = col; // Reset color
+                    }
+                });
+
+                // FEATURE 3: Add glitch blocks at critical stability
+                if (stability < 20 && typeof Game !== 'undefined' && Game.active) {
+                    for (let i = 0; i < 3; i++) {
+                        if (Math.random() < 0.3) {
+                            this.ctx.fillStyle = Math.random() > 0.5 ? 'rgba(255,0,60,0.3)' : 'rgba(0,243,255,0.3)';
+                            const gx = Math.random() * this.w;
+                            const gy = Math.random() * this.h;
+                            const gw = Math.random() * 100 + 20;
+                            const gh = Math.random() * 20 + 5;
+                            this.ctx.fillRect(gx, gy, gw, gh);
+                        }
+                    }
+                }
+
+                this.ctx.globalAlpha = 1;
+                requestAnimationFrame(() => this.loop());
+            };
+        }
+
+        // Initialize new systems
+        HeartbeatVignetteSystem.init();
+        ScreenCrackSystem.init();
+        KIAStampSystem.init();
     </script>
 </body>
 
