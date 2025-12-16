@@ -164,6 +164,69 @@
             backdrop-filter: grayscale(100%) blur(4px);
         }
 
+        /* Timer Panel Freeze Effect */
+        #timer-panel.frozen {
+            position: relative;
+            animation: timerFreezeGlow 1s infinite alternate;
+        }
+
+        #timer-panel.frozen::before {
+            content: '❄️ FROZEN';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: var(--f-title);
+            font-size: 0.9rem;
+            color: #00f3ff;
+            text-shadow: 0 0 15px #00f3ff, 0 0 30px #00f3ff;
+            letter-spacing: 3px;
+            z-index: 10;
+            animation: freezeTextPulse 0.5s infinite alternate;
+        }
+
+        #timer-panel.frozen::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 200, 255, 0.15);
+            backdrop-filter: blur(2px);
+            border-radius: 8px;
+            box-shadow:
+                inset 0 0 30px rgba(0, 243, 255, 0.4),
+                0 0 20px rgba(0, 243, 255, 0.5),
+                0 0 40px rgba(0, 200, 255, 0.3);
+            z-index: 5;
+        }
+
+        #timer-panel.frozen .stat-val,
+        #timer-panel.frozen .stat-label,
+        #timer-panel.frozen .time-bar-container {
+            opacity: 0.3;
+        }
+
+        @keyframes timerFreezeGlow {
+            0% {
+                box-shadow: 0 0 20px rgba(0, 243, 255, 0.5), inset 0 0 15px rgba(0, 200, 255, 0.2);
+            }
+
+            100% {
+                box-shadow: 0 0 40px rgba(0, 243, 255, 0.8), inset 0 0 25px rgba(0, 200, 255, 0.4);
+            }
+        }
+
+        @keyframes freezeTextPulse {
+            0% {
+                opacity: 0.8;
+                transform: translate(-50%, -50%) scale(1);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1.05);
+            }
+        }
+
         /* Rewind Effect Logic */
         body.is-rewinding .fx-rewind {
             opacity: 1 !important;
@@ -1859,7 +1922,7 @@
 
     <div id="hud" class="hidden">
         <!-- New Left HUD Timer -->
-        <div class="hud-panel hud-top-left" style="
+        <div class="hud-panel hud-top-left" id="timer-panel" style="
             top: 90px;
             left: 40px;
             right: auto;
@@ -2803,11 +2866,9 @@
 
             freeze(duration = 5) {
                 this.frozen = true;
-                AudioSystem.playFreeze();
-                document.body.classList.add('is-frozen');
+                // Timer pauses for duration, visual effect handled by TimePowers.useFreeze
                 setTimeout(() => {
                     this.frozen = false;
-                    document.body.classList.remove('is-frozen');
                 }, duration * 1000);
             },
 
@@ -2835,16 +2896,23 @@
                 this.updatePowerUI();
             },
 
-            // Freeze: Pause timer for 5 seconds
+            // Freeze: Pause timer for 5 seconds (timer only, game continues)
             useFreeze() {
                 if (this.freezeCharges <= 0 || TimerSystem.frozen || !Game.active) return false;
                 this.freezeCharges--;
 
+                // Freeze only the timer (not full screen)
                 TimerSystem.freeze(5);
-                freezeMusicEffect(); // BGM Effect             document.querySelector('.fx-freeze').style.opacity = '1';
-                setTimeout(() => {
-                    document.querySelector('.fx-freeze').style.opacity = '0';
-                }, 5000);
+                AudioSystem.playFreeze();
+
+                // Apply freeze visual effect only to timer panel
+                const timerPanel = document.getElementById('timer-panel');
+                if (timerPanel) {
+                    timerPanel.classList.add('frozen');
+                    setTimeout(() => {
+                        timerPanel.classList.remove('frozen');
+                    }, 5000);
+                }
 
                 const btn = document.getElementById('btn-freeze');
                 if (btn) btn.classList.add('used');
