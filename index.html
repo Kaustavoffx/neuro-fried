@@ -315,6 +315,136 @@
             animation: anxietyPulse 2s ease-in-out infinite;
         }
 
+        /* TYPEWRITER EFFECT STYLES */
+        .typewriter-text {
+            font-family: var(--f-mono);
+            white-space: pre-wrap;
+            overflow: hidden;
+            border-right: 2px solid var(--primary);
+            animation: blinkCursor 0.7s step-end infinite;
+        }
+
+        .typewriter-text.done {
+            border-right: none;
+            animation: none;
+        }
+
+        @keyframes blinkCursor {
+
+            0%,
+            100% {
+                border-color: var(--primary);
+            }
+
+            50% {
+                border-color: transparent;
+            }
+        }
+
+        .story-container {
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(255, 0, 0, 0.4);
+            border-radius: 12px;
+            padding: 25px 30px;
+            margin: 20px auto;
+            max-width: 650px;
+            min-height: 100px;
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+
+        .story-line {
+            color: #ffffff;
+            font-family: var(--f-mono);
+            font-size: 1.1rem;
+            margin-bottom: 12px;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.3s, transform 0.3s;
+            text-shadow: 0 0 10px rgba(255, 0, 0, 0.3);
+        }
+
+        .story-line.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* FADE FROM DARKNESS OVERLAY - Starts hidden */
+        .darkness-overlay {
+            position: fixed;
+            inset: 0;
+            background: #000000;
+            z-index: 99999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 1s ease;
+        }
+
+        .darkness-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .darkness-overlay.fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* CLICK TO START SCREEN */
+        .click-to-start {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 100000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .click-to-start .start-text {
+            font-family: var(--f-title);
+            font-size: 2rem;
+            color: var(--primary);
+            animation: pulsate 2s ease-in-out infinite;
+            text-shadow: 0 0 30px var(--primary);
+        }
+
+        .click-to-start .start-subtext {
+            font-family: var(--f-mono);
+            font-size: 1rem;
+            color: var(--text-dim);
+            margin-top: 15px;
+            animation: blink 1s ease-in-out infinite;
+        }
+
+        @keyframes pulsate {
+
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            50% {
+                transform: scale(1.05);
+                opacity: 0.8;
+            }
+        }
+
+        @keyframes blink {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.3;
+            }
+        }
+
         /* Eerie Float Animation */
         @keyframes eerieFloat {
 
@@ -3486,6 +3616,15 @@
 
 <body>
 
+    <!-- DARKNESS OVERLAY for cinematic transitions -->
+    <div class="darkness-overlay" id="darkness-overlay"></div>
+
+    <!-- CLICK TO START SCREEN -->
+    <div class="click-to-start" id="click-to-start">
+        <div class="start-text">⚡ NEURO-FRIED ⚡</div>
+        <div class="start-subtext">[ CLICK ANYWHERE TO BEGIN ]</div>
+    </div>
+
     <div id="render-layer"><canvas id="c"></canvas></div>
     <div class="vignette"></div>
     <div class="scanlines"></div>
@@ -3519,21 +3658,10 @@
         <h2 style="font-family:var(--f-title); color:var(--text-main); margin-bottom:10px; font-size:2rem;">
             FATE SELECTION
         </h2>
-        <div
-            style="font-family:var(--f-mono); color:var(--text-dim); margin-bottom:25px; max-width:500px; text-align:center; line-height:1.6;">
-            <p style="color:#ff6666; font-style:italic; margin-bottom:10px;">
-                "The timeline fractures into three paths..."
-            </p>
-            <p style="opacity:0.8;">
-                Your fate is not yours to choose. The machine decides.
-            </p>
-            <p style="opacity:0.7; font-size:0.9rem; margin-top:8px;">
-                Will you face your <span style="color:var(--primary)">OWN LUCK</span>,
-                get trapped in a <span style="color:#a855f7">TIME LOOP</span>,
-                or duel <span style="color:var(--danger)">YOURSELF</span>?
-            </p>
+        <div class="story-container" id="fate-story-container">
+            <!-- Typewriter text generated here -->
         </div>
-        <div class="luck-box">
+        <div class="luck-box" id="luck-box-container" style="opacity:0; pointer-events:none;">
             <div class="luck-container">
                 <div class="luck-slots">
                     <div class="luck-slot" id="luck-slot-1">?</div>
@@ -3782,34 +3910,20 @@
 
         <div class="protocol-container">
             <div class="protocol-trigger">[ TRANSMISSION INTERCEPTED ]</div>
-            <div class="mission-log" style="text-align:left; line-height:1.8;">
-                <p class="protocol-line" style="color:#ff4444; font-style:italic;">
-                    "You wake up. Your head is pounding."
-                </p>
-                <p class="protocol-line" style="opacity:0.9;">
-                    ◉ The clock reads <span style="color:var(--primary)">60 SECONDS</span>. It's counting down.
-                </p>
-                <p class="protocol-line" style="opacity:0.85;">
-                    ◉ Your memories... they're bleeding away. Fragments of time.
-                </p>
-                <p class="protocol-line" style="opacity:0.8;">
-                    ◉ The only way out? <span style="color:var(--danger)">REMEMBER.</span> Answer correctly.
-                </p>
-                <p class="protocol-line" style="opacity:0.75;">
-                    ◉ Each correct answer buys you time. Each mistake... costs you.
-                </p>
-                <p class="protocol-line" style="color:#ff6666; font-weight:bold; margin-top:10px;">
-                    "Time is the only currency. And yours is running out."
-                </p>
+            <div class="story-container" id="title-story-container">
+                <!-- Typewriter text will be generated here -->
             </div>
         </div>
 
-        <button class="tech-btn" id="init-btn">INITIALIZE SYSTEM</button>
+        <button class="tech-btn" id="init-btn" style="opacity:0; pointer-events:none;">INITIALIZE SYSTEM</button>
     </div>
 
     <div id="s-roulette" class="screen hidden">
         <h2 style="font-family:var(--f-title); color:var(--text-main); margin-bottom:20px; opacity:0.8;">SEARCHING
             ARCHIVES...</h2>
+        <div class="story-container" id="roulette-story-container">
+            <!-- Typewriter text generated here -->
+        </div>
         <div class="roulette-box">
             <div class="roulette-window">
                 <div class="roulette-track" id="roulette-track"></div>
@@ -3829,21 +3943,19 @@
     <div id="s-timeline" class="screen hidden">
         <div class="timeline-box">
             <h2 style="font-family:var(--f-title); color:var(--text-main);">CHOOSE YOUR PATH</h2>
-            <p style="font-family:var(--f-mono); color:#ff6666; font-style:italic; margin:15px 0;">
-                "Two paths through time. Neither is safe."
-            </p>
-            <p
-                style="font-family:var(--f-mono); color:var(--text-dim); opacity:0.8; max-width:400px; margin:0 auto 20px;">
-                Forward through history as it happened... or backwards, unraveling memory itself?
-            </p>
-            <div style="margin:30px 0; font-family:var(--f-mono); font-size:2rem; color:var(--secondary);">
-                1935 <span style="opacity:0.5">&lt;---&gt;</span> 2035
+            <div class="story-container" id="timeline-story-container">
+                <!-- Typewriter text generated here -->
             </div>
-            <div class="btn-row">
-                <button class="tech-btn" style="border-color:var(--primary); color:var(--primary);"
-                    onclick="Game.startGame('asc')">CHRONOLOGICAL</button>
-                <button class="tech-btn" style="border-color:var(--danger); color:var(--danger);"
-                    onclick="Game.startGame('desc')">REWIND FLOW</button>
+            <div id="timeline-controls" style="opacity:0; pointer-events:none;">
+                <div style="margin:20px 0; font-family:var(--f-mono); font-size:2rem; color:var(--secondary);">
+                    1935 <span style="opacity:0.5">&lt;---&gt;</span> 2035
+                </div>
+                <div class="btn-row">
+                    <button class="tech-btn" style="border-color:var(--primary); color:var(--primary);"
+                        onclick="Game.startGame('asc')">CHRONOLOGICAL</button>
+                    <button class="tech-btn" style="border-color:var(--danger); color:var(--danger);"
+                        onclick="Game.startGame('desc')">REWIND FLOW</button>
+                </div>
             </div>
         </div>
     </div>
@@ -4576,6 +4688,82 @@
         }
 
         // =============================================
+        // TYPEWRITER SYSTEM - Story Narrative Effect
+        // =============================================
+        const TypeWriter = {
+            speed: 30, // ms per character
+            lineDelay: 500, // ms between lines
+
+            async type(elementId, text, speed = this.speed) {
+                const el = document.getElementById(elementId);
+                if (!el) return;
+
+                el.textContent = '';
+                el.classList.add('typewriter-text');
+                el.classList.remove('done');
+
+                for (let i = 0; i < text.length; i++) {
+                    el.textContent += text[i];
+                    // Typing sound effect (subtle)
+                    if (text[i] !== ' ' && i % 3 === 0) {
+                        this.playTypingSound();
+                    }
+                    await this.wait(speed);
+                }
+
+                el.classList.add('done');
+            },
+
+            async typeLines(containerId, lines, lineSpeed = this.speed) {
+                const container = document.getElementById(containerId);
+                if (!container) return;
+
+                container.innerHTML = '';
+
+                for (const line of lines) {
+                    const p = document.createElement('p');
+                    p.className = 'story-line typewriter-text';
+                    p.style.cssText = line.style || '';
+                    container.appendChild(p);
+
+                    await this.wait(200);
+                    p.classList.add('visible');
+
+                    for (let i = 0; i < line.text.length; i++) {
+                        p.textContent += line.text[i];
+                        if (line.text[i] !== ' ' && i % 4 === 0) {
+                            this.playTypingSound();
+                        }
+                        await this.wait(lineSpeed);
+                    }
+
+                    p.classList.add('done');
+                    await this.wait(this.lineDelay);
+                }
+            },
+
+            playTypingSound() {
+                try {
+                    if (typeof AudioSystem !== 'undefined' && AudioSystem.ctx) {
+                        const osc = AudioSystem.ctx.createOscillator();
+                        const gain = AudioSystem.ctx.createGain();
+                        osc.connect(gain);
+                        gain.connect(AudioSystem.ctx.destination);
+                        osc.frequency.value = 800 + Math.random() * 200;
+                        osc.type = 'square';
+                        gain.gain.value = 0.02;
+                        osc.start();
+                        osc.stop(AudioSystem.ctx.currentTime + 0.02);
+                    }
+                } catch (e) { }
+            },
+
+            wait(ms) {
+                return new Promise(resolve => setTimeout(resolve, ms));
+            }
+        };
+
+        // =============================================
         // GAME MODE SYSTEMS
         // =============================================
 
@@ -4878,6 +5066,12 @@
 
             triggerNight() {
                 if (!this.active) return;
+
+                if (typeof TimerSystem !== 'undefined' && TimerSystem.frozen) {
+                    setTimeout(() => this.triggerNight(), 500);
+                    return;
+                }
+
                 this.nightTriggered = true;
                 document.body.classList.remove('time-day');
                 document.body.classList.add('time-night');
@@ -4937,6 +5131,11 @@
 
                 setTimeout(() => {
                     if (!this.active) return;
+
+                    if (typeof TimerSystem !== 'undefined' && TimerSystem.frozen) {
+                        setTimeout(() => this.simulateAIAnswer(questionData, options), 500);
+                        return;
+                    }
 
                     const correct = Math.random() < 0.65;
                     const aiOpts = document.querySelectorAll('#opt-area-ai .opt-btn');
@@ -5443,7 +5642,7 @@
 
             // Freeze: Pause timer for 5 seconds (timer only, game continues)
             useFreeze() {
-                if (this.freezeCharges <= 0 || TimerSystem.frozen || !Game.active) return false;
+                if (this.freezeCharges <= 0 || TimerSystem.frozen || (!Game.active && (typeof DuelMode === 'undefined' || !DuelMode.active))) return false;
                 this.freezeCharges--;
 
                 // Freeze only the timer (not full screen)
@@ -5468,7 +5667,7 @@
 
             // Rewind: Adds Time but ACCELERATES COLLAPSE
             useRewind() {
-                if (this.rewindCharges <= 0 || !Game.active) return false;
+                if (this.rewindCharges <= 0 || (!Game.active && (typeof DuelMode === 'undefined' || !DuelMode.active))) return false;
                 this.rewindCharges--;
 
                 Game.triggerRewindEffect();
@@ -5629,6 +5828,7 @@
                 try { AudioSystem.init(); AudioSystem.resume(); startBGM(); } catch (e) { }
                 gameInProgress = true;
                 LuckSystem.reset();
+                if (typeof StorySystem !== 'undefined') StorySystem.reset();
                 this.switchScreen('s-title', 's-luck');
             },
 
@@ -6305,6 +6505,17 @@
                 document.getElementById(from).classList.add('hidden');
                 document.getElementById(to).classList.remove('hidden');
                 setTimeout(() => document.getElementById(to).classList.add('active'), 10);
+
+                // Trigger Story System
+                setTimeout(async () => {
+                    if (to === 's-luck') {
+                        await StorySystem.playStory('fate', 'fate', 'luck-box-container');
+                    } else if (to === 's-timeline') {
+                        await StorySystem.playStory('timeline', 'timeline', 'timeline-controls');
+                    } else if (to === 's-roulette') {
+                        await StorySystem.playStory('roulette', 'roulette', 'roulette-actions');
+                    }
+                }, 300);
             }
         };
 
@@ -6780,19 +6991,7 @@
         document.addEventListener('DOMContentLoaded', function () {
             console.log('🔧 Attaching toggle button event listeners...');
 
-            const soundBtn = document.getElementById('sound-toggle');
             const themeBtn = document.getElementById('theme-toggle-btn');
-
-            if (soundBtn) {
-                soundBtn.addEventListener('click', function (e) {
-                    e.stopPropagation();
-                    console.log('🔊 Sound button clicked via event listener!');
-                    toggleSound();
-                });
-                console.log('✅ Sound button listener attached');
-            } else {
-                console.error('❌ Sound button not found!');
-            }
 
             if (themeBtn) {
                 themeBtn.addEventListener('click', function (e) {
@@ -6805,6 +7004,108 @@
                 console.error('❌ Theme button not found!');
             }
         });
+
+        // =============================================
+        // STORY SYSTEM - All Screen Narratives
+        // =============================================
+        const StorySystem = {
+            stories: {
+                title: [
+                    { text: '"You wake up. Your head is pounding."', style: 'color:#ff4444; font-style:italic;' },
+                    { text: '◉ The clock reads 60 SECONDS. It\'s counting down.', style: 'color:#ffffff;' },
+                    { text: '◉ Your memories... they\'re bleeding away.', style: 'color:#ffffff; opacity:0.9;' },
+                    { text: '◉ The only way out? REMEMBER. Answer correctly.', style: 'color:#ffffff; opacity:0.85;' },
+                    { text: '◉ Each correct answer buys you time. Each mistake costs you.', style: 'color:#ffffff; opacity:0.8;' },
+                    { text: '"Time is the only currency. And yours is running out."', style: 'color:#ff6666; font-weight:bold;' }
+                ],
+                fate: [
+                    { text: '"The timeline fractures into three paths..."', style: 'color:#ff4444; font-style:italic;' },
+                    { text: '◉ Your fate is not yours to choose.', style: 'color:#ffffff;' },
+                    { text: '◉ The machine will decide.', style: 'color:#ffffff; opacity:0.9;' },
+                    { text: '◉ OWN LUCK... TIME LOOP... or TIMELINE DUEL?', style: 'color:#ffffff; opacity:0.85;' },
+                    { text: '"Spin the wheel. Accept your destiny."', style: 'color:#ff6666; font-weight:bold;' }
+                ],
+                timeline: [
+                    { text: '"Two paths through time. Neither is safe."', style: 'color:#ff4444; font-style:italic;' },
+                    { text: '◉ Forward through history as it happened...', style: 'color:#ffffff;' },
+                    { text: '◉ Or backwards, unraveling memory itself?', style: 'color:#ffffff; opacity:0.9;' },
+                    { text: '"Choose wisely. Time waits for no one."', style: 'color:#ff6666; font-weight:bold;' }
+                ],
+                roulette: [
+                    { text: '"Searching the corrupted archives..."', style: 'color:#ff4444; font-style:italic;' },
+                    { text: '◉ Fragments of knowledge swirl before you.', style: 'color:#ffffff;' },
+                    { text: '"Accept your topic. Or risk a reroll."', style: 'color:#ff6666; font-weight:bold;' }
+                ]
+            },
+
+            playedScreens: new Set(),
+
+            async fadeFromDarkness() {
+                const overlay = document.getElementById('darkness-overlay');
+                if (overlay) {
+                    overlay.style.opacity = '1';
+                    await new Promise(r => setTimeout(r, 100));
+                    overlay.classList.add('fade-out');
+                    await new Promise(r => setTimeout(r, 1000));
+                }
+            },
+
+            async playStory(screenId, storyKey, controlsId) {
+                if (this.playedScreens.has(screenId)) return;
+                this.playedScreens.add(screenId);
+
+                const containerId = screenId + '-story-container';
+                const story = this.stories[storyKey];
+                if (!story) return;
+
+                await TypeWriter.typeLines(containerId, story, 30);
+
+                // Reveal controls after typing
+                if (controlsId) {
+                    const controls = document.getElementById(controlsId);
+                    if (controls) {
+                        await new Promise(r => setTimeout(r, 400));
+                        controls.style.transition = 'opacity 0.5s ease';
+                        controls.style.opacity = '1';
+                        controls.style.pointerEvents = 'auto';
+                    }
+                }
+            },
+
+            reset() {
+                this.playedScreens.clear();
+            }
+        };
+
+        // CLICK TO START HANDLER
+        document.getElementById('click-to-start').addEventListener('click', async function () {
+            const startScreen = document.getElementById('click-to-start');
+            startScreen.style.transition = 'opacity 0.8s ease';
+            startScreen.style.opacity = '0';
+
+            await new Promise(r => setTimeout(r, 800));
+            startScreen.style.display = 'none';
+
+            // Start the title screen story
+            await StorySystem.playStory('title', 'title', 'init-btn');
+        });
+
+        // Hook into screen transitions
+        const originalShowScreen = window.showScreen || function () { };
+        window.showScreen = function (screenId) {
+            originalShowScreen(screenId);
+
+            // Trigger story for specific screens
+            setTimeout(async () => {
+                if (screenId === 's-luck') {
+                    await StorySystem.playStory('fate', 'fate', 'luck-box-container');
+                } else if (screenId === 's-timeline') {
+                    await StorySystem.playStory('timeline', 'timeline', 'timeline-controls');
+                } else if (screenId === 's-roulette') {
+                    await StorySystem.playStory('roulette', 'roulette', 'roulette-actions');
+                }
+            }, 300);
+        };
 
     </script>
 </body>
