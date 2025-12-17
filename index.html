@@ -1625,13 +1625,30 @@
             }
         }
 
-        /* WIN SCREEN */
+        /* WIN SCREEN - CYBERPUNK HOLOGRAPHIC CELEBRATION */
         .win-modal {
             position: fixed;
             inset: 0;
             z-index: 2000;
-            background: rgba(0, 20, 0, 0.95);
-            backdrop-filter: blur(20px);
+            background:
+                /* Holographic grid overlay */
+                repeating-linear-gradient(0deg,
+                    transparent,
+                    transparent 50px,
+                    rgba(57, 255, 20, 0.03) 50px,
+                    rgba(57, 255, 20, 0.03) 51px),
+                repeating-linear-gradient(90deg,
+                    transparent,
+                    transparent 50px,
+                    rgba(57, 255, 20, 0.03) 50px,
+                    rgba(57, 255, 20, 0.03) 51px),
+                /* Radial victory glow */
+                radial-gradient(ellipse at 50% 50%, rgba(57, 255, 20, 0.2) 0%, transparent 60%),
+                radial-gradient(ellipse at 50% 0%, rgba(0, 255, 136, 0.25) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 100%, rgba(0, 243, 255, 0.2) 0%, transparent 50%),
+                /* Deep space base */
+                linear-gradient(180deg, #000805 0%, #001510 30%, #000f0a 70%, #000503 100%);
+            backdrop-filter: blur(5px);
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -1639,6 +1656,86 @@
             opacity: 0;
             pointer-events: none;
             transition: 0.5s;
+        }
+
+        /* Pulsing energy rings from center */
+        .win-modal::before {
+            content: '';
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            width: 200vmax;
+            height: 200vmax;
+            transform: translate(-50%, -50%);
+            background:
+                repeating-radial-gradient(circle at center,
+                    transparent 0px,
+                    transparent 80px,
+                    rgba(57, 255, 20, 0.08) 82px,
+                    transparent 84px,
+                    transparent 160px,
+                    rgba(0, 255, 136, 0.06) 162px,
+                    transparent 164px);
+            animation: pulseRingsWin 4s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Glitchy horizontal scanlines + vertical bars */
+        .win-modal::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background:
+                /* Moving vertical light bars */
+                linear-gradient(90deg,
+                    transparent 0%,
+                    transparent 20%,
+                    rgba(57, 255, 20, 0.05) 25%,
+                    transparent 30%,
+                    transparent 45%,
+                    rgba(0, 243, 255, 0.04) 50%,
+                    transparent 55%,
+                    transparent 70%,
+                    rgba(57, 255, 20, 0.05) 75%,
+                    transparent 80%,
+                    transparent 100%),
+                /* Scanline effect */
+                repeating-linear-gradient(0deg,
+                    transparent 0px,
+                    transparent 2px,
+                    rgba(57, 255, 20, 0.02) 3px,
+                    transparent 4px);
+            animation: scanLinesWin 3s linear infinite;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        @keyframes pulseRingsWin {
+
+            0%,
+            100% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 0.8;
+            }
+
+            50% {
+                transform: translate(-50%, -50%) scale(1.1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes scanLinesWin {
+            0% {
+                background-position: 0 0, 0 0;
+            }
+
+            100% {
+                background-position: 100vw 0, 0 4px;
+            }
         }
 
         .win-modal.active {
@@ -1650,9 +1747,36 @@
             font-family: var(--f-title);
             font-size: 5rem;
             color: var(--green);
-            text-shadow: 0 0 50px var(--green);
-            animation: winPulse 2s infinite;
+            text-shadow:
+                0 0 20px var(--green),
+                0 0 40px var(--green),
+                0 0 80px rgba(57, 255, 20, 0.5),
+                0 2px 0 rgba(0, 255, 136, 0.8),
+                0 -2px 0 rgba(0, 243, 255, 0.8);
+            animation: winPulse 2s infinite, holoFlicker 0.1s infinite;
             text-align: center;
+            position: relative;
+            z-index: 10;
+        }
+
+        @keyframes holoFlicker {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            92% {
+                opacity: 1;
+            }
+
+            93% {
+                opacity: 0.8;
+            }
+
+            94% {
+                opacity: 1;
+            }
         }
 
         .win-subtitle {
@@ -1662,6 +1786,8 @@
             margin-bottom: 50px;
             opacity: 0.8;
             text-align: center;
+            position: relative;
+            z-index: 10;
         }
 
         .stats-grid {
@@ -1669,6 +1795,8 @@
             grid-template-columns: repeat(2, 1fr);
             gap: 30px;
             margin-bottom: 50px;
+            position: relative;
+            z-index: 10;
         }
 
         .stat-box {
@@ -1693,33 +1821,184 @@
 
             0%,
             100% {
-                text-shadow: 0 0 30px var(--green);
+                text-shadow: 0 0 30px var(--green), 0 0 60px rgba(57, 255, 20, 0.3);
             }
 
             50% {
-                text-shadow: 0 0 60px var(--green), 0 0 100px var(--green);
+                text-shadow: 0 0 60px var(--green), 0 0 100px var(--green), 0 0 150px rgba(57, 255, 20, 0.5);
             }
         }
 
-        /* GAME OVER SCREEN - Enhanced Gradient Background */
+        /* GAME OVER SCREEN - CYBERPUNK GLITCH FAILURE */
         #s-over {
             background:
-                radial-gradient(ellipse at 50% 0%, rgba(79, 70, 229, 0.25) 0%, transparent 45%),
-                radial-gradient(ellipse at 100% 100%, rgba(30, 27, 75, 0.5) 0%, transparent 50%),
-                radial-gradient(ellipse at 0% 100%, rgba(79, 70, 229, 0.2) 0%, transparent 45%),
-                radial-gradient(ellipse at 50% 100%, rgba(30, 58, 138, 0.3) 0%, transparent 40%),
-                linear-gradient(180deg, #000008 0%, #0c0a20 25%, #0f0d28 50%, #080618 75%, #000005 100%) !important;
-            position: relative;
-        }
-
-        #s-over::before {
-            content: '';
+                /* Diagonal warning stripes */
+                repeating-linear-gradient(-45deg,
+                    transparent,
+                    transparent 40px,
+                    rgba(255, 0, 60, 0.03) 40px,
+                    rgba(255, 0, 60, 0.03) 80px),
+                /* Horizontal glitch lines */
+                repeating-linear-gradient(0deg,
+                    transparent,
+                    transparent 3px,
+                    rgba(255, 0, 60, 0.015) 3px,
+                    rgba(255, 0, 60, 0.015) 4px),
+                /* Danger zones */
+                radial-gradient(ellipse at 50% 0%, rgba(255, 0, 60, 0.3) 0%, transparent 50%),
+                radial-gradient(ellipse at 0% 50%, rgba(153, 51, 255, 0.2) 0%, transparent 50%),
+                radial-gradient(ellipse at 100% 50%, rgba(153, 51, 255, 0.2) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 100%, rgba(255, 0, 60, 0.25) 0%, transparent 50%),
+                /* Deep void base */
+                linear-gradient(180deg, #080005 0%, #100008 30%, #0d0010 70%, #050003 100%) !important;
             position: absolute;
             inset: 0;
+        }
+
+        /* Pulsing danger rings */
+        #s-over::before {
+            content: '';
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            width: 200vmax;
+            height: 200vmax;
+            transform: translate(-50%, -50%);
             background:
-                radial-gradient(circle at 50% 30%, transparent 0%, rgba(0, 0, 5, 0.5) 100%);
+                repeating-radial-gradient(circle at center,
+                    transparent 0px,
+                    transparent 100px,
+                    rgba(255, 0, 60, 0.06) 102px,
+                    transparent 104px,
+                    transparent 200px,
+                    rgba(153, 51, 255, 0.05) 202px,
+                    transparent 204px);
+            animation: pulseRingsLose 5s ease-in-out infinite;
             pointer-events: none;
-            z-index: 0;
+            z-index: 1;
+        }
+
+        /* Animated glitch/static noise effect */
+        #s-over::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background:
+                /* VHS tracking errors */
+                linear-gradient(90deg,
+                    transparent 0%,
+                    transparent 15%,
+                    rgba(255, 0, 60, 0.08) 16%,
+                    transparent 17%,
+                    transparent 40%,
+                    rgba(153, 51, 255, 0.06) 42%,
+                    transparent 44%,
+                    transparent 65%,
+                    rgba(255, 0, 60, 0.05) 66%,
+                    transparent 68%,
+                    transparent 85%,
+                    rgba(153, 51, 255, 0.07) 87%,
+                    transparent 89%,
+                    transparent 100%),
+                /* Horizontal glitch bars */
+                repeating-linear-gradient(0deg,
+                    transparent 0px,
+                    transparent 80px,
+                    rgba(255, 0, 60, 0.04) 82px,
+                    transparent 84px,
+                    transparent 160px,
+                    rgba(153, 51, 255, 0.03) 162px,
+                    transparent 164px);
+            animation: glitchBarsLose 2s steps(10) infinite, glitchShiftLose 0.5s steps(3) infinite;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        @keyframes pulseRingsLose {
+
+            0%,
+            100% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 0.7;
+            }
+
+            50% {
+                transform: translate(-50%, -50%) scale(1.15);
+                opacity: 1;
+            }
+        }
+
+        @keyframes glitchBarsLose {
+
+            0%,
+            100% {
+                background-position: 0 0, 0 0;
+            }
+
+            10% {
+                background-position: -5vw 0, 0 10px;
+            }
+
+            20% {
+                background-position: 3vw 0, 0 -5px;
+            }
+
+            30% {
+                background-position: -10vw 0, 0 15px;
+            }
+
+            40% {
+                background-position: 8vw 0, 0 -10px;
+            }
+
+            50% {
+                background-position: -3vw 0, 0 5px;
+            }
+
+            60% {
+                background-position: 5vw 0, 0 -15px;
+            }
+
+            70% {
+                background-position: -8vw 0, 0 8px;
+            }
+
+            80% {
+                background-position: 2vw 0, 0 -3px;
+            }
+
+            90% {
+                background-position: -5vw 0, 0 12px;
+            }
+        }
+
+        @keyframes glitchShiftLose {
+
+            0%,
+            100% {
+                clip-path: inset(0 0 0 0);
+            }
+
+            25% {
+                clip-path: inset(10% 0 80% 0);
+            }
+
+            50% {
+                clip-path: inset(40% 0 50% 0);
+            }
+
+            75% {
+                clip-path: inset(70% 0 20% 0);
+            }
+        }
+
+        /* Content stays on top */
+        #s-over .game-over-container {
+            position: relative;
+            z-index: 10;
         }
 
         /* DANGER STATE */
@@ -2076,33 +2355,6 @@
         /* =========================================
            GAME OVER SCREEN STYLES
            ========================================= */
-        #s-over {
-            background: radial-gradient(ellipse at center,
-                    rgba(0, 20, 40, 0.95) 0%,
-                    rgba(0, 10, 30, 0.98) 50%,
-                    rgba(0, 5, 15, 1) 100%);
-        }
-
-        #s-over::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background:
-                radial-gradient(ellipse at 20% 80%, rgba(0, 150, 255, 0.15) 0%, transparent 50%),
-                radial-gradient(ellipse at 80% 20%, rgba(0, 200, 255, 0.1) 0%, transparent 50%),
-                radial-gradient(ellipse at 50% 50%, rgba(0, 100, 200, 0.05) 0%, transparent 70%);
-            pointer-events: none;
-            z-index: -1;
-        }
-
-        #s-over::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: radial-gradient(circle at center, transparent 30%, rgba(0, 30, 60, 0.8) 100%);
-            pointer-events: none;
-            z-index: -1;
-        }
 
         .game-over-container {
             display: flex;
@@ -2389,44 +2641,51 @@
 
     <div id="victory-screen" class="win-modal" style="display:none;">
         <h1 class="glitch-title"
-            style="color: var(--green); text-shadow: 0 0 30px var(--green); transform: scale(0.8);">
+            style="color: var(--green); text-shadow: 0 0 30px var(--green), 0 0 80px rgba(57, 255, 20, 0.5); transform: scale(0.8); position: relative; z-index: 10;">
             NEURAL SYNC COMPLETE
         </h1>
         <div class="victory-stats" style="
-            background: rgba(53, 36, 36, 0.8);
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--primary);
-            border-radius: 12px;
+            background: rgba(0, 20, 10, 0.85);
+            backdrop-filter: blur(15px);
+            border: 2px solid rgba(57, 255, 20, 0.4);
+            border-radius: 16px;
             padding: 30px 50px;
             margin: 30px 0;
             width: 80%;
             max-width: 600px;
+            box-shadow: 0 0 40px rgba(57, 255, 20, 0.2), inset 0 0 30px rgba(0, 0, 0, 0.5);
+            position: relative;
+            z-index: 10;
         ">
             <div class="stat-row"
-                style="display: flex; justify-content: space-between; margin: 15px 0; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px;">
-                <span class="stat-label" style="font-family: var(--f-ui); color: var(--text-muted);">FINAL SCORE</span>
+                style="display: flex; justify-content: space-between; margin: 15px 0; border-bottom: 1px solid rgba(57, 255, 20, 0.2); padding-bottom: 10px;">
+                <span class="stat-label" style="font-family: var(--f-ui); color: rgba(255,255,255,0.7);">FINAL
+                    SCORE</span>
                 <span class="stat-val" id="final-score"
-                    style="font-family: var(--f-mono); font-size: 1.5rem; color: var(--primary);">0</span>
+                    style="font-family: var(--f-mono); font-size: 1.5rem; color: var(--green); text-shadow: 0 0 10px var(--green);">0</span>
             </div>
-            <div class="stat-row" style="display: flex; justify-content: space-between; margin: 15px 0;">
-                <span class="stat-label" style="font-family: var(--f-ui); color: var(--text-muted);">TIME
+            <div class="stat-row"
+                style="display: flex; justify-content: space-between; margin: 15px 0; border-bottom: 1px solid rgba(57, 255, 20, 0.2); padding-bottom: 10px;">
+                <span class="stat-label" style="font-family: var(--f-ui); color: rgba(255,255,255,0.7);">TIME
                     SURVIVED</span>
                 <span class="stat-val" id="time-survived"
-                    style="font-family: var(--f-mono); font-size: 1.5rem; color: var(--secondary);">0s</span>
+                    style="font-family: var(--f-mono); font-size: 1.5rem; color: var(--secondary); text-shadow: 0 0 10px var(--secondary);">0s</span>
             </div>
-            <div class="stat-row" style="display: flex; justify-content: space-between; margin: 15px 0;">
-                <span class="stat-label" style="font-family: var(--f-ui); color: var(--text-muted);">QUESTIONS
+            <div class="stat-row"
+                style="display: flex; justify-content: space-between; margin: 15px 0; border-bottom: 1px solid rgba(57, 255, 20, 0.2); padding-bottom: 10px;">
+                <span class="stat-label" style="font-family: var(--f-ui); color: rgba(255,255,255,0.7);">QUESTIONS
                     CLEARED</span>
                 <span class="stat-val" id="questions-cleared"
                     style="font-family: var(--f-mono); font-size: 1.5rem; color: var(--text-main);">0</span>
             </div>
             <div class="stat-row" style="display: flex; justify-content: space-between; margin: 15px 0;">
-                <span class="stat-label" style="font-family: var(--f-ui); color: var(--text-muted);">MAX SPEED</span>
+                <span class="stat-label" style="font-family: var(--f-ui); color: rgba(255,255,255,0.7);">MAX
+                    SPEED</span>
                 <span class="stat-val" id="max-speed"
-                    style="font-family: var(--f-mono); font-size: 1.5rem; color: var(--danger);">1x</span>
+                    style="font-family: var(--f-mono); font-size: 1.5rem; color: var(--danger); text-shadow: 0 0 10px var(--danger);">1x</span>
             </div>
         </div>
-        <button class="tech-btn" onclick="location.reload()">REBOOT</button>
+        <button class="tech-btn" style="position: relative; z-index: 10;" onclick="location.reload()">REBOOT</button>
     </div>
 
     <header>
