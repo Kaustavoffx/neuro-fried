@@ -246,7 +246,8 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            z-index: 100;
+            z-index: 9999;
+            /* Above everything to ensure clicks work */
             backdrop-filter: blur(10px);
         }
 
@@ -271,6 +272,187 @@
             align-items: center;
             justify-content: center;
             transition: 0.3s;
+        }
+
+        /* =============================================
+           TOGGLE BUTTONS - SOUND & THEME
+           Time-themed rewind/loop design
+           ============================================= */
+        .toggle-controls {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            pointer-events: auto;
+            /* Enable clicks */
+            z-index: 10000;
+        }
+
+        .toggle-btn {
+            position: relative;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(0, 0, 5, 0.9);
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            cursor: pointer;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 15px rgba(79, 70, 229, 0.3);
+            overflow: hidden;
+            z-index: 1000;
+            /* Ensure buttons are on top */
+        }
+
+        .toggle-btn::before {
+            content: '';
+            position: absolute;
+            inset: 3px;
+            border-radius: 50%;
+            border: 1px dashed rgba(79, 70, 229, 0.4);
+            animation: rotateRing 10s linear infinite;
+            pointer-events: none;
+            /* Don't block clicks */
+        }
+
+        @keyframes rotateRing {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .toggle-btn:hover {
+            background: rgba(79, 70, 229, 0.2);
+            box-shadow: 0 0 30px rgba(79, 70, 229, 0.5);
+            transform: scale(1.1);
+        }
+
+        .toggle-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* Sound OFF state */
+        .toggle-btn.sound-off {
+            border-color: var(--danger);
+            color: var(--danger);
+            box-shadow: 0 0 15px rgba(255, 0, 60, 0.3);
+        }
+
+        .toggle-btn.sound-off::before {
+            border-color: rgba(255, 0, 60, 0.4);
+            animation-direction: reverse;
+        }
+
+        /* Theme button - rotating icon */
+        .toggle-btn.theme-btn .icon {
+            transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .toggle-btn.theme-btn:hover .icon {
+            transform: rotate(180deg);
+        }
+
+        /* =============================================
+           DARK MONOCHROME THEME - Black/Ash/White only
+           ============================================= */
+        body.theme-dark {
+            --primary: #a0a0a0 !important;
+            --primary-light: #c0c0c0 !important;
+            --secondary: #808080 !important;
+            --dark-blue: #1a1a1a !important;
+            --danger: #606060 !important;
+            --green: #d0d0d0 !important;
+        }
+
+        /* Dark theme - toggle buttons */
+        body.theme-dark .toggle-btn:not(.sound-off) {
+            border-color: #a0a0a0 !important;
+            color: #a0a0a0 !important;
+            box-shadow: 0 0 15px rgba(160, 160, 160, 0.2) !important;
+        }
+
+        body.theme-dark .toggle-btn::before {
+            border-color: rgba(160, 160, 160, 0.3) !important;
+        }
+
+        body.theme-dark .brand {
+            color: #c0c0c0 !important;
+            text-shadow: 0 0 10px rgba(200, 200, 200, 0.5) !important;
+        }
+
+        /* Dark theme - tech buttons */
+        body.theme-dark .tech-btn {
+            color: #a0a0a0 !important;
+            border-color: #a0a0a0 !important;
+            box-shadow: 0 0 20px rgba(160, 160, 160, 0.2), inset 0 0 20px rgba(160, 160, 160, 0.05) !important;
+        }
+
+        body.theme-dark .tech-btn:hover {
+            background: #a0a0a0 !important;
+            color: #000000 !important;
+        }
+
+        /* Dark theme - title glow */
+        body.theme-dark .glitch-title {
+            text-shadow: 0 0 30px rgba(200, 200, 200, 0.5) !important;
+            color: #ffffff !important;
+        }
+
+        /* Dark theme - HUD panels */
+        body.theme-dark .hud-panel {
+            border-color: rgba(100, 100, 100, 0.3) !important;
+            background: rgba(15, 15, 15, 0.95) !important;
+        }
+
+        /* Dark theme - glass elements */
+        body.theme-dark .roulette-box,
+        body.theme-dark .timeline-box,
+        body.theme-dark .mission-log {
+            border-color: rgba(100, 100, 100, 0.3) !important;
+            background: rgba(15, 15, 15, 0.95) !important;
+        }
+
+        /* Dark theme - option buttons */
+        body.theme-dark .opt-btn {
+            border-color: #606060 !important;
+            color: #c0c0c0 !important;
+        }
+
+        body.theme-dark .opt-btn:hover {
+            border-color: #a0a0a0 !important;
+            background: rgba(160, 160, 160, 0.1) !important;
+        }
+
+        /* Dark theme - game over screen */
+        body.theme-dark #s-over {
+            background: linear-gradient(180deg, #000000 0%, #0a0a0a 50%, #000000 100%) !important;
+        }
+
+        /* Dark theme - win modal */
+        body.theme-dark .win-modal {
+            background: linear-gradient(180deg, #000000 0%, #0a0a0a 50%, #000000 100%) !important;
+        }
+
+        /* Dark theme - share card wrapper */
+        body.theme-dark .share-card-wrapper {
+            background: linear-gradient(135deg, #404040, #606060, #404040) !important;
+        }
+
+        /* Dark theme - time bar */
+        body.theme-dark .time-bar {
+            background: linear-gradient(90deg, #505050, #a0a0a0) !important;
+        }
+
+        /* Dark theme - scanline effect toned down */
+        body.theme-dark .vignette {
+            background: radial-gradient(circle, transparent 30%, rgba(0, 0, 0, 0.95) 100%) !important;
         }
 
         /* HUD - REDESIGNED */
@@ -1625,30 +1807,36 @@
             }
         }
 
-        /* WIN SCREEN - CYBERPUNK HOLOGRAPHIC CELEBRATION */
+        /* =============================================
+           WIN SCREEN - TIME SAVED / TIMELINE RESTORED
+           Theme: Expanding time rings, clock hands, forward motion
+           ============================================= */
         .win-modal {
             position: fixed;
             inset: 0;
             z-index: 2000;
             background:
-                /* Holographic grid overlay */
-                repeating-linear-gradient(0deg,
-                    transparent,
-                    transparent 50px,
-                    rgba(57, 255, 20, 0.03) 50px,
-                    rgba(57, 255, 20, 0.03) 51px),
-                repeating-linear-gradient(90deg,
-                    transparent,
-                    transparent 50px,
-                    rgba(57, 255, 20, 0.03) 50px,
-                    rgba(57, 255, 20, 0.03) 51px),
-                /* Radial victory glow */
-                radial-gradient(ellipse at 50% 50%, rgba(57, 255, 20, 0.2) 0%, transparent 60%),
-                radial-gradient(ellipse at 50% 0%, rgba(0, 255, 136, 0.25) 0%, transparent 50%),
-                radial-gradient(ellipse at 50% 100%, rgba(0, 243, 255, 0.2) 0%, transparent 50%),
-                /* Deep space base */
-                linear-gradient(180deg, #000805 0%, #001510 30%, #000f0a 70%, #000503 100%);
-            backdrop-filter: blur(5px);
+                /* INTENSE BLACK VIGNETTE BORDER */
+                radial-gradient(ellipse at 50% 50%, transparent 30%, rgba(0, 0, 0, 0.7) 60%, rgba(0, 0, 0, 0.95) 80%, #000000 100%),
+                /* Clock-like concentric time rings */
+                repeating-radial-gradient(circle at 50% 50%,
+                    transparent 0px,
+                    transparent 60px,
+                    rgba(57, 255, 20, 0.04) 62px,
+                    transparent 64px,
+                    transparent 120px,
+                    rgba(0, 243, 255, 0.03) 122px,
+                    transparent 124px),
+                /* Clock hand radial lines - 12 directions */
+                repeating-conic-gradient(from 0deg at 50% 50%,
+                    transparent 0deg,
+                    rgba(57, 255, 20, 0.02) 1deg,
+                    transparent 2deg,
+                    transparent 30deg),
+                /* Central time glow - TIME RESTORED */
+                radial-gradient(ellipse at 50% 50%, rgba(57, 255, 20, 0.15) 0%, transparent 40%),
+                /* Deep time-space base */
+                linear-gradient(180deg, #000502 0%, #000805 30%, #000503 70%, #000000 100%);
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -1658,7 +1846,7 @@
             transition: 0.5s;
         }
 
-        /* Pulsing energy rings from center */
+        /* ROTATING TIME RINGS - Expanding outward (time gained!) */
         .win-modal::before {
             content: '';
             position: fixed;
@@ -1668,73 +1856,69 @@
             height: 200vmax;
             transform: translate(-50%, -50%);
             background:
+                /* Multiple clock rings at different sizes */
                 repeating-radial-gradient(circle at center,
                     transparent 0px,
-                    transparent 80px,
-                    rgba(57, 255, 20, 0.08) 82px,
-                    transparent 84px,
-                    transparent 160px,
-                    rgba(0, 255, 136, 0.06) 162px,
-                    transparent 164px);
-            animation: pulseRingsWin 4s ease-in-out infinite;
+                    transparent 100px,
+                    rgba(57, 255, 20, 0.06) 102px,
+                    transparent 106px,
+                    transparent 200px,
+                    rgba(0, 255, 136, 0.05) 202px,
+                    transparent 206px,
+                    transparent 300px,
+                    rgba(0, 243, 255, 0.04) 302px,
+                    transparent 306px);
+            animation: timeExpandWin 8s linear infinite;
             pointer-events: none;
             z-index: 1;
         }
 
-        /* Glitchy horizontal scanlines + vertical bars */
+        /* CLOCK HANDS - Rotating radial lines */
         .win-modal::after {
             content: '';
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
+            top: 50%;
+            left: 50%;
+            width: 200vmax;
+            height: 200vmax;
+            transform: translate(-50%, -50%);
             background:
-                /* Moving vertical light bars */
-                linear-gradient(90deg,
-                    transparent 0%,
-                    transparent 20%,
-                    rgba(57, 255, 20, 0.05) 25%,
-                    transparent 30%,
-                    transparent 45%,
-                    rgba(0, 243, 255, 0.04) 50%,
-                    transparent 55%,
-                    transparent 70%,
-                    rgba(57, 255, 20, 0.05) 75%,
-                    transparent 80%,
-                    transparent 100%),
-                /* Scanline effect */
-                repeating-linear-gradient(0deg,
-                    transparent 0px,
-                    transparent 2px,
-                    rgba(57, 255, 20, 0.02) 3px,
-                    transparent 4px);
-            animation: scanLinesWin 3s linear infinite;
+                /* Hour hand */
+                conic-gradient(from 0deg at 50% 50%,
+                    transparent 0deg,
+                    rgba(57, 255, 20, 0.15) 2deg,
+                    transparent 4deg,
+                    transparent 360deg),
+                /* Minute hand */
+                conic-gradient(from 90deg at 50% 50%,
+                    transparent 0deg,
+                    rgba(0, 243, 255, 0.1) 1deg,
+                    transparent 3deg,
+                    transparent 360deg);
+            animation: clockHandsWin 20s linear infinite;
             pointer-events: none;
-            z-index: 1;
+            z-index: 2;
         }
 
-        @keyframes pulseRingsWin {
-
-            0%,
-            100% {
-                transform: translate(-50%, -50%) scale(1);
-                opacity: 0.8;
-            }
-
-            50% {
-                transform: translate(-50%, -50%) scale(1.1);
-                opacity: 1;
-            }
-        }
-
-        @keyframes scanLinesWin {
+        /* Time rings expand outward - TIME GAINED */
+        @keyframes timeExpandWin {
             0% {
-                background-position: 0 0, 0 0;
+                transform: translate(-50%, -50%) scale(1) rotate(0deg);
             }
 
             100% {
-                background-position: 100vw 0, 0 4px;
+                transform: translate(-50%, -50%) scale(1.2) rotate(30deg);
+            }
+        }
+
+        /* Clock hands rotate forward - TIME FLOWS */
+        @keyframes clockHandsWin {
+            0% {
+                transform: translate(-50%, -50%) rotate(0deg);
+            }
+
+            100% {
+                transform: translate(-50%, -50%) rotate(360deg);
             }
         }
 
@@ -1829,33 +2013,39 @@
             }
         }
 
-        /* GAME OVER SCREEN - CYBERPUNK GLITCH FAILURE */
+        /* =============================================
+           GAME OVER SCREEN - TIME LOST / TIMELINE BROKEN
+           Theme: Collapsing time rings, reverse clock, rewind motion
+           Colors: INDIGO and BLACK only
+           ============================================= */
         #s-over {
             background:
-                /* Diagonal warning stripes */
-                repeating-linear-gradient(-45deg,
-                    transparent,
-                    transparent 40px,
-                    rgba(255, 0, 60, 0.03) 40px,
-                    rgba(255, 0, 60, 0.03) 80px),
-                /* Horizontal glitch lines */
-                repeating-linear-gradient(0deg,
-                    transparent,
-                    transparent 3px,
-                    rgba(255, 0, 60, 0.015) 3px,
-                    rgba(255, 0, 60, 0.015) 4px),
-                /* Danger zones */
-                radial-gradient(ellipse at 50% 0%, rgba(255, 0, 60, 0.3) 0%, transparent 50%),
-                radial-gradient(ellipse at 0% 50%, rgba(153, 51, 255, 0.2) 0%, transparent 50%),
-                radial-gradient(ellipse at 100% 50%, rgba(153, 51, 255, 0.2) 0%, transparent 50%),
-                radial-gradient(ellipse at 50% 100%, rgba(255, 0, 60, 0.25) 0%, transparent 50%),
-                /* Deep void base */
-                linear-gradient(180deg, #080005 0%, #100008 30%, #0d0010 70%, #050003 100%) !important;
+                /* INTENSE BLACK VIGNETTE BORDER */
+                radial-gradient(ellipse at 50% 50%, transparent 30%, rgba(0, 0, 0, 0.7) 60%, rgba(0, 0, 0, 0.95) 80%, #000000 100%),
+                /* Clock-like concentric time rings - COLLAPSING */
+                repeating-radial-gradient(circle at 50% 50%,
+                    transparent 0px,
+                    transparent 60px,
+                    rgba(79, 70, 229, 0.05) 62px,
+                    transparent 64px,
+                    transparent 120px,
+                    rgba(30, 27, 75, 0.08) 122px,
+                    transparent 124px),
+                /* Clock hand radial lines - 12 directions (broken clock) */
+                repeating-conic-gradient(from 0deg at 50% 50%,
+                    transparent 0deg,
+                    rgba(79, 70, 229, 0.03) 1deg,
+                    transparent 2deg,
+                    transparent 30deg),
+                /* Central void - TIME CONSUMED */
+                radial-gradient(ellipse at 50% 50%, rgba(79, 70, 229, 0.1) 0%, transparent 35%),
+                /* Deep void base - PURE BLACK with subtle indigo */
+                linear-gradient(180deg, #000002 0%, #03031a 30%, #05051a 50%, #03031a 70%, #000000 100%) !important;
             position: absolute;
             inset: 0;
         }
 
-        /* Pulsing danger rings */
+        /* COLLAPSING TIME RINGS - Shrinking inward (time lost!) */
         #s-over::before {
             content: '';
             position: fixed;
@@ -1865,133 +2055,69 @@
             height: 200vmax;
             transform: translate(-50%, -50%);
             background:
+                /* Multiple clock rings collapsing - INDIGO */
                 repeating-radial-gradient(circle at center,
                     transparent 0px,
                     transparent 100px,
-                    rgba(255, 0, 60, 0.06) 102px,
-                    transparent 104px,
+                    rgba(79, 70, 229, 0.06) 102px,
+                    transparent 106px,
                     transparent 200px,
-                    rgba(153, 51, 255, 0.05) 202px,
-                    transparent 204px);
-            animation: pulseRingsLose 5s ease-in-out infinite;
+                    rgba(129, 140, 248, 0.04) 202px,
+                    transparent 206px,
+                    transparent 300px,
+                    rgba(30, 27, 75, 0.05) 302px,
+                    transparent 306px);
+            animation: timeCollapseLose 10s linear infinite;
             pointer-events: none;
             z-index: 1;
         }
 
-        /* Animated glitch/static noise effect */
+        /* REWINDING CLOCK HANDS - Rotating backwards - INDIGO */
         #s-over::after {
             content: '';
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
+            top: 50%;
+            left: 50%;
+            width: 200vmax;
+            height: 200vmax;
+            transform: translate(-50%, -50%);
             background:
-                /* VHS tracking errors */
-                linear-gradient(90deg,
-                    transparent 0%,
-                    transparent 15%,
-                    rgba(255, 0, 60, 0.08) 16%,
-                    transparent 17%,
-                    transparent 40%,
-                    rgba(153, 51, 255, 0.06) 42%,
-                    transparent 44%,
-                    transparent 65%,
-                    rgba(255, 0, 60, 0.05) 66%,
-                    transparent 68%,
-                    transparent 85%,
-                    rgba(153, 51, 255, 0.07) 87%,
-                    transparent 89%,
-                    transparent 100%),
-                /* Horizontal glitch bars */
-                repeating-linear-gradient(0deg,
-                    transparent 0px,
-                    transparent 80px,
-                    rgba(255, 0, 60, 0.04) 82px,
-                    transparent 84px,
-                    transparent 160px,
-                    rgba(153, 51, 255, 0.03) 162px,
-                    transparent 164px);
-            animation: glitchBarsLose 2s steps(10) infinite, glitchShiftLose 0.5s steps(3) infinite;
+                /* Hour hand - REWINDING - INDIGO */
+                conic-gradient(from 0deg at 50% 50%,
+                    transparent 0deg,
+                    rgba(79, 70, 229, 0.15) 2deg,
+                    transparent 4deg,
+                    transparent 360deg),
+                /* Minute hand - REWINDING FASTER - LIGHT INDIGO */
+                conic-gradient(from 180deg at 50% 50%,
+                    transparent 0deg,
+                    rgba(129, 140, 248, 0.1) 1deg,
+                    transparent 3deg,
+                    transparent 360deg);
+            animation: clockHandsLose 15s linear infinite reverse;
             pointer-events: none;
-            z-index: 1;
+            z-index: 2;
         }
 
-        @keyframes pulseRingsLose {
-
-            0%,
-            100% {
-                transform: translate(-50%, -50%) scale(1);
-                opacity: 0.7;
+        /* Time rings collapse inward - TIME LOST */
+        @keyframes timeCollapseLose {
+            0% {
+                transform: translate(-50%, -50%) scale(1.2) rotate(30deg);
             }
 
-            50% {
-                transform: translate(-50%, -50%) scale(1.15);
-                opacity: 1;
+            100% {
+                transform: translate(-50%, -50%) scale(1) rotate(0deg);
             }
         }
 
-        @keyframes glitchBarsLose {
+        /* Clock hands rotate BACKWARDS - TIME REWINDS */
+        @keyframes clockHandsLose {
+            0% {
+                transform: translate(-50%, -50%) rotate(0deg);
+            }
 
-            0%,
             100% {
-                background-position: 0 0, 0 0;
-            }
-
-            10% {
-                background-position: -5vw 0, 0 10px;
-            }
-
-            20% {
-                background-position: 3vw 0, 0 -5px;
-            }
-
-            30% {
-                background-position: -10vw 0, 0 15px;
-            }
-
-            40% {
-                background-position: 8vw 0, 0 -10px;
-            }
-
-            50% {
-                background-position: -3vw 0, 0 5px;
-            }
-
-            60% {
-                background-position: 5vw 0, 0 -15px;
-            }
-
-            70% {
-                background-position: -8vw 0, 0 8px;
-            }
-
-            80% {
-                background-position: 2vw 0, 0 -3px;
-            }
-
-            90% {
-                background-position: -5vw 0, 0 12px;
-            }
-        }
-
-        @keyframes glitchShiftLose {
-
-            0%,
-            100% {
-                clip-path: inset(0 0 0 0);
-            }
-
-            25% {
-                clip-path: inset(10% 0 80% 0);
-            }
-
-            50% {
-                clip-path: inset(40% 0 50% 0);
-            }
-
-            75% {
-                clip-path: inset(70% 0 20% 0);
+                transform: translate(-50%, -50%) rotate(360deg);
             }
         }
 
@@ -2695,6 +2821,51 @@
                 style="font-family:var(--f-ui); font-size:1rem; color:var(--primary); font-weight:700; letter-spacing:2px; margin-top:0px; text-shadow: 0 0 5px rgba(0, 243, 255, 0.4);">
                 DEV: KAUSTAV CHOWDHURY
             </div>
+        </div>
+        <!-- TOGGLE CONTROLS -->
+        <div class="toggle-controls">
+            <!-- SOUND TOGGLE -->
+            <button class="toggle-btn" id="sound-toggle" onclick="toggleSound()" title="Toggle Sound">
+                <span class="icon">🔊</span>
+            </button>
+            <!-- THEME TOGGLE - DARK MONOCHROME THEME -->
+            <button class="toggle-btn theme-btn" id="theme-toggle-btn" title="Switch Theme" onclick="
+                var r = document.documentElement;
+                var isDark = document.body.classList.contains('theme-dark');
+                if (isDark) {
+                    /* SWITCH BACK TO INDIGO */
+                    r.style.setProperty('--primary', '#4f46e5');
+                    r.style.setProperty('--primary-light', '#818cf8');
+                    r.style.setProperty('--secondary', '#a5b4fc');
+                    r.style.setProperty('--danger', '#ff003c');
+                    r.style.setProperty('--green', '#39ff14');
+                    r.style.setProperty('--text-main', '#ffffff');
+                    r.style.setProperty('--text-dim', '#94a3b8');
+                    r.style.setProperty('--bg-color', '#000005');
+                    r.style.setProperty('--glass-bg', 'rgba(0, 0, 5, 0.98)');
+                    r.style.setProperty('--glass-border', '1px solid rgba(79, 70, 229, 0.2)');
+                    document.body.classList.remove('theme-dark');
+                    this.querySelector('.icon').textContent = '🔄';
+                    console.log('Switched to INDIGO (Color Mode)');
+                } else {
+                    /* SWITCH TO DARK MONOCHROME - Black/Ash/White only */
+                    r.style.setProperty('--primary', '#a0a0a0');
+                    r.style.setProperty('--primary-light', '#c0c0c0');
+                    r.style.setProperty('--secondary', '#808080');
+                    r.style.setProperty('--danger', '#606060');
+                    r.style.setProperty('--green', '#d0d0d0');
+                    r.style.setProperty('--text-main', '#ffffff');
+                    r.style.setProperty('--text-dim', '#707070');
+                    r.style.setProperty('--bg-color', '#000000');
+                    r.style.setProperty('--glass-bg', 'rgba(10, 10, 10, 0.98)');
+                    r.style.setProperty('--glass-border', '1px solid rgba(100, 100, 100, 0.3)');
+                    document.body.classList.add('theme-dark');
+                    this.querySelector('.icon').textContent = '🌙';
+                    console.log('Switched to DARK MONO (Black/Ash/White)');
+                }
+            ">
+                <span class="icon">🔄</span>
+            </button>
         </div>
     </header>
 
@@ -3421,6 +3592,92 @@
             setTimeout(() => bgMusic.volume = 0.25, 5000); // Updated to match new volume
         }
 
+        // =============================================
+        // GLOBAL TOGGLE SYSTEMS
+        // =============================================
+        console.log('✅ TOGGLE SYSTEMS LOADED - Functions toggleSound() and toggleTheme() are ready!');
+
+        // --- SOUND TOGGLE ---
+        let soundEnabled = true;
+        let savedBgmVolume = 0.25;
+
+        function toggleSound() {
+            const btn = document.getElementById('sound-toggle');
+            const icon = btn.querySelector('.icon');
+
+            soundEnabled = !soundEnabled;
+
+            if (soundEnabled) {
+                // Enable sound
+                bgMusic.volume = savedBgmVolume;
+                if (AudioSystem.ctx && AudioSystem.ctx.state === 'suspended') {
+                    AudioSystem.resume();
+                }
+                icon.textContent = '🔊';
+                btn.classList.remove('sound-off');
+                btn.title = 'Sound ON - Click to mute';
+            } else {
+                // Disable sound
+                savedBgmVolume = bgMusic.volume || 0.25;
+                bgMusic.volume = 0;
+                if (AudioSystem.ctx) {
+                    AudioSystem.ctx.suspend();
+                }
+                icon.textContent = '🔇';
+                btn.classList.add('sound-off');
+                btn.title = 'Sound OFF - Click to unmute';
+            }
+        }
+
+        // --- THEME TOGGLE ---
+        let currentTheme = 'indigo'; // 'indigo' or 'emerald'
+
+        function toggleTheme() {
+            try {
+                console.log('🔄 toggleTheme() STARTING - Current theme:', currentTheme);
+
+                const btn = document.getElementById('theme-toggle-btn');
+                console.log('🔍 Button found:', !!btn);
+
+                if (!btn) {
+                    console.error('Theme button not found!');
+                    return;
+                }
+
+                const icon = btn.querySelector('.icon');
+                const root = document.documentElement;
+                console.log('🔍 Root element:', !!root);
+
+                // Rotate icon
+                if (icon) {
+                    icon.style.transform = 'rotate(360deg)';
+                    setTimeout(() => icon.style.transform = 'rotate(0deg)', 500);
+                }
+
+                if (currentTheme === 'indigo') {
+                    console.log('🟢 Switching to EMERALD...');
+                    root.style.setProperty('--primary', '#10b981');
+                    root.style.setProperty('--primary-light', '#34d399');
+                    root.style.setProperty('--secondary', '#6ee7b7');
+                    document.body.classList.add('theme-emerald');
+                    currentTheme = 'emerald';
+                    btn.title = 'Theme: EMERALD - Click to switch';
+                    console.log('✅ EMERALD APPLIED! Check if colors changed.');
+                } else {
+                    console.log('🔵 Switching to INDIGO...');
+                    root.style.setProperty('--primary', '#4f46e5');
+                    root.style.setProperty('--primary-light', '#818cf8');
+                    root.style.setProperty('--secondary', '#a5b4fc');
+                    document.body.classList.remove('theme-emerald');
+                    currentTheme = 'indigo';
+                    btn.title = 'Theme: INDIGO - Click to switch';
+                    console.log('✅ INDIGO APPLIED! Check if colors changed.');
+                }
+            } catch (error) {
+                console.error('❌ ERROR in toggleTheme:', error);
+            }
+        }
+
         // --- 2. AUDIO (Safe) ---
         // --- 2. AUDIO SYSTEM ---
         const AudioSystem = {
@@ -3434,6 +3691,7 @@
             },
 
             resume() {
+                if (!soundEnabled) return; // Respect global sound toggle
                 if (this.ctx && this.ctx.state === 'suspended') this.ctx.resume();
             },
 
@@ -4942,6 +5200,39 @@
         HeartbeatVignetteSystem.init();
         ScreenCrackSystem.init();
         KIAStampSystem.init();
+
+        // =============================================
+        // ATTACH TOGGLE BUTTON EVENT LISTENERS
+        // =============================================
+        document.addEventListener('DOMContentLoaded', function () {
+            console.log('🔧 Attaching toggle button event listeners...');
+
+            const soundBtn = document.getElementById('sound-toggle');
+            const themeBtn = document.getElementById('theme-toggle-btn');
+
+            if (soundBtn) {
+                soundBtn.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    console.log('🔊 Sound button clicked via event listener!');
+                    toggleSound();
+                });
+                console.log('✅ Sound button listener attached');
+            } else {
+                console.error('❌ Sound button not found!');
+            }
+
+            if (themeBtn) {
+                themeBtn.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    console.log('🔄 Theme button clicked via event listener!');
+                    toggleTheme();
+                });
+                console.log('✅ Theme button listener attached');
+            } else {
+                console.error('❌ Theme button not found!');
+            }
+        });
+
     </script>
 </body>
 
