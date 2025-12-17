@@ -24,25 +24,30 @@
         @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&display=swap');
 
         :root {
-            /* INDIGO DARK THEME - Rich Blue Palette */
-            --bg-color: #000005;
-            --bg-dark: #000002;
-            --primary: #4f46e5;
-            --primary-light: #818cf8;
-            --secondary: #a5b4fc;
-            --dark-blue: #1e1b4b;
+            /* EXTREME BLOODY HORROR THEME */
+            --bg-color: #050000;
+            --bg-dark: #020000;
+            --primary: #ff1a1a;
+            --primary-light: #ff6666;
+            --secondary: #ff4444;
+            --dark-blue: #1a0000;
             --accent: #ffffff;
-            --danger: #ff003c;
-            --green: #39ff14;
+            --danger: #ff0000;
+            --blood: #8b0000;
+            --blood-dark: #4a0000;
+            --blood-bright: #cc0000;
+            --green: #00ff00;
             --text-main: #ffffff;
-            --text-dim: #94a3b8;
-            --particle-col: #ffffff;
+            --text-dim: #cccccc;
+            --particle-col: #ff0000;
+            --horror-glow: rgba(255, 0, 0, 0.25);
+            --blood-glow: rgba(139, 0, 0, 0.4);
 
-            /* DEEP BLACK GLASS - Darker & Richer */
-            --glass-bg: rgba(0, 0, 5, 0.98);
-            --glass-border: 1px solid rgba(79, 70, 229, 0.2);
+            /* BLOOD-STAINED GLASS - Less opaque for readability */
+            --glass-bg: rgba(15, 0, 0, 0.9);
+            --glass-border: 1px solid rgba(139, 0, 0, 0.5);
             --glass-blur: blur(30px);
-            --glass-shadow: 0 25px 60px rgba(0, 0, 0, 0.95);
+            --glass-shadow: 0 30px 80px rgba(139, 0, 0, 0.4);
 
             /* FONTS */
             --f-title: 'Orbitron', sans-serif;
@@ -119,6 +124,267 @@
 
             100% {
                 box-shadow: inset 0 0 200px rgba(0, 0, 0, 1);
+            }
+        }
+
+        /* =============================================
+           EXTREME BLOODY HORROR EFFECTS
+           ============================================= */
+
+        /* BLOOD RED AMBIENT - Intense glow from all edges */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(ellipse at 50% 0%, rgba(139, 0, 0, 0.6) 0%, transparent 40%),
+                radial-gradient(ellipse at 0% 50%, rgba(255, 0, 0, 0.3) 0%, transparent 30%),
+                radial-gradient(ellipse at 100% 50%, rgba(255, 0, 0, 0.3) 0%, transparent 30%),
+                radial-gradient(ellipse at 50% 100%, rgba(139, 0, 0, 0.5) 0%, transparent 40%),
+                radial-gradient(circle at 30% 20%, rgba(200, 0, 0, 0.2) 0%, transparent 20%),
+                radial-gradient(circle at 70% 80%, rgba(200, 0, 0, 0.2) 0%, transparent 20%);
+            pointer-events: none;
+            z-index: 9998;
+            animation: bloodPulse 4s ease-in-out infinite alternate;
+        }
+
+        @keyframes bloodPulse {
+            0% {
+                opacity: 0.5;
+                filter: brightness(0.9);
+            }
+
+            50% {
+                opacity: 0.8;
+                filter: brightness(1.1);
+            }
+
+            100% {
+                opacity: 0.6;
+                filter: brightness(1);
+            }
+        }
+
+        /* BLOOD VEINS OVERLAY - Creepy pulsing veins */
+        .blood-veins {
+            position: fixed;
+            inset: 0;
+            background:
+                linear-gradient(90deg, transparent 49%, rgba(139, 0, 0, 0.1) 50%, transparent 51%),
+                linear-gradient(0deg, transparent 49%, rgba(139, 0, 0, 0.1) 50%, transparent 51%);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: 9996;
+            animation: veinPulse 2s ease-in-out infinite;
+            opacity: 0.3;
+        }
+
+        @keyframes veinPulse {
+
+            0%,
+            100% {
+                opacity: 0.2;
+            }
+
+            50% {
+                opacity: 0.4;
+            }
+        }
+
+        /* BLOOD DRIP EFFECT - Subtle for readability */
+        .blood-drip {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 100vh;
+            background:
+                linear-gradient(180deg, rgba(139, 0, 0, 0.5) 0%, rgba(139, 0, 0, 0.2) 5%, transparent 12%),
+                linear-gradient(180deg, rgba(200, 0, 0, 0.4) 0%, transparent 6%) 20% 0,
+                linear-gradient(180deg, rgba(139, 0, 0, 0.3) 0%, transparent 8%) 40% 0,
+                linear-gradient(180deg, rgba(180, 0, 0, 0.4) 0%, transparent 7%) 60% 0,
+                linear-gradient(180deg, rgba(139, 0, 0, 0.3) 0%, transparent 5%) 80% 0;
+            background-size: 100% 100%, 3px 100%, 2px 100%, 4px 100%, 2px 100%;
+            background-repeat: no-repeat;
+            pointer-events: none;
+            z-index: 9995;
+            animation: bloodDripAnim 8s ease-in-out infinite;
+            opacity: 0.35;
+        }
+
+        @keyframes bloodDripAnim {
+
+            0%,
+            100% {
+                opacity: 0.3;
+                transform: translateY(0);
+            }
+
+            30% {
+                opacity: 0.6;
+            }
+
+            50% {
+                opacity: 0.5;
+                transform: translateY(5px);
+            }
+
+            70% {
+                opacity: 0.4;
+            }
+        }
+
+        /* Scanlines for horror CRT feel */
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: repeating-linear-gradient(0deg,
+                    rgba(0, 0, 0, 0.1) 0px,
+                    rgba(0, 0, 0, 0.1) 1px,
+                    transparent 1px,
+                    transparent 3px);
+            pointer-events: none;
+            z-index: 9997;
+            opacity: 0.3;
+        }
+
+        /* Screen Shake Effect */
+        @keyframes horrorShake {
+
+            0%,
+            100% {
+                transform: translate(0);
+            }
+
+            10% {
+                transform: translate(-2px, -1px);
+            }
+
+            20% {
+                transform: translate(2px, 1px);
+            }
+
+            30% {
+                transform: translate(-1px, 2px);
+            }
+
+            40% {
+                transform: translate(1px, -1px);
+            }
+
+            50% {
+                transform: translate(-2px, 1px);
+            }
+
+            60% {
+                transform: translate(2px, -2px);
+            }
+
+            70% {
+                transform: translate(-1px, -1px);
+            }
+
+            80% {
+                transform: translate(1px, 2px);
+            }
+
+            90% {
+                transform: translate(-2px, -2px);
+            }
+        }
+
+        body.horror-shake {
+            animation: horrorShake 0.4s ease-in-out;
+        }
+
+        /* Anxiety Pulse Effect */
+        @keyframes anxietyPulse {
+
+            0%,
+            100% {
+                box-shadow: inset 0 0 0 0 var(--horror-glow);
+            }
+
+            50% {
+                box-shadow: inset 0 0 100px 30px var(--horror-glow);
+            }
+        }
+
+        body.anxiety-mode {
+            animation: anxietyPulse 2s ease-in-out infinite;
+        }
+
+        /* Eerie Float Animation */
+        @keyframes eerieFloat {
+
+            0%,
+            100% {
+                transform: translateY(0) rotate(0deg);
+            }
+
+            25% {
+                transform: translateY(-3px) rotate(0.3deg);
+            }
+
+            50% {
+                transform: translateY(-6px) rotate(-0.3deg);
+            }
+
+            75% {
+                transform: translateY(-3px) rotate(0.2deg);
+            }
+        }
+
+        /* Glitch Screen Effect */
+        @keyframes glitchScreen {
+            0% {
+                transform: skewX(0) translate(0);
+                filter: hue-rotate(0deg);
+            }
+
+            20% {
+                transform: skewX(-2deg) translate(-2px, 0);
+                filter: hue-rotate(30deg);
+            }
+
+            40% {
+                transform: skewX(2deg) translate(2px, 1px);
+            }
+
+            60% {
+                transform: skewX(-1deg) translate(-1px, -1px);
+                filter: hue-rotate(-20deg);
+            }
+
+            80% {
+                transform: skewX(1deg) translate(1px, 0);
+            }
+
+            100% {
+                transform: skewX(0) translate(0);
+                filter: hue-rotate(0deg);
+            }
+        }
+
+        body.glitch-active {
+            animation: glitchScreen 0.3s ease-in-out;
+        }
+
+        /* Blood Drip from Top */
+        @keyframes bloodDrip {
+            0% {
+                transform: scaleY(0);
+                opacity: 0;
+            }
+
+            10% {
+                opacity: 0.6;
+            }
+
+            100% {
+                transform: scaleY(1);
+                opacity: 0;
             }
         }
 
@@ -874,9 +1140,9 @@
         .tech-btn {
             position: relative;
             z-index: 10000;
-            background: rgba(0, 243, 255, 0.05);
+            background: rgba(20, 0, 0, 0.8);
             color: var(--primary);
-            border: 2px solid var(--primary);
+            border: 2px solid #000000;
             padding: 22px 55px;
             font-family: var(--f-title);
             font-size: 1.3rem;
@@ -888,10 +1154,10 @@
             pointer-events: auto;
             overflow: hidden;
             animation: btnPulse 2s infinite;
-            box-shadow: 0 0 20px rgba(79, 70, 229, 0.3), inset 0 0 20px rgba(79, 70, 229, 0.1);
+            box-shadow: 0 0 20px rgba(139, 0, 0, 0.4), inset 0 0 20px rgba(139, 0, 0, 0.2);
         }
 
-        /* Scanning line effect */
+        /* BLACK SCANNING LINE effect */
         .tech-btn::before {
             content: '';
             position: absolute;
@@ -899,7 +1165,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(transparent, rgba(79, 70, 229, 0.4), transparent);
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.6), transparent);
             animation: btnScan 2s linear infinite;
         }
 
@@ -907,20 +1173,25 @@
             content: '';
             position: absolute;
             inset: 2px;
-            background: transparent;
-            border: 1px solid rgba(79, 70, 229, 0.3);
+            background: repeating-linear-gradient(0deg,
+                    transparent 0px,
+                    transparent 3px,
+                    rgba(0, 0, 0, 0.1) 3px,
+                    rgba(0, 0, 0, 0.1) 5px);
+            border: 1px solid rgba(139, 0, 0, 0.3);
             border-radius: 2px;
+            pointer-events: none;
         }
 
         @keyframes btnPulse {
 
             0%,
             100% {
-                box-shadow: 0 0 20px rgba(79, 70, 229, 0.3), inset 0 0 20px rgba(79, 70, 229, 0.1);
+                box-shadow: 0 0 20px rgba(139, 0, 0, 0.4), inset 0 0 20px rgba(139, 0, 0, 0.2);
             }
 
             50% {
-                box-shadow: 0 0 40px rgba(79, 70, 229, 0.6), inset 0 0 30px rgba(79, 70, 229, 0.2);
+                box-shadow: 0 0 40px rgba(200, 0, 0, 0.6), inset 0 0 30px rgba(139, 0, 0, 0.3);
             }
         }
 
@@ -1724,6 +1995,486 @@
                 transform: scale(0.9);
                 transform-origin: bottom right;
             }
+        }
+
+        /* =========================================
+           MOBILE BLOCKER
+           ========================================= */
+        .mobile-blocker {
+            position: fixed;
+            inset: 0;
+            z-index: 99999;
+            background: linear-gradient(180deg, #000005 0%, #0a0a1a 50%, #000005 100%);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .mobile-blocker.active {
+            display: flex;
+        }
+
+        .mobile-blocker h1 {
+            font-family: var(--f-title);
+            font-size: 1.8rem;
+            color: var(--danger);
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px var(--danger);
+        }
+
+        .mobile-blocker p {
+            font-family: var(--f-mono);
+            color: var(--text-dim);
+            max-width: 350px;
+            line-height: 1.6;
+        }
+
+        .mobile-blocker .desktop-icon {
+            font-size: 5rem;
+            margin-top: 30px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        /* =========================================
+           LUCK RANDOMIZER SCREEN
+           ========================================= */
+        .luck-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .luck-slots {
+            display: flex;
+            gap: 20px;
+        }
+
+        .luck-slot {
+            width: 100px;
+            height: 130px;
+            background: var(--glass-bg);
+            border: 2px solid var(--primary);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--f-title);
+            font-size: 2.5rem;
+            color: var(--primary);
+            box-shadow: 0 0 20px rgba(79, 70, 229, 0.3), inset 0 0 30px rgba(0, 0, 0, 0.5);
+            transition: all 0.3s ease;
+        }
+
+        .luck-slot.spinning {
+            animation: slotGlow 0.15s infinite alternate;
+        }
+
+        .luck-slot.selected {
+            border-color: var(--green);
+            color: var(--green);
+            box-shadow: 0 0 40px rgba(57, 255, 20, 0.5), inset 0 0 20px rgba(57, 255, 20, 0.1);
+            transform: scale(1.1);
+        }
+
+        @keyframes slotGlow {
+            0% {
+                box-shadow: 0 0 20px rgba(79, 70, 229, 0.3);
+            }
+
+            100% {
+                box-shadow: 0 0 40px rgba(79, 70, 229, 0.6);
+            }
+        }
+
+        .luck-result {
+            font-family: var(--f-title);
+            font-size: 1.8rem;
+            color: var(--primary);
+            text-align: center;
+            min-height: 100px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .luck-result .mode-desc {
+            font-family: var(--f-mono);
+            font-size: 1rem;
+            color: var(--text-dim);
+        }
+
+        .luck-box {
+            background: var(--glass-bg);
+            padding: 50px;
+            border: var(--glass-border);
+            text-align: center;
+            border-radius: 16px;
+            box-shadow: var(--glass-shadow);
+            backdrop-filter: var(--glass-blur);
+        }
+
+        /* =========================================
+           MODE B: TIME LOOP / DREAM MODE
+           ========================================= */
+        body.mode-dream {
+            animation: dreamPulse 3s infinite alternate;
+        }
+
+        body.mode-dream .game-grid {
+            filter: hue-rotate(15deg) saturate(1.1);
+        }
+
+        body.mode-dream .q-card {
+            animation: dreamGlitchSubtle 5s infinite;
+        }
+
+        @keyframes dreamPulse {
+            0% {
+                filter: brightness(1) saturate(1);
+            }
+
+            100% {
+                filter: brightness(1.05) saturate(1.15);
+            }
+        }
+
+        @keyframes dreamGlitchSubtle {
+
+            0%,
+            95%,
+            100% {
+                transform: translate(0);
+            }
+
+            96% {
+                transform: translate(-2px, 1px);
+            }
+
+            97% {
+                transform: translate(2px, -1px);
+            }
+
+            98% {
+                transform: translate(-1px, -1px);
+            }
+
+            99% {
+                transform: translate(1px, 1px);
+            }
+        }
+
+        .dream-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 5000;
+            background: rgba(0, 0, 0, 0.97);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .dream-overlay.active {
+            display: flex;
+        }
+
+        .dream-text {
+            font-family: var(--f-title);
+            font-size: 3.5rem;
+            color: var(--primary);
+            animation: dreamTextGlow 1.5s infinite alternate;
+            text-align: center;
+        }
+
+        .dream-subtext {
+            font-family: var(--f-mono);
+            color: var(--text-dim);
+            margin-top: 20px;
+            font-size: 1.2rem;
+        }
+
+        @keyframes dreamTextGlow {
+            0% {
+                text-shadow: 0 0 20px var(--primary);
+                opacity: 0.7;
+            }
+
+            100% {
+                text-shadow: 0 0 60px var(--primary), 0 0 100px var(--primary);
+                opacity: 1;
+            }
+        }
+
+        /* =========================================
+           MODE C: TIMELINE DUEL (SPLIT SCREEN)
+           ========================================= */
+        .duel-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            width: 100%;
+            max-width: 1400px;
+            padding: 20px;
+            margin-top: 60px;
+        }
+
+        .duel-side {
+            background: rgba(0, 0, 0, 0.95);
+            border: 2px solid var(--primary);
+            border-radius: 16px;
+            padding: 25px;
+            min-height: 450px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .duel-side.player {
+            border-color: var(--primary);
+            box-shadow: 0 0 30px rgba(255, 0, 0, 0.2);
+        }
+
+        .duel-side.ai {
+            background: rgba(0, 0, 0, 0.95);
+            border-color: var(--primary);
+            box-shadow: 0 0 30px rgba(255, 0, 0, 0.2);
+            opacity: 0.9;
+        }
+
+        .duel-side.ai .opt-btn {
+            pointer-events: none;
+        }
+
+        .duel-label {
+            font-family: var(--f-title);
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            text-align: center;
+            padding: 10px;
+            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .duel-side.player .duel-label {
+            color: var(--primary);
+            border-bottom: 2px solid var(--primary);
+        }
+
+        .duel-side.ai .duel-label {
+            color: var(--secondary);
+            border-bottom: 2px solid var(--secondary);
+        }
+
+        .duel-side .opt-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .duel-side .opt-btn {
+            padding: 20px;
+            font-size: 1.1rem;
+        }
+
+        /* Day/Night Theme Transitions */
+        body.time-day {
+            --bg-color: #0a0a15;
+            animation: dayAmbient 4s infinite alternate;
+        }
+
+        body.time-day::before {
+            content: '☀️ DAY';
+            position: fixed;
+            top: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: var(--f-title);
+            font-size: 1rem;
+            color: #ffd700;
+            text-shadow: 0 0 20px #ffd700;
+            z-index: 100;
+            letter-spacing: 3px;
+        }
+
+        body.time-night::before {
+            content: '🌙 NIGHT';
+            position: fixed;
+            top: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: var(--f-title);
+            font-size: 1rem;
+            color: var(--secondary);
+            text-shadow: 0 0 20px var(--secondary);
+            z-index: 100;
+            letter-spacing: 3px;
+            animation: nightPulseText 1s infinite alternate;
+        }
+
+        @keyframes dayAmbient {
+            0% {
+                filter: brightness(1.05);
+            }
+
+            100% {
+                filter: brightness(1);
+            }
+        }
+
+        body.time-night {
+            --bg-color: #000002;
+            animation: nightAmbient 2s infinite alternate;
+        }
+
+        @keyframes nightAmbient {
+            0% {
+                filter: brightness(0.85);
+            }
+
+            100% {
+                filter: brightness(0.95);
+            }
+        }
+
+        @keyframes nightPulseText {
+            0% {
+                opacity: 0.7;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+        /* Creepy Restart Overlay */
+        .creepy-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            background: #000;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .creepy-overlay.active {
+            display: flex;
+        }
+
+        .creepy-text {
+            font-family: var(--f-title);
+            font-size: 2.5rem;
+            color: var(--danger);
+            text-shadow: 0 0 30px var(--danger), 0 0 60px rgba(255, 0, 60, 0.5);
+            animation: creepyFlicker 0.1s infinite;
+            max-width: 80%;
+            line-height: 1.4;
+        }
+
+        .creepy-subtext {
+            font-family: var(--f-mono);
+            color: var(--text-dim);
+            margin-top: 30px;
+            font-size: 1.2rem;
+            animation: creepyPulse 2s infinite;
+        }
+
+        @keyframes creepyFlicker {
+
+            0%,
+            90%,
+            100% {
+                opacity: 1;
+            }
+
+            91% {
+                opacity: 0.4;
+            }
+
+            92% {
+                opacity: 0.9;
+            }
+
+            93% {
+                opacity: 0.3;
+            }
+        }
+
+        @keyframes creepyPulse {
+
+            0%,
+            100% {
+                opacity: 0.5;
+            }
+
+            50% {
+                opacity: 1;
+            }
+        }
+
+        /* Puzzle Modal */
+        .puzzle-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 6000;
+            background: rgba(0, 0, 0, 0.95);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .puzzle-modal.active {
+            display: flex;
+        }
+
+        .puzzle-box {
+            background: var(--glass-bg);
+            border: 2px solid var(--primary);
+            border-radius: 16px;
+            padding: 50px;
+            text-align: center;
+            max-width: 500px;
+        }
+
+        .puzzle-title {
+            font-family: var(--f-title);
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+
+        .puzzle-question {
+            font-family: var(--f-mono);
+            font-size: 2rem;
+            color: var(--text-main);
+            margin: 30px 0;
+        }
+
+        .puzzle-input {
+            width: 200px;
+            padding: 15px;
+            font-family: var(--f-mono);
+            font-size: 1.5rem;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            border-radius: 8px;
+            outline: none;
+        }
+
+        .puzzle-input:focus {
+            box-shadow: 0 0 20px rgba(79, 70, 229, 0.5);
+        }
+
+        .puzzle-submit {
+            margin-top: 20px;
         }
 
         /* COUNTDOWN TIMER - Add to your CSS */
@@ -2739,6 +3490,10 @@
     <div class="vignette"></div>
     <div class="scanlines"></div>
 
+    <!-- BLOOD HORROR OVERLAYS -->
+    <div class="blood-veins"></div>
+    <div class="blood-drip" id="blood-drip"></div>
+
     <div class="fx-overlay fx-rewind"></div>
     <div class="fx-overlay fx-freeze"></div>
 
@@ -2749,6 +3504,93 @@
     </div>
 
     <div class="screen-crack-overlay" id="screen-crack-overlay"></div>
+
+    <!-- MOBILE BLOCKER -->
+    <div class="mobile-blocker" id="mobile-blocker">
+        <h1>🖥️ DESKTOP ONLY</h1>
+        <p>NEURO-FRIED requires a desktop browser for the full neural experience. The timeline cannot be accessed from
+            mobile devices.</p>
+        <div class="desktop-icon">💻</div>
+        <p style="margin-top: 20px; font-size: 0.9rem; opacity: 0.6;">Switch to a computer to play.</p>
+    </div>
+
+    <!-- LUCK RANDOMIZER SCREEN -->
+    <div id="s-luck" class="screen hidden">
+        <h2 style="font-family:var(--f-title); color:var(--text-main); margin-bottom:10px; font-size:2rem;">
+            FATE SELECTION
+        </h2>
+        <p style="font-family:var(--f-mono); color:var(--text-dim); margin-bottom:30px;">
+            Your timeline awaits...
+        </p>
+        <div class="luck-box">
+            <div class="luck-container">
+                <div class="luck-slots">
+                    <div class="luck-slot" id="luck-slot-1">?</div>
+                    <div class="luck-slot" id="luck-slot-2">?</div>
+                    <div class="luck-slot" id="luck-slot-3">?</div>
+                </div>
+                <div class="luck-result" id="luck-result"></div>
+            </div>
+            <button class="tech-btn" id="spin-luck-btn" style="margin-top:30px;">SPIN FATE</button>
+        </div>
+    </div>
+
+    <!-- DREAM OVERLAY (Mode B) -->
+    <div class="dream-overlay" id="dream-overlay">
+        <div class="dream-text" id="dream-text">IT WAS A DREAM...</div>
+        <div class="dream-subtext" id="dream-subtext">Timeline resetting...</div>
+    </div>
+
+    <!-- DUEL GAME SCREEN (Mode C) -->
+    <div id="s-game-duel" class="screen hidden">
+        <div class="duel-container">
+            <!-- PLAYER SIDE -->
+            <div class="duel-side player">
+                <div class="duel-label">⚡ YOU</div>
+                <span class="era-tag" id="era-display-player" style="margin-bottom:15px;">YEAR: 1990</span>
+                <div class="q-text" id="q-text-player" style="font-size:1.1rem; margin-bottom:20px;">LOADING...</div>
+                <div class="opt-grid" id="opt-area-player"></div>
+                <div style="margin-top:auto; padding-top:20px; text-align:center;">
+                    <span style="font-family:var(--f-mono); color:var(--primary);">SCORE: <span
+                            id="player-duel-score">0</span></span>
+                </div>
+            </div>
+
+            <!-- AI SIDE -->
+            <div class="duel-side ai">
+                <div class="duel-label">🤖 OTHER YOU</div>
+                <span class="era-tag" id="era-display-ai" style="margin-bottom:15px;">YEAR: 1990</span>
+                <div class="q-text" id="q-text-ai" style="font-size:1.1rem; margin-bottom:20px;">LOADING...</div>
+                <div class="opt-grid" id="opt-area-ai"></div>
+                <div style="margin-top:auto; padding-top:20px; text-align:center;">
+                    <span style="font-family:var(--f-mono); color:var(--secondary);">SCORE: <span
+                            id="ai-duel-score">0</span></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PUZZLE MODAL (Mode C End) -->
+    <div class="puzzle-modal" id="puzzle-modal">
+        <div class="puzzle-box">
+            <div class="puzzle-title">⏳ FINAL CHALLENGE ⏳</div>
+            <div style="font-family:var(--f-mono); color:var(--text-dim); margin-bottom:20px;">
+                Solve to escape the timeline...
+            </div>
+            <div class="puzzle-question" id="puzzle-question">2 + 2 = ?</div>
+            <input type="text" class="puzzle-input" id="puzzle-input" placeholder="?" autocomplete="off">
+            <button class="tech-btn puzzle-submit" id="puzzle-submit">SUBMIT</button>
+            <div id="puzzle-feedback" style="margin-top:15px; font-family:var(--f-mono); min-height:30px;"></div>
+        </div>
+    </div>
+
+    <!-- CREEPY RESTART OVERLAY -->
+    <div class="creepy-overlay" id="creepy-overlay">
+        <div class="creepy-text" id="creepy-text">YOU CANNOT ESCAPE</div>
+        <div class="creepy-subtext" id="creepy-subtext">You must play again...</div>
+        <button class="tech-btn" id="creepy-continue"
+            style="margin-top:40px; border-color:var(--danger); color:var(--danger);">CONTINUE</button>
+    </div>
 
     <div id="fail-modal" class="fail-modal">
         <div class="fail-title">TIMELINE FRACTURED</div>
@@ -2824,10 +3666,6 @@
         </div>
         <!-- TOGGLE CONTROLS -->
         <div class="toggle-controls">
-            <!-- SOUND TOGGLE -->
-            <button class="toggle-btn" id="sound-toggle" onclick="toggleSound()" title="Toggle Sound">
-                <span class="icon">🔊</span>
-            </button>
             <!-- THEME TOGGLE - DARK MONOCHROME THEME -->
             <button class="toggle-btn theme-btn" id="theme-toggle-btn" title="Switch Theme" onclick="
                 var r = document.documentElement;
@@ -2972,7 +3810,8 @@
                 1935 <span style="opacity:0.5">&lt;---&gt;</span> 2035
             </div>
             <div class="btn-row">
-                <button class="tech-btn" onclick="Game.startGame('asc')">CHRONOLOGICAL</button>
+                <button class="tech-btn" style="border-color:var(--primary); color:var(--primary);"
+                    onclick="Game.startGame('asc')">CHRONOLOGICAL</button>
                 <button class="tech-btn" style="border-color:var(--danger); color:var(--danger);"
                     onclick="Game.startGame('desc')">REWIND FLOW</button>
             </div>
@@ -3603,50 +4442,47 @@
 
         function toggleSound() {
             const btn = document.getElementById('sound-toggle');
+            if (!btn) return;
             const icon = btn.querySelector('.icon');
 
             soundEnabled = !soundEnabled;
 
             if (soundEnabled) {
                 // Enable sound
-                bgMusic.volume = savedBgmVolume;
-                if (AudioSystem.ctx && AudioSystem.ctx.state === 'suspended') {
+                if (typeof bgMusic !== 'undefined' && bgMusic) {
+                    bgMusic.volume = savedBgmVolume;
+                }
+                if (typeof AudioSystem !== 'undefined' && AudioSystem.ctx && AudioSystem.ctx.state === 'suspended') {
                     AudioSystem.resume();
                 }
-                icon.textContent = '🔊';
+                if (icon) icon.textContent = '🔊';
                 btn.classList.remove('sound-off');
                 btn.title = 'Sound ON - Click to mute';
             } else {
                 // Disable sound
-                savedBgmVolume = bgMusic.volume || 0.25;
-                bgMusic.volume = 0;
-                if (AudioSystem.ctx) {
+                if (typeof bgMusic !== 'undefined' && bgMusic) {
+                    savedBgmVolume = bgMusic.volume || 0.25;
+                    bgMusic.volume = 0;
+                }
+                if (typeof AudioSystem !== 'undefined' && AudioSystem.ctx) {
                     AudioSystem.ctx.suspend();
                 }
-                icon.textContent = '🔇';
+                if (icon) icon.textContent = '🔇';
                 btn.classList.add('sound-off');
                 btn.title = 'Sound OFF - Click to unmute';
             }
         }
 
-        // --- THEME TOGGLE ---
-        let currentTheme = 'indigo'; // 'indigo' or 'emerald'
+        // --- THEME TOGGLE - 3 THEMES: COLORFUL, BLOODY, NOIR ---
+        let currentTheme = 'bloody'; // Start with current bloody theme
 
         function toggleTheme() {
             try {
-                console.log('🔄 toggleTheme() STARTING - Current theme:', currentTheme);
-
                 const btn = document.getElementById('theme-toggle-btn');
-                console.log('🔍 Button found:', !!btn);
-
-                if (!btn) {
-                    console.error('Theme button not found!');
-                    return;
-                }
+                if (!btn) return;
 
                 const icon = btn.querySelector('.icon');
                 const root = document.documentElement;
-                console.log('🔍 Root element:', !!root);
 
                 // Rotate icon
                 if (icon) {
@@ -3654,29 +4490,670 @@
                     setTimeout(() => icon.style.transform = 'rotate(0deg)', 500);
                 }
 
-                if (currentTheme === 'indigo') {
-                    console.log('🟢 Switching to EMERALD...');
-                    root.style.setProperty('--primary', '#10b981');
-                    root.style.setProperty('--primary-light', '#34d399');
-                    root.style.setProperty('--secondary', '#6ee7b7');
-                    document.body.classList.add('theme-emerald');
-                    currentTheme = 'emerald';
-                    btn.title = 'Theme: EMERALD - Click to switch';
-                    console.log('✅ EMERALD APPLIED! Check if colors changed.');
-                } else {
-                    console.log('🔵 Switching to INDIGO...');
-                    root.style.setProperty('--primary', '#4f46e5');
+                // Cycle: bloody -> colorful -> noir -> bloody
+                if (currentTheme === 'bloody') {
+                    // COLORFUL (Indigo/Blue) - Original theme
+                    root.style.setProperty('--primary', '#6366f1');
                     root.style.setProperty('--primary-light', '#818cf8');
                     root.style.setProperty('--secondary', '#a5b4fc');
-                    document.body.classList.remove('theme-emerald');
-                    currentTheme = 'indigo';
-                    btn.title = 'Theme: INDIGO - Click to switch';
-                    console.log('✅ INDIGO APPLIED! Check if colors changed.');
+                    root.style.setProperty('--danger', '#ef4444');
+                    root.style.setProperty('--blood', '#dc2626');
+                    root.style.setProperty('--bg-color', '#000005');
+                    root.style.setProperty('--text-main', '#ffffff');
+                    root.style.setProperty('--horror-glow', 'rgba(99, 102, 241, 0.2)');
+                    root.style.setProperty('--glass-bg', 'rgba(10, 10, 30, 0.9)');
+                    document.body.classList.remove('theme-bloody', 'theme-noir');
+                    document.body.classList.add('theme-colorful');
+                    currentTheme = 'colorful';
+                    if (icon) icon.textContent = '🌈';
+                    btn.title = 'Theme: COLORFUL - Click for NOIR';
+                } else if (currentTheme === 'colorful') {
+                    // NOIR (Black & White)
+                    root.style.setProperty('--primary', '#ffffff');
+                    root.style.setProperty('--primary-light', '#e0e0e0');
+                    root.style.setProperty('--secondary', '#aaaaaa');
+                    root.style.setProperty('--danger', '#888888');
+                    root.style.setProperty('--blood', '#666666');
+                    root.style.setProperty('--bg-color', '#000000');
+                    root.style.setProperty('--text-main', '#ffffff');
+                    root.style.setProperty('--horror-glow', 'rgba(255, 255, 255, 0.1)');
+                    root.style.setProperty('--glass-bg', 'rgba(20, 20, 20, 0.9)');
+                    document.body.classList.remove('theme-colorful', 'theme-bloody');
+                    document.body.classList.add('theme-noir');
+                    currentTheme = 'noir';
+                    if (icon) icon.textContent = '⬛';
+                    btn.title = 'Theme: NOIR - Click for BLOODY';
+                } else {
+                    // BLOODY (Red Horror) - Current default
+                    root.style.setProperty('--primary', '#ff1a1a');
+                    root.style.setProperty('--primary-light', '#ff6666');
+                    root.style.setProperty('--secondary', '#ff4444');
+                    root.style.setProperty('--danger', '#ff0000');
+                    root.style.setProperty('--blood', '#8b0000');
+                    root.style.setProperty('--bg-color', '#050000');
+                    root.style.setProperty('--text-main', '#ffffff');
+                    root.style.setProperty('--horror-glow', 'rgba(255, 0, 0, 0.25)');
+                    root.style.setProperty('--glass-bg', 'rgba(15, 0, 0, 0.9)');
+                    document.body.classList.remove('theme-colorful', 'theme-noir');
+                    document.body.classList.add('theme-bloody');
+                    currentTheme = 'bloody';
+                    if (icon) icon.textContent = '🩸';
+                    btn.title = 'Theme: BLOODY - Click for COLORFUL';
                 }
             } catch (error) {
-                console.error('❌ ERROR in toggleTheme:', error);
+                console.error('Error in toggleTheme:', error);
             }
         }
+
+        // =============================================
+        // GAME MODE SYSTEMS
+        // =============================================
+
+        // Mode Constants
+        const GAME_MODES = {
+            A: {
+                name: 'OWN LUCK',
+                icon: '🎯',
+                desc: 'Standard gameplay with Freeze & Rewind powers',
+                theme: 'normal'
+            },
+            B: {
+                name: 'TIME LOOP',
+                icon: '🌀',
+                desc: 'Glitch effects • Dream sequences • Loop on death',
+                theme: 'dream'
+            },
+            C: {
+                name: 'TIMELINE DUEL',
+                icon: '⚔️',
+                desc: 'You vs AI • Day to Night • Puzzle finale',
+                theme: 'duel'
+            }
+        };
+
+        let currentGameMode = null;
+        let gameInProgress = false;
+
+        // --- MOBILE DETECTION ---
+        function isMobileDevice() {
+            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+                || window.innerWidth < 1024;
+        }
+
+        function checkMobileBlock() {
+            const blocker = document.getElementById('mobile-blocker');
+            if (blocker) {
+                if (isMobileDevice()) {
+                    blocker.classList.add('active');
+                } else {
+                    blocker.classList.remove('active');
+                }
+            }
+        }
+
+        // --- EXIT WARNING ---
+        window.addEventListener('beforeunload', (e) => {
+            if (gameInProgress) {
+                e.preventDefault();
+                e.returnValue = 'You have an active game. Are you sure you want to leave?';
+                return e.returnValue;
+            }
+        });
+
+        // --- LUCK RANDOMIZER SYSTEM ---
+        const LuckSystem = {
+            spinning: false,
+
+            spin() {
+                if (this.spinning) return;
+                this.spinning = true;
+
+                const slots = document.querySelectorAll('.luck-slot');
+                const modes = ['A', 'B', 'C'];
+                const icons = { 'A': '🎯', 'B': '🌀', 'C': '⚔️' };
+
+                // Disable button immediately
+                const spinBtn = document.getElementById('spin-luck-btn');
+                spinBtn.textContent = 'SPINNING...';
+                spinBtn.disabled = true;
+
+                // Play initial sound
+                if (typeof AudioSystem !== 'undefined') AudioSystem.playRouletteClick();
+
+                // Add spinning class for glow effect
+                slots.forEach(slot => slot.classList.add('spinning'));
+
+                // Decide final result upfront
+                currentGameMode = modes[Math.floor(Math.random() * 3)];
+
+                // Spin each slot independently with staggered stop times
+                const slotStopTimes = [2000, 2500, 3000]; // Each slot stops at different time
+
+                slots.forEach((slot, index) => {
+                    this.spinSlot(slot, icons, modes, slotStopTimes[index], index === slots.length - 1);
+                });
+            },
+
+            spinSlot(slot, icons, modes, duration, isLast) {
+                const startTime = Date.now();
+                const startInterval = 50;  // Start fast (50ms)
+                const endInterval = 400;   // End slow (400ms)
+
+                let lastUpdate = 0;
+                let currentInterval = startInterval;
+
+                const animate = () => {
+                    const elapsed = Date.now() - startTime;
+                    const progress = Math.min(elapsed / duration, 1);
+
+                    // Ease-out curve: starts fast, slows down dramatically at end
+                    const easeOut = 1 - Math.pow(1 - progress, 3);
+                    currentInterval = startInterval + (endInterval - startInterval) * easeOut;
+
+                    // Only update if enough time has passed
+                    if (elapsed - lastUpdate >= currentInterval) {
+                        const randomMode = modes[Math.floor(Math.random() * 3)];
+                        slot.textContent = icons[randomMode];
+                        lastUpdate = elapsed;
+
+                        // Play tick sound on slower spins
+                        if (currentInterval > 150 && typeof AudioSystem !== 'undefined') {
+                            AudioSystem.playRouletteClick();
+                        }
+                    }
+
+                    if (progress < 1) {
+                        requestAnimationFrame(animate);
+                    } else {
+                        // Final stop - show selected mode with bounce effect
+                        this.stopSlot(slot, icons, isLast);
+                    }
+                };
+
+                requestAnimationFrame(animate);
+            },
+
+            stopSlot(slot, icons, isLast) {
+                slot.classList.remove('spinning');
+                slot.textContent = icons[currentGameMode];
+
+                // Bounce animation
+                slot.style.transform = 'scale(1.2)';
+                setTimeout(() => {
+                    slot.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        slot.style.transform = 'scale(1.1)';
+                        slot.classList.add('selected');
+                        setTimeout(() => {
+                            slot.style.transform = 'scale(1)';
+                        }, 100);
+                    }, 100);
+                }, 100);
+
+                // Play stop sound
+                if (typeof AudioSystem !== 'undefined') AudioSystem.playCorrect();
+
+                // If this is the last slot, show result
+                if (isLast) {
+                    setTimeout(() => this.showResult(), 500);
+                }
+            },
+
+            showResult() {
+                const result = document.getElementById('luck-result');
+                const mode = GAME_MODES[currentGameMode];
+
+                result.innerHTML = `
+                    <span style="font-size:2.5rem;">${mode.icon}</span>
+                    <span>${mode.name}</span>
+                    <span class="mode-desc">${mode.desc}</span>
+                `;
+
+                // Update button
+                const spinBtn = document.getElementById('spin-luck-btn');
+                spinBtn.textContent = 'ENTERING TIMELINE...';
+
+                this.spinning = false;
+
+                // Proceed after delay
+                setTimeout(() => {
+                    if (typeof Game !== 'undefined') {
+                        Game.proceedWithMode();
+                    }
+                }, 2000);
+            },
+
+            reset() {
+                const slots = document.querySelectorAll('.luck-slot');
+                slots.forEach(slot => {
+                    slot.textContent = '?';
+                    slot.classList.remove('spinning', 'selected');
+                });
+                document.getElementById('luck-result').innerHTML = '';
+                const spinBtn = document.getElementById('spin-luck-btn');
+                spinBtn.textContent = 'SPIN FATE';
+                spinBtn.disabled = false;
+                currentGameMode = null;
+            }
+        };
+
+        // --- DREAM MODE (Mode B) ---
+        const DreamMode = {
+            maxQuestions: 20,
+            questionsInDream: 0,
+            currentQuestionCount: 0,
+            dreamCount: 0,
+            active: false,
+
+            init() {
+                // Random questions between 8-20
+                this.questionsInDream = Math.floor(Math.random() * 13) + 8;
+                this.currentQuestionCount = 0;
+                this.dreamCount = 0;
+                this.active = true;
+                document.body.classList.add('mode-dream');
+            },
+
+            onQuestionAnswered() {
+                if (!this.active) return false;
+                this.currentQuestionCount++;
+
+                // Check if dream sequence should trigger
+                if (this.currentQuestionCount >= this.questionsInDream) {
+                    return true; // Trigger dream
+                }
+                return false;
+            },
+
+            triggerDreamSequence(isWin) {
+                const overlay = document.getElementById('dream-overlay');
+                const dreamText = document.getElementById('dream-text');
+                const dreamSubtext = document.getElementById('dream-subtext');
+
+                if (isWin) {
+                    dreamText.textContent = 'YOU ARE RECOVERED';
+                    dreamText.style.color = 'var(--green)';
+                    dreamSubtext.textContent = 'Timeline stabilized...';
+                } else {
+                    dreamText.textContent = 'IT WAS A DREAM...';
+                    dreamText.style.color = 'var(--primary)';
+                    dreamSubtext.textContent = 'Timeline resetting...';
+                }
+
+                overlay.classList.add('active');
+
+                if (typeof AudioSystem !== 'undefined') AudioSystem.playRewind();
+
+                setTimeout(() => {
+                    overlay.classList.remove('active');
+
+                    if (isWin) {
+                        // Victory!
+                        this.cleanup();
+                        if (typeof Game !== 'undefined') Game.gameWin();
+                    } else {
+                        // Loop back
+                        this.dreamCount++;
+                        this.currentQuestionCount = 0;
+                        this.questionsInDream = Math.floor(Math.random() * 13) + 8;
+
+                        // Restart the game round
+                        if (typeof Game !== 'undefined') {
+                            Game.round = 0;
+                            Game.score = Math.floor(Game.score * 0.5); // Lose half score
+                            document.getElementById('hud-score').innerText = Game.score;
+                            TimerSystem.start(60);
+                            Game.nextRound();
+                        }
+                    }
+                }, 3000);
+            },
+
+            cleanup() {
+                this.active = false;
+                document.body.classList.remove('mode-dream');
+            }
+        };
+
+        // --- DUEL MODE (Mode C) ---
+        const DuelMode = {
+            playerScore: 0,
+            aiScore: 0,
+            dayStartTime: null,
+            nightTriggered: false,
+            nightTimeout: null,
+            active: false,
+            currentQuestion: null,
+
+            init() {
+                this.playerScore = 0;
+                this.aiScore = 0;
+                this.dayStartTime = Date.now();
+                this.nightTriggered = false;
+                this.active = true;
+                document.body.classList.add('time-day');
+                this.startDayNightCycle();
+
+                document.getElementById('player-duel-score').textContent = '0';
+                document.getElementById('ai-duel-score').textContent = '0';
+            },
+
+            startDayNightCycle() {
+                // Random time between 45-90 seconds for night to trigger
+                const nightDelay = (Math.random() * 45 + 45) * 1000;
+                this.nightTimeout = setTimeout(() => {
+                    this.triggerNight();
+                }, nightDelay);
+            },
+
+            triggerNight() {
+                if (!this.active) return;
+                this.nightTriggered = true;
+                document.body.classList.remove('time-day');
+                document.body.classList.add('time-night');
+
+                if (typeof AudioSystem !== 'undefined') AudioSystem.playFreeze();
+
+                // End game after short night period
+                setTimeout(() => {
+                    if (this.active) {
+                        this.endDuelWithPuzzle();
+                    }
+                }, 8000);
+            },
+
+            loadDuelQuestion(questionData) {
+                this.currentQuestion = questionData;
+
+                // Player side
+                document.getElementById('era-display-player').innerText = `YEAR: ${questionData.y}`;
+                document.getElementById('q-text-player').innerText = questionData.q;
+
+                // AI side (same question)
+                document.getElementById('era-display-ai').innerText = `YEAR: ${questionData.y}`;
+                document.getElementById('q-text-ai').innerText = questionData.q;
+
+                // Generate options for player
+                const playerArea = document.getElementById('opt-area-player');
+                playerArea.innerHTML = '';
+                const options = [questionData.a, ...questionData.w].sort(() => Math.random() - 0.5);
+
+                options.forEach(txt => {
+                    const b = document.createElement('div');
+                    b.className = 'opt-btn';
+                    b.innerText = txt;
+                    b.onclick = () => this.playerAnswer(txt, questionData.a);
+                    playerArea.appendChild(b);
+                });
+
+                // Generate options for AI (same order)
+                const aiArea = document.getElementById('opt-area-ai');
+                aiArea.innerHTML = '';
+                options.forEach(txt => {
+                    const b = document.createElement('div');
+                    b.className = 'opt-btn';
+                    b.innerText = txt;
+                    b.dataset.answer = txt;
+                    aiArea.appendChild(b);
+                });
+
+                // Simulate AI answering
+                this.simulateAIAnswer(questionData, options);
+            },
+
+            simulateAIAnswer(questionData, options) {
+                // AI has 65% accuracy, answers in 1-4 seconds
+                const delay = Math.random() * 3000 + 1000;
+
+                setTimeout(() => {
+                    if (!this.active) return;
+
+                    const correct = Math.random() < 0.65;
+                    const aiOpts = document.querySelectorAll('#opt-area-ai .opt-btn');
+
+                    aiOpts.forEach(opt => {
+                        if (correct && opt.dataset.answer === questionData.a) {
+                            opt.style.background = 'rgba(57, 255, 20, 0.3)';
+                            opt.style.borderColor = 'var(--green)';
+                            this.aiScore += 100;
+                        } else if (!correct && opt.dataset.answer !== questionData.a && Math.random() > 0.5) {
+                            opt.style.background = 'rgba(255, 0, 60, 0.3)';
+                            opt.style.borderColor = 'var(--danger)';
+                        }
+                    });
+
+                    document.getElementById('ai-duel-score').textContent = this.aiScore;
+                }, delay);
+            },
+
+            playerAnswer(ans, correct) {
+                if (!this.active) return;
+
+                const playerOpts = document.querySelectorAll('#opt-area-player .opt-btn');
+                playerOpts.forEach(opt => opt.style.pointerEvents = 'none');
+
+                if (ans === correct) {
+                    this.playerScore += 100;
+                    if (typeof AudioSystem !== 'undefined') AudioSystem.playCorrect();
+                    playerOpts.forEach(opt => {
+                        if (opt.innerText === ans) {
+                            opt.style.background = 'rgba(57, 255, 20, 0.3)';
+                            opt.style.borderColor = 'var(--green)';
+                        }
+                    });
+
+                    // Sync with main Game score and HUD
+                    if (typeof Game !== 'undefined') {
+                        Game.score = this.playerScore;
+                        document.getElementById('hud-score').innerText = this.playerScore;
+                    }
+                } else {
+                    if (typeof AudioSystem !== 'undefined') AudioSystem.playWrong();
+                    playerOpts.forEach(opt => {
+                        if (opt.innerText === ans) {
+                            opt.style.background = 'rgba(255, 0, 60, 0.3)';
+                            opt.style.borderColor = 'var(--danger)';
+                        }
+                    });
+                }
+
+                document.getElementById('player-duel-score').textContent = this.playerScore;
+
+                // Next question after delay
+                setTimeout(() => {
+                    if (typeof Game !== 'undefined' && this.active) {
+                        Game.round++;
+                        Game.nextRound();
+                    }
+                }, 1500);
+            },
+
+            endDuelWithPuzzle() {
+                this.active = false;
+                if (this.nightTimeout) clearTimeout(this.nightTimeout);
+
+                // Transfer scores to main game
+                if (typeof Game !== 'undefined') {
+                    Game.score = this.playerScore;
+                }
+
+                PuzzleSystem.show();
+            },
+
+            cleanup() {
+                this.active = false;
+                if (this.nightTimeout) clearTimeout(this.nightTimeout);
+                document.body.classList.remove('time-day', 'time-night');
+            }
+        };
+
+        // --- PUZZLE SYSTEM (Mode C Finale) ---
+        const PuzzleSystem = {
+            puzzles: [
+                { q: 'Complete: 2, 4, 8, 16, ?', a: '32' },
+                { q: 'Unscramble: MEIT', a: 'TIME' },
+                { q: 'What is 7 × 8?', a: '56' },
+                { q: 'Complete: 1, 1, 2, 3, 5, ?', a: '8' },
+                { q: 'Unscramble: NIREW', a: 'REWIND' },
+                { q: 'What is 144 ÷ 12?', a: '12' },
+                { q: '⏰ + 🔄 = ?', a: 'REWIND' },
+                { q: '60 seconds = ? minutes', a: '1' }
+            ],
+            currentPuzzle: null,
+            attempts: 0,
+
+            show() {
+                this.currentPuzzle = this.puzzles[Math.floor(Math.random() * this.puzzles.length)];
+                this.attempts = 0;
+
+                document.getElementById('puzzle-question').textContent = this.currentPuzzle.q;
+                document.getElementById('puzzle-input').value = '';
+                document.getElementById('puzzle-feedback').textContent = '';
+                document.getElementById('puzzle-modal').classList.add('active');
+
+                // Focus the input
+                setTimeout(() => {
+                    document.getElementById('puzzle-input').focus();
+                }, 100);
+            },
+
+            submit() {
+                const input = document.getElementById('puzzle-input').value.trim().toUpperCase();
+                const feedback = document.getElementById('puzzle-feedback');
+
+                if (input === this.currentPuzzle.a.toUpperCase()) {
+                    feedback.textContent = '✅ CORRECT!';
+                    feedback.style.color = 'var(--green)';
+                    if (typeof AudioSystem !== 'undefined') AudioSystem.playCorrect();
+
+                    setTimeout(() => {
+                        document.getElementById('puzzle-modal').classList.remove('active');
+                        DuelMode.cleanup();
+                        if (typeof Game !== 'undefined') Game.gameWin();
+                    }, 1500);
+                } else {
+                    this.attempts++;
+                    feedback.textContent = `❌ WRONG (${3 - this.attempts} tries left)`;
+                    feedback.style.color = 'var(--danger)';
+                    if (typeof AudioSystem !== 'undefined') AudioSystem.playWrong();
+
+                    document.getElementById('puzzle-input').value = '';
+
+                    if (this.attempts >= 3) {
+                        setTimeout(() => {
+                            document.getElementById('puzzle-modal').classList.remove('active');
+                            DuelMode.cleanup();
+                            // Trigger creepy restart instead of normal game over
+                            this.triggerCreepyRestart();
+                        }, 1500);
+                    }
+                }
+            },
+
+            triggerCreepyRestart() {
+                const overlay = document.getElementById('creepy-overlay');
+                const creepyText = document.getElementById('creepy-text');
+                const creepySubtext = document.getElementById('creepy-subtext');
+
+                // Horror messages
+                const messages = [
+                    { text: 'YOU CANNOT ESCAPE', sub: 'You must play again...' },
+                    { text: 'THERE IS NO EXIT', sub: 'The timeline demands sacrifice...' },
+                    { text: 'YOU HAVE TO PLAY', sub: 'Otherwise you cannot leave...' },
+                    { text: 'FOREVER LOOPING', sub: 'Play. Or stay trapped.' }
+                ];
+
+                const msg = messages[Math.floor(Math.random() * messages.length)];
+                creepyText.textContent = msg.text;
+                creepySubtext.textContent = msg.sub;
+
+                overlay.classList.add('active');
+
+                // Stop BGM if playing
+                if (typeof stopBGM !== 'undefined') stopBGM();
+
+                document.getElementById('hud').classList.add('hidden');
+                document.getElementById('s-game-duel').classList.add('hidden');
+            }
+        };
+
+        // Initialize on load
+        window.addEventListener('resize', checkMobileBlock);
+        document.addEventListener('DOMContentLoaded', () => {
+            checkMobileBlock();
+
+            // Luck spin button
+            const spinBtn = document.getElementById('spin-luck-btn');
+            if (spinBtn) {
+                spinBtn.addEventListener('click', () => LuckSystem.spin());
+            }
+
+            // Puzzle submit
+            const puzzleSubmit = document.getElementById('puzzle-submit');
+            if (puzzleSubmit) {
+                puzzleSubmit.addEventListener('click', () => PuzzleSystem.submit());
+            }
+
+            // Puzzle input enter key
+            const puzzleInput = document.getElementById('puzzle-input');
+            if (puzzleInput) {
+                puzzleInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') PuzzleSystem.submit();
+                });
+            }
+
+            // Creepy continue button - restart game
+            const creepyContinue = document.getElementById('creepy-continue');
+            if (creepyContinue) {
+                creepyContinue.addEventListener('click', () => {
+                    // Trigger horror glitch
+                    HorrorEffects.glitch();
+                    HorrorEffects.shake();
+
+                    setTimeout(() => {
+                        document.getElementById('creepy-overlay').classList.remove('active');
+                        // Reset game state
+                        currentGameMode = null;
+                        gameInProgress = false;
+                        // Return to title screen
+                        document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
+                        document.getElementById('s-title').classList.remove('hidden');
+                        // Restart music
+                        try { startBGM(); } catch (e) { }
+                    }, 300);
+                });
+            }
+        });
+
+        // =============================================
+        // HORROR EFFECTS HELPER SYSTEM
+        // =============================================
+        const HorrorEffects = {
+            shake() {
+                document.body.classList.add('horror-shake');
+                setTimeout(() => document.body.classList.remove('horror-shake'), 400);
+            },
+
+            glitch() {
+                document.body.classList.add('glitch-active');
+                setTimeout(() => document.body.classList.remove('glitch-active'), 300);
+            },
+
+            anxiety(enable = true) {
+                if (enable) {
+                    document.body.classList.add('anxiety-mode');
+                } else {
+                    document.body.classList.remove('anxiety-mode');
+                }
+            },
+
+            randomGlitch() {
+                // Random chance to glitch during gameplay
+                if (Math.random() < 0.1) {
+                    this.glitch();
+                }
+            }
+        };
 
         // --- 2. AUDIO (Safe) ---
         // --- 2. AUDIO SYSTEM ---
@@ -4120,8 +5597,35 @@
 
             startSequence() {
                 try { AudioSystem.init(); AudioSystem.resume(); startBGM(); } catch (e) { }
-                this.switchScreen('s-title', 's-roulette');
-                this.startRoulette();
+                gameInProgress = true;
+                LuckSystem.reset();
+                this.switchScreen('s-title', 's-luck');
+            },
+
+            proceedWithMode() {
+                // Called by LuckSystem after mode is selected
+                switch (currentGameMode) {
+                    case 'A':
+                        // Normal mode
+                        this.switchScreen('s-luck', 's-roulette');
+                        this.startRoulette();
+                        break;
+                    case 'B':
+                        // Dream/Time Loop mode
+                        DreamMode.init();
+                        this.switchScreen('s-luck', 's-roulette');
+                        this.startRoulette();
+                        break;
+                    case 'C':
+                        // Duel mode
+                        DuelMode.init();
+                        this.switchScreen('s-luck', 's-roulette');
+                        this.startRoulette();
+                        break;
+                    default:
+                        this.switchScreen('s-luck', 's-roulette');
+                        this.startRoulette();
+                }
             },
 
             startRoulette() {
@@ -4323,7 +5827,12 @@
                             });
 
                             setTimeout(() => {
-                                this.switchScreen('s-hype', 's-game');
+                                // Choose correct game screen based on mode
+                                if (currentGameMode === 'C') {
+                                    this.switchScreen('s-hype', 's-game-duel');
+                                } else {
+                                    this.switchScreen('s-hype', 's-game');
+                                }
                                 c.classList.remove('hidden');
                                 this.nextRound();
                             }, 800);
@@ -4334,20 +5843,25 @@
             },
 
             nextRound() {
-                if (this.round >= this.qData.length) { this.gameWin(); return; } // Check for win?
-                // Wait, endless mode or win? User said "Win Screen". 
-                // Let's assume win after all questions in topic (20 questions).
+                if (this.round >= this.qData.length) { this.gameWin(); return; }
 
                 const d = this.qData[this.round];
-                this.rewindUsedInRound = false; // Reset rewind availability for new question
+                this.rewindUsedInRound = false;
 
+                // Handle Duel Mode (Mode C) separately
+                if (currentGameMode === 'C' && DuelMode.active) {
+                    DuelMode.loadDuelQuestion(d);
+                    return;
+                }
+
+                // Normal and Dream mode use standard game screen
                 document.getElementById('era-display').innerText = `YEAR: ${d.y}`;
                 document.getElementById('q-text').innerText = d.q;
 
-                const gr = document.getElementById('opt-area'); gr.innerHTML = "";
+                const gr = document.getElementById('opt-area'); gr.innerHTML = '';
                 [d.a, ...d.w].sort(() => Math.random() - 0.5).forEach(txt => {
                     const b = document.createElement('div');
-                    b.className = "opt-btn"; b.innerText = txt;
+                    b.className = 'opt-btn'; b.innerText = txt;
                     b.onclick = () => this.check(txt, d.a);
                     gr.appendChild(b);
                 });
@@ -4523,6 +6037,17 @@
 
                     this.score += finalVal;
                     document.getElementById('hud-score').innerText = this.score;
+
+                    // Dream Mode (Mode B) - Check for dream trigger
+                    if (currentGameMode === 'B' && DreamMode.active) {
+                        if (DreamMode.onQuestionAnswered()) {
+                            // Trigger dream sequence - player wins if they completed without dying
+                            TimerSystem.stop();
+                            DreamMode.triggerDreamSequence(true);
+                            return;
+                        }
+                    }
+
                     this.round++; this.nextRound();
                 } else {
                     // WRONG ANSWER LOGIC
@@ -4587,6 +6112,12 @@
                 TimerSystem.stop();
                 AudioSystem.playWrong();
 
+                // Dream Mode (Mode B) - trigger dream loop instead of fail
+                if (currentGameMode === 'B' && DreamMode.active) {
+                    DreamMode.triggerDreamSequence(false); // false = loss
+                    return;
+                }
+
                 // Update Rewind Button Text
                 const btn = document.querySelector('.btn-rewind');
                 if (btn) {
@@ -4629,8 +6160,13 @@
             gameWin() {
                 this.active = false;
                 TimerSystem.stop();
-                stopBGM(); // Stop BGM
-                AudioSystem.playCorrect(); // Victory Sound
+                stopBGM();
+                AudioSystem.playCorrect();
+                gameInProgress = false;
+
+                // Cleanup any active modes
+                if (currentGameMode === 'B') DreamMode.cleanup();
+                if (currentGameMode === 'C') DuelMode.cleanup();
 
                 // Set victory headline before showing game over screen
                 this.isWin = true;
@@ -4644,9 +6180,10 @@
                 // Update final score for display
                 document.getElementById('final-aura-score').textContent = this.score;
 
-                // Hide HUD and game screen
+                // Hide HUD and game screens
                 document.getElementById('hud').classList.add('hidden');
                 document.getElementById('s-game').classList.add('hidden');
+                document.getElementById('s-game-duel').classList.add('hidden');
 
                 // Use the same outro sequence as game over
                 this.runOutroSequence();
@@ -4654,9 +6191,14 @@
 
             gameOver() {
                 this.active = false; AudioSystem.playWrong();
-                stopBGM(); // Stop BGM
+                stopBGM();
+                gameInProgress = false;
                 document.getElementById('fail-modal').classList.remove('active');
                 document.body.classList.add('power-off-anim');
+
+                // Cleanup any active modes
+                if (currentGameMode === 'B') DreamMode.cleanup();
+                if (currentGameMode === 'C') DuelMode.cleanup();
 
                 // Reset headline to SIGNAL LOST for game over
                 this.isWin = false;
@@ -4671,6 +6213,7 @@
                     document.body.classList.remove('power-off-anim');
                     document.getElementById('hud').classList.add('hidden');
                     document.getElementById('s-game').classList.add('hidden');
+                    document.getElementById('s-game-duel').classList.add('hidden');
                     this.runOutroSequence();
                 }, 700);
             },
