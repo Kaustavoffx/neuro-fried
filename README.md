@@ -1,150 +1,154 @@
-<div align="center">
-
 # ⚡ NEURO-FRIED ⚡
-### *TEMPORAL COLLAPSE*
+### A Time-Survival Horror Experience
 
-[![Play Now](https://img.shields.io/badge/🎮%20PLAY%20NOW-00F3FF?style=for-the-badge&labelColor=0a0a0f)](https://neuro-fried.vercel.app)
-[![Made with](https://img.shields.io/badge/Made%20With-Vanilla%20JS-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
-[![CSS3](https://img.shields.io/badge/Styled%20With-CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/CSS)
-[![HTML5](https://img.shields.io/badge/Built%20On-HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/HTML)
-
-> **"The future is broken. You have 60 seconds to fix it."**
+> *"You wake up. Your head is pounding. The clock reads 60 seconds... and it's counting down."*
 
 ---
 
-</div>
+## 🩸 THE STORY
 
-## 🌌 The Story
+You are trapped inside a **collapsing neural network**. Reality is fragmenting around you.
 
-You are a **Rogue Archivist** trapped in a collapsing timeline. Reality is fracturing around you. The only way to stabilize the temporal storm is to **remember** — answer questions from across the corrupted timeline before it erases you from existence.
+Your memories are bleeding away — fragments of history, technology, science... everything you once knew is slipping through your fingers like sand.
 
-But here's the twist: **Every time you rewind, the collapse accelerates.**
+The only way to survive? **REMEMBER.**
+
+Each correct answer buys you precious seconds. Each mistake? It costs you.
+
+But here's the cruel twist: **Every time you rewind, the collapse accelerates faster.**
+
+*Time is the only currency. And yours is running out.*
 
 ---
 
-## 🎮 Gameplay Loop
+## 🎮 THREE FATES AWAIT
+
+The machine doesn't let you choose. **It decides your fate.**
+
+| Mode | Description |
+|:-----|:------------|
+| 🎯 **OWN LUCK** | Standard survival. Freeze time. Rewind mistakes. Fight for every second. |
+| 🌀 **TIME LOOP** | You die... and wake up again. Was it a dream? Reality glitches. The loop continues. |
+| ⚔️ **TIMELINE DUEL** | Face yourself from another timeline. Day turns to night. Solve the final puzzle or be trapped forever. |
+
+---
+
+## ⏱️ CORE MECHANICS
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                                                             │
-│   ⏱️ 60 SECONDS  ──▶  ❓ QUESTION  ──▶  ✅ CORRECT (+5s)   │
-│         │                   │               │               │
-│         │                   │               ▼               │
-│         │                   │         🔥 STREAK++          │
-│         │                   │               │               │
-│         │                   ▼               ▼               │
-│         │              ❌ WRONG         💎 POWER CHARGE    │
-│         │                   │                               │
-│         ▼                   ▼                               │
-│      ☠️ GAME OVER ◀── ⏱️ TIME RUNS OUT                     │
-│                                                             │
-└─────────────────────────────────────────────────────────────┘
+60 SECONDS. THAT'S ALL YOU GET.
+
+✅ Correct Answer  →  +5 seconds
+❌ Wrong Answer    →  -5 seconds  
+❄️ FREEZE [SPACE]  →  Pause time for 5 seconds
+⏪ REWIND [R]      →  +20 seconds... BUT game speed increases FOREVER
+
+Every 5 questions → Timer accelerates
+Survive 20 questions → Neural Sync Complete
+Timer hits zero → GAME OVER
 ```
 
 ---
 
-## ✨ Core Features
+## 🔥 WHAT MAKES THIS DIFFERENT
 
-| Feature | Description |
-|:--------|:------------|
-| 🕐 **Global Timer** | You start with 60 seconds. It never stops. It only accelerates. |
-| ❄️ **Freeze Power** | Press `SPACE` to pause time for 5 seconds. Costs 1 charge. |
-| ⏪ **Rewind Power** | Press `R` to gain +10 seconds. **BUT: Game speed permanently increases.** |
-| 🔥 **Streak System** | Consecutive correct answers boost your score multiplier. |
-| 💎 **Power Charges** | Earn Freeze at 3-streak, Rewind at 5-streak. |
-| 🌀 **Anomalies** | Random events like *Mirror Mode* (UI flips) or *Chrono-Acceleration* (2x speed). |
-| 📈 **Dynamic Difficulty** | The longer you survive, the faster the game ticks. |
+- **Time is your health bar** — No lives, no hearts. Just seconds bleeding away.
+- **Risk vs Reward** — Rewind saves you now, but dooms you later.
+- **Streak System** — Chain correct answers for score multipliers and power charges.
+- **Anomaly Events** — Random chaos: Mirror Mode, Chrono-Acceleration, screen distortions.
+- **Horror Atmosphere** — Blood-red ambience, screen shake, CRT effects, anxiety pulse.
+- **3 Unique Game Modes** — Each playthrough is different.
 
 ---
 
-## 🕹️ Controls
+## 🎰 THE LUCK SYSTEM
 
-<div align="center">
+*"Your fate is not yours to choose. The machine decides."*
+
+Before each game, spin the **Fate Roulette**:
+- Three slots spin like a casino machine
+- They slow down one by one
+- Your destiny is revealed: OWN LUCK, TIME LOOP, or TIMELINE DUEL
+
+No choice. No escape. Only fate.
+
+---
+
+## 📚 400+ QUESTIONS ACROSS 20 CATEGORIES
+
+From the birth of the internet to the bleeding edge of AI...
+
+🤖 AI & Future Tech • 💹 Finance & Markets • 🚀 Space Exploration  
+💻 Code & Algorithms • 🎮 Gaming History • 🔒 Cyber Security  
+🧬 Biotech & Science • ⚡ Energy & Auto • 📱 Social Media  
+...and more
+
+---
+
+## 🕹️ CONTROLS
 
 | Action | Desktop | Mobile |
-|:------:|:-------:|:------:|
-| **Select Answer** | `Click` / `1-4` | `Tap` |
-| **Freeze Time** | `SPACE` | `FREEZE Button` |
-| **Rewind** | `R` | `REWIND Button` |
-
-</div>
+|:-------|:--------|:-------|
+| Select Answer | Click or 1-4 | Tap |
+| Freeze Time | SPACE | FREEZE Button |
+| Rewind | R | REWIND Button |
 
 ---
 
-## 🔧 Technical Stack
+## 🔧 BUILT WITH
 
-<div align="center">
+**Zero frameworks. Zero dependencies. Pure raw browser power.**
 
-| Technology | Usage |
-|:-----------|:------|
-| ![HTML5](https://img.shields.io/badge/-HTML5-E34F26?style=flat-square&logo=html5&logoColor=white) | Structure & Semantics |
-| ![CSS3](https://img.shields.io/badge/-CSS3-1572B6?style=flat-square&logo=css3&logoColor=white) | Animations, Glitches, CRT Effects |
-| ![JavaScript](https://img.shields.io/badge/-JavaScript-F7DF1E?style=flat-square&logo=javascript&logoColor=black) | Game Logic, Audio Synthesis |
-| ![Web Audio API](https://img.shields.io/badge/-Web%20Audio%20API-9B4DCA?style=flat-square) | Procedural Sound Effects |
-| ![Canvas API](https://img.shields.io/badge/-Canvas%20API-FF6F00?style=flat-square) | Background Particle System |
+- HTML5 — Structure
+- CSS3 — Animations, glitch effects, horror atmosphere
+- JavaScript — Game logic, audio synthesis
+- Web Audio API — Procedural sound effects
+- Canvas API — Particle starfield background
 
-</div>
-
-**Zero Dependencies.** No React. No Vue. No Webpack. Just raw browser power.
+Single file. No build step. Just open and play.
 
 ---
 
-## 📚 Topics & Categories
+## 🚀 PLAY NOW
 
-The game features **20 unique categories** with **400+ questions** spanning:
+**Live Demo:** [https://neuro-fried.vercel.app](https://neuro-fried.vercel.app)
 
-- 💹 Finance & Markets
-- 💻 Code & Algorithms  
-- 🤖 Future Tech & AI
-- 📱 Social Media History
-- 🚀 Space Exploration
-- 🎮 Gaming History
-- 🔒 Cyber Security
-- 🧬 Biotech & Science
-- ⚡ Energy & Automotive
-- ...and more!
+**Or run locally:**
+```bash
+git clone https://github.com/Kaustavoffx/neuro-fried.git
+cd neuro-fried
+# Just open index.html in your browser
+```
 
 ---
 
-## � Visual Effects
+## 🎯 THEME: "THE CHANGING OF TIME"
 
-- **CRT Scanlines** — Authentic retro monitor feel
-- **Chromatic Aberration** — RGB split distortion
-- **VHS Glitch** — Triggered on rewind actions
-- **Particle Starfield** — Canvas-rendered background
-- **Neon Glow UI** — Cyberpunk aesthetic
+This game is built around **time manipulation**:
 
----
+- ⏱️ Time as your only resource (health = seconds)
+- ❄️ FREEZE time to pause the countdown
+- ⏪ REWIND time to gain seconds (at a permanent cost)
+- 🌀 TIME LOOPS where death resets reality
+- 🌙 DAY/NIGHT cycles in Timeline Duel mode
+- ⚡ Accelerating time as you progress
 
-## 🚀 Quick Start
-
-1. **Clone the repo**
-   ```bash
-   git clone https://github.com/Kaustavoffx/neuro-fried.git
-   ```
-
-2. **Open `index.html`** in your browser. That's it. No build step required.
-
-3. **Or play online:** [https://neuro-fried.vercel.app](https://neuro-fried.vercel.app)
+Every mechanic, every decision, every consequence revolves around **the changing of time**.
 
 ---
 
-## 👨‍💻 Developer
+## 👨‍💻 DEVELOPER
 
-<div align="center">
-
-**Kaustav Chowdhury**
-
-[![GitHub](https://img.shields.io/badge/GitHub-Kaustavoffx-181717?style=flat-square&logo=github)](https://github.com/Kaustavoffx)
-
-</div>
+**Kaustav Chowdhury** — [@Kaustavoffx](https://github.com/Kaustavoffx)
 
 ---
 
 <div align="center">
 
-*Built for the Codédex December 2024 Game Jam*
+*Built for the Codédex December 2025 Game Jam*
 
 **⚠️ WARNING: TEMPORAL INSTABILITY DETECTED ⚠️**
+
+*"Time is the only currency. And yours is running out."*
 
 </div>
