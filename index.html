@@ -3970,57 +3970,6 @@
         <button class="tech-btn" style="position: relative; z-index: 10;" onclick="location.reload()">REBOOT</button>
     </div>
 
-    <header>
-        <div style="display:flex; flex-direction:column; align-items:flex-start;">
-            <div class="brand">NEURO-FRIED</div>
-            <div
-                style="font-family:var(--f-ui); font-size:1rem; color:var(--primary); font-weight:700; letter-spacing:2px; margin-top:0px; text-shadow: 0 0 5px rgba(0, 243, 255, 0.4);">
-                DEV: KAUSTAV CHOWDHURY
-            </div>
-        </div>
-        <!-- TOGGLE CONTROLS -->
-        <div class="toggle-controls">
-            <!-- THEME TOGGLE - DARK MONOCHROME THEME -->
-            <button class="toggle-btn theme-btn" id="theme-toggle-btn" title="Switch Theme" onclick="
-                var r = document.documentElement;
-                var isDark = document.body.classList.contains('theme-dark');
-                if (isDark) {
-                    /* SWITCH BACK TO INDIGO */
-                    r.style.setProperty('--primary', '#4f46e5');
-                    r.style.setProperty('--primary-light', '#818cf8');
-                    r.style.setProperty('--secondary', '#a5b4fc');
-                    r.style.setProperty('--danger', '#ff003c');
-                    r.style.setProperty('--green', '#39ff14');
-                    r.style.setProperty('--text-main', '#ffffff');
-                    r.style.setProperty('--text-dim', '#94a3b8');
-                    r.style.setProperty('--bg-color', '#000005');
-                    r.style.setProperty('--glass-bg', 'rgba(0, 0, 5, 0.98)');
-                    r.style.setProperty('--glass-border', '1px solid rgba(79, 70, 229, 0.2)');
-                    document.body.classList.remove('theme-dark');
-                    this.querySelector('.icon').textContent = '🔄';
-                    console.log('Switched to INDIGO (Color Mode)');
-                } else {
-                    /* SWITCH TO DARK MONOCHROME - Black/Ash/White only */
-                    r.style.setProperty('--primary', '#a0a0a0');
-                    r.style.setProperty('--primary-light', '#c0c0c0');
-                    r.style.setProperty('--secondary', '#808080');
-                    r.style.setProperty('--danger', '#606060');
-                    r.style.setProperty('--green', '#d0d0d0');
-                    r.style.setProperty('--text-main', '#ffffff');
-                    r.style.setProperty('--text-dim', '#707070');
-                    r.style.setProperty('--bg-color', '#000000');
-                    r.style.setProperty('--glass-bg', 'rgba(10, 10, 10, 0.98)');
-                    r.style.setProperty('--glass-border', '1px solid rgba(100, 100, 100, 0.3)');
-                    document.body.classList.add('theme-dark');
-                    this.querySelector('.icon').textContent = '🌙';
-                    console.log('Switched to DARK MONO (Black/Ash/White)');
-                }
-            ">
-                <span class="icon">🔄</span>
-            </button>
-        </div>
-    </header>
-
     <div id="hud" class="hidden">
         <!-- New Left HUD Timer -->
         <div class="hud-panel hud-top-left" id="timer-panel" style="
@@ -8595,8 +8544,7 @@
         </div>
     </div>
 
-    <!-- Dark mode toggle -->
-    <button id="theme-toggle-btn" class="theme-toggle">Toggle Dark Mode</button>
+
 
     <!-- Blood drops container -->
     <div id="blood-drop-container"></div>
@@ -8608,14 +8556,12 @@
             <div style="display: flex; flex-direction: column;">
                 <h1 class="black-glow" onclick="if(typeof handleTitleClick === 'function') handleTitleClick()"
                     style="font-family: var(--f-title); font-size: 2rem; color: var(--primary); margin: 0; line-height: 1; cursor: pointer;">
-                    NEUROFRIED</h1>
-                <span style="font-family: var(--f-mono); font-size: 0.8rem; color: #888;">dev: kaustav chowdhury</span>
+                    NEURO FRIED</h1>
+                <span style="font-family: var(--f-mono); font-size: 0.8rem; color: #888;">DEV: Kaustav Chowdhury</span>
             </div>
         </div>
         <div style="display: flex; align-items: center; gap: 10px;">
-            <button onclick="showLeaderboard()"
-                style="background:none; border:none; font-size:1.5rem; cursor:pointer;">🏆</button>
-            <button id="theme-toggle-btn" class="theme-toggle" aria-label="Toggle Dark Mode">🌙</button>
+            <!-- Buttons moved to footer -->
         </div>
     </header>
     <!-- ACHIEVEMENT SYSTEM -->
@@ -8697,21 +8643,36 @@
         /* Achievement Gallery Button */
         .ach-gallery-btn {
             position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: rgba(0, 0, 0, 0.8);
+            bottom: 30px;
+            right: 30px;
+            width: 320px;
+            /* Fixed width for uniformity */
+            height: 60px;
+            /* Fixed height */
+            padding: 0;
+            box-sizing: border-box;
+            /* Include padding/border in width */
+            border-radius: 50px;
+            /* Pill shape */
+            background: rgba(0, 0, 0, 0.9);
             border: 2px solid var(--primary);
             color: var(--primary);
-            font-size: 1.5rem;
+            font-size: 1.2rem;
+            font-family: var(--f-title);
+            /* Use title font */
+            letter-spacing: 2px;
             cursor: pointer;
             z-index: 9999;
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
             justify-content: center;
+            /* Center content */
+            gap: 15px;
+            /* Consistent gap */
+            text-transform: uppercase;
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.3);
+            /* Initial glow */
         }
 
         .ach-gallery-btn:hover {
@@ -8719,6 +8680,81 @@
             box-shadow: 0 0 20px var(--primary);
             background: var(--primary);
             color: #000;
+        }
+
+        /* Leaderboard Button - At the Header (Top Right) */
+        .leaderboard-btn {
+            position: fixed;
+            top: 30px;
+            /* Moved to Header */
+            right: 30px;
+            width: 320px;
+            /* Fixed width for uniformity */
+            height: 60px;
+            /* Fixed height */
+            padding: 0;
+            box-sizing: border-box;
+            /* Include padding/border in width */
+            border-radius: 50px;
+            background: rgba(0, 0, 0, 0.9);
+            border: 2px solid var(--primary);
+            /* Ditto Color (Cyan) */
+            color: var(--primary);
+            font-size: 1.2rem;
+            font-family: var(--f-title);
+            letter-spacing: 2px;
+            cursor: pointer;
+            z-index: 9999;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            /* Center content */
+            gap: 15px;
+            /* Consistent gap */
+            text-transform: uppercase;
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.3);
+            /* Ditto Glow */
+        }
+
+        .leaderboard-btn:hover {
+            transform: scale(1.05);
+            /* Gentle zoom */
+            box-shadow: 0 0 20px var(--primary);
+            background: var(--primary);
+            color: #000;
+        }
+
+        /* Mobile Responsive Buttons */
+        @media (max-width: 768px) {
+
+            .ach-gallery-btn,
+            .leaderboard-btn {
+                width: 60px !important;
+                /* Shrink to circle */
+                padding: 0 !important;
+                border-radius: 50% !important;
+                font-size: 0 !important;
+                /* Hide text */
+                gap: 0 !important;
+            }
+
+            /* Show Icon */
+            .ach-gallery-btn span:first-child,
+            .leaderboard-btn span:first-child {
+                font-size: 1.5rem !important;
+                margin: 0 !important;
+            }
+
+            /* Hide Count and Text labels */
+            .ach-gallery-btn .ach-count {
+                position: absolute !important;
+                top: -5px !important;
+                right: -5px !important;
+                font-size: 0.7rem !important;
+                background: var(--danger);
+                display: block !important;
+            }
         }
 
         .ach-gallery-btn .ach-count {
@@ -8934,10 +8970,18 @@
         </div>
     </div>
 
+    <!-- Leaderboard Button -->
+    <button class="leaderboard-btn" onclick="showLeaderboard()">
+        <span style="font-size: 1.5rem;">🌍</span>
+        LEADERBOARD
+    </button>
+
     <!-- Achievement Gallery Button -->
     <button class="ach-gallery-btn" id="open-ach-btn" onclick="openAchievements()">
-        🏆
-        <span class="ach-count" id="ach-count">0/17</span>
+        <span style="font-size: 1.5rem;">🏆</span>
+        NEURAL ARCHIVE
+        <span class="ach-count" id="ach-count"
+            style="position: static; background: var(--danger); font-size: 0.8rem; padding: 2px 8px; border-radius: 4px; min-width: auto;">0/23</span>
     </button>
 
     <!-- Achievement Gallery Modal -->
@@ -8953,6 +8997,16 @@
             </div>
         </div>
     </div>
+    <script>
+        /* AUTO FULLSCREEN ON FIRST INTERACTION */
+        document.addEventListener('click', function () {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.log(`Error attempting to enable full-screen: ${err.message}`);
+                });
+            }
+        }, { once: true });
+    </script>
 </body>
 
 </html>
