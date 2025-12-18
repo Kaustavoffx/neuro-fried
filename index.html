@@ -8359,7 +8359,7 @@
             // New stats
             themeToggleCount: 0,
             modesPlayed: new Set(),
-            gamesPlayed: 0
+            gamesPlayed: 0,
             leaderboardOpenCount: 0,
             titleClickCount: 0
         };
@@ -8935,9 +8935,9 @@
     </div>
 
     <!-- Achievement Gallery Button -->
-    <button class="ach-gallery-btn" id="ach-gallery-btn" onclick="openAchievements()">
+    <button class="ach-gallery-btn" id="open-ach-btn" onclick="openAchievements()">
         🏆
-        <span class="ach-count" id="ach-count">0/12</span>
+        <span class="ach-count" id="ach-count">0/17</span>
     </button>
 
     <!-- Achievement Gallery Modal -->
@@ -8947,7 +8947,7 @@
                 <h2 class="ach-modal-title">⚡ NEURAL ACHIEVEMENTS ⚡</h2>
                 <button class="ach-modal-close" onclick="closeAchievements()">×</button>
             </div>
-            <p class="ach-progress-text" id="ach-progress">0 of 12 achievements unlocked</p>
+            <p class="ach-progress-text" id="ach-progress">0 of 17 achievements unlocked</p>
             <div class="ach-grid" id="ach-grid">
                 <!-- Achievements populated by JS -->
             </div>
@@ -8956,4 +8956,3 @@
 </body>
 
 </html>
-```
