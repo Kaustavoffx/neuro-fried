@@ -2392,6 +2392,28 @@
             max-width: 1400px;
             padding: 20px;
             margin-top: 60px;
+            border-radius: 16px;
+            /* Ensure Grid is used for side-by-side */
+            align-items: stretch;
+
+            /* 'High' Feel - Floating intensity */
+            animation: highFloat 6s ease-in-out infinite;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        @keyframes highFloat {
+
+            0%,
+            100% {
+                transform: translateY(0);
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            }
+
+            50% {
+                transform: translateY(-10px);
+                box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+                border-color: rgba(255, 255, 255, 0.3);
+            }
         }
 
         .duel-side {
@@ -3398,6 +3420,85 @@
                 opacity: 1;
                 transform: translate(-50%, -50%) scale(1) rotate(-15deg);
             }
+        }
+
+        /* RE-IMPLEMENTED BLACK HOLE EXIT ANIMATION */
+        @keyframes blackHoleSuck {
+            0% {
+                transform: scale(1) rotate(0deg);
+                filter: brightness(1) contrast(1);
+                opacity: 1;
+            }
+
+            40% {
+                transform: scale(0.9) rotate(5deg);
+                filter: brightness(1.2) contrast(1.5) hue-rotate(90deg);
+                opacity: 1;
+            }
+
+            100% {
+                transform: scale(0) rotate(720deg);
+                filter: brightness(0) contrast(5);
+                opacity: 0;
+            }
+        }
+
+        body.sucked-into-void .screen.active,
+        body.sucked-into-void .fail-modal.active,
+        body.sucked-into-void #s-over {
+            animation: blackHoleSuck 1.5s cubic-bezier(0.7, 0, 0.3, 1) forwards !important;
+        }
+
+        body.sucked-into-void {
+            background: black !important;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        /* DUEL MODE: CREEPY GLASS AESTHETIC */
+        .duel-glass-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(8px);
+            z-index: 10;
+            pointer-events: none;
+            border-radius: 4px;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8);
+        }
+
+        .opt-btn.ai-glass {
+            position: relative;
+            background: #000;
+            color: transparent !important;
+            border: 1px solid #333;
+            overflow: hidden;
+            transition: all 0.5s;
+        }
+
+        .opt-btn.ai-glass::after {
+            content: "👁️";
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: rgba(255, 255, 255, 0.1);
+            filter: blur(2px);
+        }
+
+        .opt-btn.ai-glass.selected {
+            border-color: var(--primary);
+            box-shadow: 0 0 15px var(--primary);
+        }
+
+        .opt-btn.ai-glass.selected::after {
+            content: "LOCKED";
+            color: var(--primary);
+            filter: blur(0px);
+            letter-spacing: 2px;
+            animation: glitchText 0.3s infinite;
         }
 
         /* =========================================
@@ -4634,23 +4735,31 @@
                 // Start new track
                 this.currentTrack = newTrack;
                 newTrack.currentTime = 0;
-                newTrack.volume = 0;
 
-                const playPromise = newTrack.play();
-                if (playPromise !== undefined) {
-                    playPromise.catch(error => {
-                        console.log("Auto-play prevented (will resume on click):", error);
-                        // Add one-time click handler to resume if blocked
-                        document.addEventListener('click', () => {
-                            if (this.currentTrack === newTrack && newTrack.paused) {
-                                newTrack.play();
-                                this.fadeIn(newTrack);
-                            }
-                        }, { once: true });
-                    });
+                // FORCE PLAY GAMEOVER (No Fade-In) - User Request Fix
+                if (trackName === 'gameover') {
+                    newTrack.volume = this.baseVolume;
+                    const playPromise = newTrack.play();
+                    if (playPromise !== undefined) {
+                        playPromise.catch(e => console.error("Game Over BGM Fail:", e));
+                    }
+                } else {
+                    // Standard Fade-In
+                    newTrack.volume = 0;
+                    const playPromise = newTrack.play();
+                    if (playPromise !== undefined) {
+                        playPromise.catch(error => {
+                            console.log("Auto-play prevented (will resume on click):", error);
+                            document.addEventListener('click', () => {
+                                if (this.currentTrack === newTrack && newTrack.paused) {
+                                    newTrack.play();
+                                    this.fadeIn(newTrack);
+                                }
+                            }, { once: true });
+                        });
+                    }
+                    this.fadeIn(newTrack);
                 }
-
-                this.fadeIn(newTrack);
             },
 
             stop() {
@@ -5262,6 +5371,14 @@
                 this.nightTriggered = false;
                 this.active = true;
                 document.body.classList.add('time-day');
+
+                // SHOW TIMER for Duel Mode (User Request)
+                const timerPanel = document.getElementById('timer-panel');
+                if (timerPanel) timerPanel.classList.remove('hidden');
+
+                // Force Timer Start for Duel Mode
+                TimerSystem.start(TimerSystem.maxTime || 60);
+
                 this.startDayNightCycle();
 
                 document.getElementById('player-duel-score').textContent = '0';
@@ -5358,12 +5475,11 @@
                 });
 
                 // Generate options for AI (same order)
-                const aiArea = document.getElementById('opt-area-ai');
                 aiArea.innerHTML = '';
                 options.forEach(txt => {
                     const b = document.createElement('div');
-                    b.className = 'opt-btn';
-                    b.innerText = txt;
+                    b.className = 'opt-btn ai-glass'; // NEW CLASS
+                    b.innerText = txt; // Text is hidden via CSS color:transparent
                     b.dataset.answer = txt;
                     aiArea.appendChild(b);
                 });
@@ -5378,7 +5494,6 @@
 
                 setTimeout(() => {
                     if (!this.active) return;
-
                     if (typeof TimerSystem !== 'undefined' && TimerSystem.frozen) {
                         setTimeout(() => this.simulateAIAnswer(questionData, options), 500);
                         return;
@@ -5387,16 +5502,25 @@
                     const correct = Math.random() < 0.65;
                     const aiOpts = document.querySelectorAll('#opt-area-ai .opt-btn');
 
-                    aiOpts.forEach(opt => {
-                        if (correct && opt.dataset.answer === questionData.a) {
-                            opt.style.background = 'rgba(57, 255, 20, 0.3)';
-                            opt.style.borderColor = 'var(--green)';
-                            this.aiScore += 100;
-                        } else if (!correct && opt.dataset.answer !== questionData.a && Math.random() > 0.5) {
-                            opt.style.background = 'rgba(255, 0, 60, 0.3)';
-                            opt.style.borderColor = 'var(--danger)';
-                        }
-                    });
+                    // Pick an answer (Correct or Random Wrong)
+                    let chosenBtn = null;
+                    const correctBtn = Array.from(aiOpts).find(b => b.dataset.answer === questionData.a);
+
+                    if (correct && correctBtn) {
+                        chosenBtn = correctBtn;
+                        this.aiScore += 100;
+                    } else {
+                        // Pick random wrong
+                        const wrongBtns = Array.from(aiOpts).filter(b => b.dataset.answer !== questionData.a);
+                        if (wrongBtns.length > 0) chosenBtn = wrongBtns[Math.floor(Math.random() * wrongBtns.length)];
+                    }
+
+                    // Visual Feedback: Creepy Glass Selection
+                    if (chosenBtn) {
+                        chosenBtn.classList.add('selected');
+                        // Do NOT reveal if it's correct/wrong to the player yet, just that they locked in.
+                        // User wanted it "hidden... covered with glass"
+                    }
 
                     document.getElementById('ai-duel-score').textContent = this.aiScore;
                 }, delay);
@@ -5460,6 +5584,10 @@
                 this.active = false;
                 if (this.nightTimeout) clearTimeout(this.nightTimeout);
                 document.body.classList.remove('time-day', 'time-night');
+
+                // RESTORE TIMER
+                const timerPanel = document.getElementById('timer-panel');
+                if (timerPanel) timerPanel.classList.remove('hidden');
             }
         };
 
@@ -5854,11 +5982,13 @@
 
                 if (this.interval) clearInterval(this.interval);
 
-                // DUEL MODE EXCEPTION: No timer countdown
                 if (typeof currentGameMode !== 'undefined' && currentGameMode === 'C') {
-                    // Update once to clear/hide info but don't tick
-                    this.update();
-                    return;
+                    // DUEL MODE: Allow ticking, but maybe handle expiration differently?
+                    // User said "show how much time is left".
+                    // So we let it run. If it hits 0, maybe just End Duel or Night comes faster?
+                    // For now, let's treat it as standard time limit for the QUESTION?
+                    // Or global time? 
+                    // Let's assume standard behavior: time runs out = game over or lost round.
                 }
 
                 this.interval = setInterval(() => {
@@ -5882,7 +6012,13 @@
 
                     if (this.timeLeft <= 0) {
                         this.stop();
-                        Game.gameOver(); // Time out = Game Over now
+                        if (typeof currentGameMode !== 'undefined' && currentGameMode === 'C') {
+                            // Duel Mode Timeout: Trigger Night Immediately or Game Over?
+                            // Game.gameOver() fits standard rules.
+                            Game.gameOver();
+                        } else {
+                            Game.gameOver();
+                        }
                     }
                 }, 100);
             },
@@ -5904,12 +6040,12 @@
                 if (!display || !bar) return;
 
                 // SPECIAL DISPLAY FOR DUEL MODE
-                if (typeof currentGameMode !== 'undefined' && currentGameMode === 'C') {
+                // SPECIAL DISPLAY FOR DUEL MODE (REMOVED - SHOW TIMER)
+                /* if (typeof currentGameMode !== 'undefined' && currentGameMode === 'C') {
                     display.textContent = "NO TIME";
                     bar.style.width = "100%";
-                    bar.style.backgroundColor = (document.body.classList.contains('time-day')) ? '#000' : '#444';
                     return;
-                }
+                } */
 
                 display.textContent = this.timeLeft.toFixed(1);
                 // Bar is relative to 60s (Initial Max) visually, or dynamic?
@@ -6733,7 +6869,7 @@
             gameWin() {
                 this.active = false;
                 TimerSystem.stop();
-                if (typeof MusicSystem !== 'undefined') MusicSystem.stop();
+                if (typeof MusicSystem !== 'undefined') MusicSystem.play('gameover');
                 AudioSystem.playCorrect();
                 gameInProgress = false;
 
@@ -6762,18 +6898,21 @@
                 this.runOutroSequence();
             },
 
+            triggerBlackHoleExit() {
+                AudioSystem.playRewind(); // Sound
+                document.body.classList.add('sucked-into-void');
+                setTimeout(() => window.location.reload(), 1400); // Reset
+            },
+
             gameOver() {
                 this.active = false; AudioSystem.playWrong();
-                if (typeof MusicSystem !== 'undefined') MusicSystem.stop();
                 gameInProgress = false;
                 document.getElementById('fail-modal').classList.remove('active');
                 document.body.classList.add('power-off-anim');
 
-                // Cleanup any active modes
                 if (currentGameMode === 'B') DreamMode.cleanup();
                 if (currentGameMode === 'C') DuelMode.cleanup();
 
-                // Reset headline to SIGNAL LOST for game over
                 this.isWin = false;
                 const headline = document.getElementById('game-over-headline');
                 if (headline) {
@@ -6782,7 +6921,6 @@
                     headline.style.textShadow = '0 0 30px var(--danger)';
                 }
 
-                // Cue the sad violin... or menacing drone in our case
                 if (typeof MusicSystem !== 'undefined') MusicSystem.play('gameover');
 
                 setTimeout(() => {
@@ -6824,6 +6962,16 @@
                     fin.classList.remove('hidden');
                     fin.style.opacity = 1;
                     wRes.style.opacity = 1;
+
+                    // ADDED: Black Hole Trigger Listener
+                    setTimeout(() => {
+                        const exitHandler = (e) => {
+                            if (e.target.matches('input') || e.target.closest('.send-feedback-btn')) return;
+                            document.removeEventListener('click', exitHandler);
+                            this.triggerBlackHoleExit();
+                        };
+                        document.addEventListener('click', exitHandler);
+                    }, 500);
 
                     setTimeout(() => {
                         wRes.style.textDecoration = 'line-through';
