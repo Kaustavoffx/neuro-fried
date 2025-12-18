@@ -3674,6 +3674,117 @@
             animation: none;
             box-shadow: 0 0 30px rgba(57, 255, 20, 0.6);
         }
+
+        /* ACHIEVEMENT TIERS */
+        .ach-card.tier-common {
+            border: 1px solid #cd7f32;
+            box-shadow: 0 0 5px rgba(205, 127, 50, 0.3);
+        }
+
+        .ach-card.tier-common .ach-card-icon {
+            text-shadow: 0 0 5px #cd7f32;
+        }
+
+        .ach-card.tier-rare {
+            border: 1px solid silver;
+            background: linear-gradient(135deg, rgba(192, 192, 192, 0.1), transparent);
+            box-shadow: 0 0 10px rgba(192, 192, 192, 0.4);
+        }
+
+        .ach-card.tier-rare .ach-card-icon {
+            text-shadow: 0 0 10px silver;
+        }
+
+        .ach-card.tier-epic {
+            border: 2px solid #ff003c;
+            background: linear-gradient(135deg, rgba(255, 0, 60, 0.15), transparent);
+            box-shadow: 0 0 15px rgba(255, 0, 60, 0.5);
+            animation: epicPulse 2s infinite alternate;
+        }
+
+        .ach-card.tier-epic .ach-card-name {
+            color: #ff003c;
+            text-shadow: 0 0 5px #ff003c;
+        }
+
+        .ach-card.tier-legendary {
+            border: 2px solid #ffd700;
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), transparent, rgba(255, 215, 0, 0.1));
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.8), inset 0 0 20px rgba(255, 215, 0, 0.2);
+            animation: legendaryShine 3s infinite linear;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ach-card.tier-legendary::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transform: rotate(45deg);
+            animation: shimmer 3s infinite;
+        }
+
+        .ach-card.tier-legendary .ach-card-name {
+            color: #ffd700;
+            text-shadow: 0 0 10px #ffd700, 0 0 20px #ffd700;
+        }
+
+        @keyframes epicPulse {
+            0% {
+                box-shadow: 0 0 15px rgba(255, 0, 60, 0.5);
+            }
+
+            100% {
+                box-shadow: 0 0 25px rgba(255, 0, 60, 0.8), inset 0 0 10px rgba(255, 0, 60, 0.2);
+            }
+        }
+
+        @keyframes legendaryShine {
+            0% {
+                border-color: #ffd700;
+                box-shadow: 0 0 30px rgba(255, 215, 0, 0.6);
+            }
+
+            50% {
+                border-color: #fff;
+                box-shadow: 0 0 50px rgba(255, 215, 0, 1);
+            }
+
+            100% {
+                border-color: #ffd700;
+                box-shadow: 0 0 30px rgba(255, 215, 0, 0.6);
+            }
+        }
+
+        /* BIGGER BUTTON */
+        #open-ach-btn {
+            transform: scale(1.3);
+            border-bottom: 2px solid var(--primary);
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 4000;
+            padding: 15px 25px;
+            font-size: 1.2rem;
+            animation: btnFloat 3s ease-in-out infinite;
+        }
+
+        @keyframes btnFloat {
+
+            0%,
+            100% {
+                transform: scale(1.3) translateY(0);
+            }
+
+            50% {
+                transform: scale(1.3) translateY(-5px);
+                box-shadow: 0 10px 20px rgba(0, 243, 255, 0.4);
+            }
+        }
     </style>
 </head>
 
@@ -5318,6 +5429,25 @@
                 document.getElementById('ai-duel-score').textContent = '0';
             },
 
+            reset() {
+                if (typeof resetAchievementStats !== 'undefined') resetAchievementStats(); // ACHIEVEMENT HOOK
+                this.playerScore = 0;
+                this.aiScore = 0;
+                this.dayStartTime = Date.now();
+                this.nightTriggered = false;
+                this.active = true;
+                document.body.classList.add('time-day');
+
+                // HIDE TIMER & HUD ELEMENTS FOR DUEL
+                const timerPanel = document.getElementById('timer-panel');
+                if (timerPanel) timerPanel.classList.add('hidden');
+
+                this.startDayNightCycle();
+
+                document.getElementById('player-duel-score').textContent = '0';
+                document.getElementById('ai-duel-score').textContent = '0';
+            },
+
             startDayNightCycle() {
                 // Random time between 45-90 seconds for night to trigger
                 const nightDelay = (Math.random() * 45 + 45) * 1000;
@@ -5472,6 +5602,7 @@
                 playerOpts.forEach(opt => opt.style.pointerEvents = 'none');
 
                 if (ans === correct) {
+                    try { if (typeof onCorrectAnswer !== 'undefined') onCorrectAnswer(); } catch (e) { console.error(e); } // ACHIEVEMENT HOOK SAFE
                     this.playerScore += 100;
                     if (typeof AudioSystem !== 'undefined') AudioSystem.playCorrect();
                     playerOpts.forEach(opt => {
@@ -5487,6 +5618,7 @@
                         document.getElementById('hud-score').innerText = this.playerScore;
                     }
                 } else {
+                    try { if (typeof onWrongAnswer !== 'undefined') onWrongAnswer(); } catch (e) { console.error(e); } // ACHIEVEMENT HOOK SAFE
                     if (typeof AudioSystem !== 'undefined') AudioSystem.playWrong();
                     playerOpts.forEach(opt => {
                         if (opt.innerText === ans) {
@@ -6029,6 +6161,16 @@
                 this.freezeCharges = 1;
                 this.rewindCharges = 3;
                 this.updatePowerUI();
+            },
+
+            useFreeze() {
+                if (this.freezeActive || this.freezeCharges <= 0) return;
+
+                if (typeof onFreezeUsed !== 'undefined') onFreezeUsed(); // ACHIEVEMENT HOOK
+                this.freezeCharges--;
+                // Assuming updateButtons() is a function that updates the UI for powers
+                // If not, this line might cause an error. Keeping it as per instruction.
+                if (typeof this.updateButtons === 'function') this.updateButtons();
             },
 
             // Freeze: Pause timer for 5 seconds (timer only, game continues)
@@ -6624,7 +6766,6 @@
                     const btn = document.querySelector('.btn-rewind');
                     btn.classList.add('shake');
                     setTimeout(() => btn.classList.remove('shake'), 400);
-                    AudioSystem.playWrong();
                 }
             },
 
@@ -6634,6 +6775,7 @@
 
 
                 if (ans === cor) {
+                    if (typeof onCorrectAnswer !== 'undefined') onCorrectAnswer(); // ACHIEVEMENT HOOK
                     AudioSystem.playCorrect();
                     if (e && typeof showScorePop === 'function') showScorePop(e.clientX, e.clientY);
 
@@ -6692,6 +6834,7 @@
                     this.round++; this.nextRound();
                 } else {
                     // WRONG ANSWER LOGIC
+                    if (typeof onWrongAnswer !== 'undefined') onWrongAnswer(); // ACHIEVEMENT HOOK
                     AudioSystem.playWrong();
 
                     // Lose Time (-5s)
@@ -6804,7 +6947,7 @@
                 if (typeof saveScore === 'function') saveScore(this.score);
                 if (typeof MusicSystem !== 'undefined') MusicSystem.play('gameover');
                 AudioSystem.playCorrect();
-                gameInProgress = false;
+                if (typeof onGameWinAC !== 'undefined') onGameWinAC(TimerSystem.timeLeft);
 
                 // Cleanup any active modes
                 if (currentGameMode === 'B') DreamMode.cleanup();
@@ -7897,6 +8040,10 @@
                 list.innerHTML = '';
                 scores.slice(0, 3).forEach((s, i) => { const li = document.createElement('li'); li.textContent = `${i + 1}. ${s}`; list.appendChild(li); });
             }
+            if (typeof achievementStats !== 'undefined' && typeof unlockAchievement !== 'undefined') {
+                achievementStats.leaderboardOpenCount = (achievementStats.leaderboardOpenCount || 0) + 1;
+                if (achievementStats.leaderboardOpenCount >= 3) unlockAchievement('social_butterfly'); // EXPANSION HOOK
+            }
             document.getElementById('leaderboard-modal').classList.remove('hidden');
         }
         function saveScore(score) {
@@ -7909,6 +8056,11 @@
             const html = document.documentElement;
             const cur = html.getAttribute('data-theme') || 'dark';
             html.setAttribute('data-theme', cur === 'dark' ? 'light' : 'dark');
+
+            if (typeof achievementStats !== 'undefined' && typeof unlockAchievement !== 'undefined') {
+                achievementStats.themeToggleCount = (achievementStats.themeToggleCount || 0) + 1;
+                if (achievementStats.themeToggleCount >= 5) unlockAchievement('void_gazer'); // EXPANSION HOOK
+            }
         }
         function spawnBloodDrop() {
             const container = document.getElementById('blood-drop-container');
@@ -7986,6 +8138,8 @@
             UserProfile.name = name;
             UserProfile.registered = true;
 
+            if (typeof unlockAchievement !== 'undefined') unlockAchievement('identity_verified'); // EXPANSION HOOK
+
             // Photo is already set by previewAvatar helper
 
             // Save to LocalStorage for persistence
@@ -8047,6 +8201,15 @@
                 // Check if already registered in this session? 
                 // User asked to add options "when the start off the game".
                 // So we always show register screen first.
+
+                // NEW ACHIEVEMENT TRACKING
+                if (typeof achievementStats !== 'undefined') {
+                    achievementStats.gamesPlayed++;
+                    if (currentGameMode) achievementStats.modesPlayed.add(currentGameMode);
+
+                    if (achievementStats.gamesPlayed >= 5) unlockAchievement('veteran');
+                    if (achievementStats.modesPlayed.size >= 3) unlockAchievement('mode_traveler');
+                }
 
                 // Initialize Audio
                 try {
@@ -8138,7 +8301,283 @@
                     updateIdentityDisplays();
                 }
             } catch (e) { }
+
+            // Initialize Achievements
+            loadAchievements();
         });
+
+        /* =============================================
+           ACHIEVEMENT SYSTEM - No Backend Required
+           ============================================= */
+
+        const ACHIEVEMENTS = {
+            // LEVEL 1: COMMON (Bronze)
+            first_blood: { id: 'first_blood', icon: '🩸', name: 'FIRST BLOOD', desc: 'Get your first correct answer', unlocked: false, tier: 'common' },
+            time_lord: { id: 'time_lord', icon: '❄️', name: 'TIME LORD', desc: 'Use the Freeze ability', unlocked: false, tier: 'common' },
+            temporal_paradox: { id: 'temporal_paradox', icon: '⏪', name: 'TEMPORAL PARADOX', desc: 'Use the Rewind ability', unlocked: false, tier: 'common' },
+            identity_verified: { id: 'identity_verified', icon: '🆔', name: 'IDENTITY VERIFIED', desc: 'Register a Full Profile', unlocked: false, tier: 'common' },
+            social_butterfly: { id: 'social_butterfly', icon: '🦋', name: 'SOCIAL BUTTERFLY', desc: 'Open the Leaderboard 3 times', unlocked: false, tier: 'common' },
+
+            // LEVEL 2: RARE (Silver)
+            hot_streak: { id: 'hot_streak', icon: '🔥', name: 'HOT STREAK', desc: 'Get 5 correct answers in a row', unlocked: false, tier: 'rare' },
+            survivor: { id: 'survivor', icon: '🚑', name: 'SURVIVOR', desc: 'Win with less than 5 seconds left', unlocked: false, tier: 'rare' },
+            risk_taker: { id: 'risk_taker', icon: '🎲', name: 'RISK TAKER', desc: 'Win after using Rewind 3+ times', unlocked: false, tier: 'rare' },
+            void_gazer: { id: 'void_gazer', icon: '⚫', name: 'VOID GAZER', desc: 'Stare into the abyss (Toggle Theme 5x)', unlocked: false, tier: 'rare' },
+            nocturnal: { id: 'nocturnal', icon: '🌑', name: 'NOCTURNAL', desc: 'Survive the Night Phase', unlocked: false, tier: 'rare' },
+
+            // LEVEL 3: EPIC (Red/Dark)
+            unstoppable: { id: 'unstoppable', icon: '🚀', name: 'UNSTOPPABLE', desc: 'Get 10 correct answers in a row', unlocked: false, tier: 'epic' },
+            comeback_king: { id: 'comeback_king', icon: '👑', name: 'COMEBACK KING', desc: 'Win after time dropped below 10s', unlocked: false, tier: 'epic' },
+            chrono_master: { id: 'chrono_master', icon: '⏳', name: 'CHRONO MASTER', desc: 'Use both Freeze and Rewind in one game', unlocked: false, tier: 'epic' },
+            speed_demon: { id: 'speed_demon', icon: '⚡', name: 'SPEED DEMON', desc: 'Win with more than 30 seconds left', unlocked: false, tier: 'epic' },
+            system_overload: { id: 'system_overload', icon: '👾', name: 'SYSTEM OVERLOAD', desc: 'You shouldn\'t be here', unlocked: false, tier: 'epic' },
+
+            // LEGENDARY (Shining)
+            neural_sync: { id: 'neural_sync', icon: '🧠', name: 'NEURAL SYNC', desc: 'Complete all questions and win', unlocked: false, tier: 'legendary' },
+            perfect_mind: { id: 'perfect_mind', icon: '💎', name: 'PERFECT MIND', desc: 'Win with 0 wrong answers', unlocked: false, tier: 'legendary' },
+            timeline_purist: { id: 'timeline_purist', icon: '⚔️', name: 'TIMELINE PURIST', desc: 'Win without using ANY Powers', unlocked: false, tier: 'legendary' },
+
+            // NEW EXPANSION V2
+            warp_speed: { id: 'warp_speed', icon: '⏩', name: 'WARP SPEED', desc: 'Reach 2x Score Multiplier', unlocked: false, tier: 'common' },
+            ice_breaker: { id: 'ice_breaker', icon: '🌡️', name: 'THERMAL DYNAMICS', desc: 'Win without ever freezing time', unlocked: false, tier: 'rare' },
+            no_looking_back: { id: 'no_looking_back', icon: '🚫', name: 'FORWARD MARCH', desc: 'Win without ever rewinding', unlocked: false, tier: 'rare' },
+            mode_traveler: { id: 'mode_traveler', icon: '🗺️', name: 'DIMENSION HOPPER', desc: 'Play all 3 gamemodes in one session', unlocked: false, tier: 'rare' },
+            veteran: { id: 'veteran', icon: '🎖️', name: 'VET', desc: 'Play 5 games in one session', unlocked: false, tier: 'epic' }
+        };
+
+        // Track game stats for achievements
+        let achievementStats = {
+            correctAnswers: 0,
+            wrongAnswers: 0,
+            currentStreak: 0,
+            maxStreak: 0,
+            freezeUsed: false,
+            rewindUsed: false,
+            rewindCount: 0,
+            droppedBelow10: false,
+            lowestTime: 60,
+            // New stats
+            themeToggleCount: 0,
+            modesPlayed: new Set(),
+            gamesPlayed: 0
+            leaderboardOpenCount: 0,
+            titleClickCount: 0
+        };
+
+        function loadAchievements() {
+            const saved = localStorage.getItem('neurofried_achievements');
+            if (saved) {
+                const parsed = JSON.parse(saved);
+                Object.keys(parsed).forEach(key => {
+                    if (ACHIEVEMENTS[key]) ACHIEVEMENTS[key].unlocked = parsed[key];
+                });
+            }
+            updateAchievementCount();
+        }
+
+        function saveAchievements() {
+            const toSave = {};
+            Object.keys(ACHIEVEMENTS).forEach(key => {
+                toSave[key] = ACHIEVEMENTS[key].unlocked;
+            });
+            localStorage.setItem('neurofried_achievements', JSON.stringify(toSave));
+        }
+
+        function unlockAchievement(id) {
+            if (!ACHIEVEMENTS[id] || ACHIEVEMENTS[id].unlocked) return;
+
+            ACHIEVEMENTS[id].unlocked = true;
+            saveAchievements();
+            showAchievementPopup(ACHIEVEMENTS[id]);
+            updateAchievementCount();
+            if (typeof AudioSystem !== 'undefined') AudioSystem.playBtnHover(); // Reuse hover sound as placeholder
+            console.log("UNLOCKED: " + id);
+        }
+
+        function showAchievementPopup(achievement) {
+            const popup = document.getElementById('achievement-popup');
+            document.getElementById('ach-popup-icon').textContent = achievement.icon;
+            document.getElementById('ach-popup-name').textContent = achievement.name;
+            document.getElementById('ach-popup-desc').textContent = achievement.desc;
+
+            popup.classList.add('show');
+            document.body.classList.add('glitch-active');
+            setTimeout(() => document.body.classList.remove('glitch-active'), 300);
+
+            // Allow multiple popups by resetting timer if needed (simple implementation)
+            setTimeout(() => popup.classList.remove('show'), 4000);
+        }
+
+        function updateAchievementCount() {
+            const total = Object.keys(ACHIEVEMENTS).length;
+            const unlocked = Object.values(ACHIEVEMENTS).filter(a => a.unlocked).length;
+
+            const countEl = document.getElementById('ach-count');
+            const progressEl = document.getElementById('ach-progress');
+
+            if (countEl) countEl.textContent = `${unlocked}/${total}`;
+            if (progressEl) progressEl.textContent = `${unlocked} of ${total} achievements unlocked`;
+        }
+
+        // ... helper to get tier name for display
+        function getTierLabel(tier) {
+            switch (tier) {
+                case 'common': return 'LVL 1 - COMMON';
+                case 'rare': return 'LVL 2 - RARE';
+                case 'epic': return 'LVL 3 - EPIC';
+                case 'legendary': return 'LEGENDARY';
+                default: return '';
+            }
+        }
+
+        window.openAchievements = function () { // Expose globally
+            const modal = document.getElementById('ach-modal');
+            const grid = document.getElementById('ach-grid');
+
+            if (!modal || !grid) return;
+
+            // Define Tier Order & Headers
+            const tiers = ['common', 'rare', 'epic', 'legendary'];
+            const tierNames = {
+                'common': 'LEVEL 1 - COMMON',
+                'rare': 'LEVEL 2 - RARE',
+                'epic': 'LEVEL 3 - EPIC',
+                'legendary': 'LEGENDARY'
+            };
+
+            let html = '';
+
+            tiers.forEach(tier => {
+                // Filter achievements for this tier
+                const tierAchs = Object.values(ACHIEVEMENTS).filter(a => (a.tier || 'common') === tier);
+
+                if (tierAchs.length > 0) {
+                    // Add Section Header
+                    html += `<h3 class="tier-header tier-${tier}">${tierNames[tier]}</h3>`;
+
+                    // Add Grid for this section works better if we don't nest grids, 
+                    // or we wrap them. Let's just output cards and rely on CSS or add a wrapper.
+                    // The current CSS might expect a grid container. 
+                    // Let's create a sub-grid or just let them flow if the main grid is flex/grid.
+                    // If #ach-grid is display:grid, headers effectively break the row flow if not handled.
+                    // Better approach: Use a wrapper div for the grid of cards for THIS tier.
+
+                    html += `<div class="ach-tier-group">`;
+
+                    tierAchs.forEach(ach => {
+                        const tierLabel = getTierLabel(ach.tier || 'common');
+                        html += `
+                            <div class="ach-card ${ach.unlocked ? 'unlocked' : 'locked'} tier-${tier}">
+                                <span class="ach-card-icon">${ach.unlocked ? ach.icon : '🔒'}</span>
+                                <div class="ach-card-info">
+                                    <div style="font-size:0.7rem; color:var(--text-dim); margin-bottom:2px; letter-spacing:1px;">${ach.unlocked ? tierLabel : 'LOCKED'}</div>
+                                    <div class="ach-card-name">${ach.unlocked ? ach.name : '??? '}</div>
+                                    <div class="ach-card-desc">${ach.unlocked ? ach.desc : 'Keep playing to unlock'}</div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    html += `</div>`; // End group
+                }
+            });
+
+            grid.innerHTML = html;
+            modal.classList.add('show');
+        };
+
+        window.closeAchievements = function () {
+            document.getElementById('ach-modal').classList.remove('show');
+        };
+
+        function resetAchievementStats() {
+            // Preserve session-based stats
+            const sessionModes = achievementStats.modesPlayed || new Set();
+            const sessionGames = achievementStats.gamesPlayed || 0;
+            const sessionThemes = achievementStats.themeToggleCount || 0;
+            const sessionClicks = achievementStats.titleClickCount || 0;
+            const sessionLeaderboard = achievementStats.leaderboardOpenCount || 0;
+
+            achievementStats = {
+                correctAnswers: 0,
+                wrongAnswers: 0,
+                currentStreak: 0,
+                maxStreak: 0,
+                freezeUsed: false,
+                rewindUsed: false,
+                rewindCount: 0,
+                droppedBelow10: false,
+                lowestTime: 60,
+                // Restore session stats
+                modesPlayed: sessionModes,
+                gamesPlayed: sessionGames,
+                themeToggleCount: sessionThemes,
+                titleClickCount: sessionClicks,
+                leaderboardOpenCount: sessionLeaderboard
+            };
+        }
+
+        // HOOKS
+        function onCorrectAnswer() {
+            achievementStats.correctAnswers++;
+            achievementStats.currentStreak++;
+            achievementStats.maxStreak = Math.max(achievementStats.maxStreak, achievementStats.currentStreak);
+
+            if (achievementStats.correctAnswers === 1) unlockAchievement('first_blood');
+            if (achievementStats.currentStreak >= 5) unlockAchievement('hot_streak');
+            if (achievementStats.currentStreak >= 10) unlockAchievement('unstoppable');
+
+            // WARP SPEED check
+            if (Game.multiplier >= 2) unlockAchievement('warp_speed');
+        }
+
+        function onWrongAnswer() {
+            achievementStats.wrongAnswers++;
+            achievementStats.currentStreak = 0;
+        }
+
+        function onFreezeUsed() {
+            achievementStats.freezeUsed = true;
+            unlockAchievement('time_lord');
+            if (achievementStats.freezeUsed && achievementStats.rewindUsed) unlockAchievement('chrono_master');
+        }
+
+        function onRewindUsed() {
+            achievementStats.rewindUsed = true;
+            achievementStats.rewindCount++;
+            unlockAchievement('temporal_paradox');
+            if (achievementStats.freezeUsed && achievementStats.rewindUsed) unlockAchievement('chrono_master');
+        }
+
+        function onTimerUpdateAC(currentTime) {
+            achievementStats.lowestTime = Math.min(achievementStats.lowestTime, currentTime);
+            if (currentTime < 10) achievementStats.droppedBelow10 = true;
+        }
+
+        function onGameWinAC(finalTime) {
+            unlockAchievement('neural_sync');
+            if (finalTime <= 5) unlockAchievement('survivor');
+            if (finalTime >= 30) unlockAchievement('speed_demon');
+            if (achievementStats.wrongAnswers === 0) unlockAchievement('perfect_mind');
+            if (achievementStats.rewindCount >= 3) unlockAchievement('risk_taker');
+            if (achievementStats.droppedBelow10) unlockAchievement('comeback_king');
+
+            // EXPANSION HOOKS
+            if (!achievementStats.freezeUsed && !achievementStats.rewindUsed) unlockAchievement('timeline_purist');
+
+            // NEW EXPANSION V2 HOOKS
+            if (!achievementStats.freezeUsed) unlockAchievement('ice_breaker');
+            if (!achievementStats.rewindUsed) unlockAchievement('no_looking_back');
+
+            // Check Nocturnal (Check DuelMode or Game state)
+            const nightTriggered = (typeof DuelMode !== 'undefined' && DuelMode.nightTriggered) || (typeof Game !== 'undefined' && Game.nightTriggered);
+            if (nightTriggered) unlockAchievement('nocturnal');
+        }
+
+        // System Overload Click Handler
+        function handleTitleClick() {
+            achievementStats.titleClickCount = (achievementStats.titleClickCount || 0) + 1;
+            if (achievementStats.titleClickCount >= 10) unlockAchievement('system_overload');
+        }
 
     </script>
 
@@ -8167,8 +8606,8 @@
         <div style="display: flex; align-items: center; gap: 15px;">
             <img src="coin.png" alt="Coin Logo" id="coin-logo" class="coin-spin">
             <div style="display: flex; flex-direction: column;">
-                <h1 class="black-glow"
-                    style="font-family: var(--f-title); font-size: 2rem; color: var(--primary); margin: 0; line-height: 1;">
+                <h1 class="black-glow" onclick="if(typeof handleTitleClick === 'function') handleTitleClick()"
+                    style="font-family: var(--f-title); font-size: 2rem; color: var(--primary); margin: 0; line-height: 1; cursor: pointer;">
                     NEUROFRIED</h1>
                 <span style="font-family: var(--f-mono); font-size: 0.8rem; color: #888;">dev: kaustav chowdhury</span>
             </div>
@@ -8179,6 +8618,341 @@
             <button id="theme-toggle-btn" class="theme-toggle" aria-label="Toggle Dark Mode">🌙</button>
         </div>
     </header>
+    <!-- ACHIEVEMENT SYSTEM -->
+    <style>
+        /* =============================================
+           ACHIEVEMENT SYSTEM - Horror Themed
+           ============================================= */
+
+        /* Achievement Notification Popup */
+        .achievement-popup {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            background: rgba(0, 0, 0, 0.95);
+            border: 2px solid var(--primary);
+            border-radius: 12px;
+            padding: 15px 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            z-index: 100001;
+            opacity: 0;
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            box-shadow: 0 0 30px var(--primary), inset 0 0 20px rgba(255, 0, 0, 0.1);
+        }
+
+        .achievement-popup.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        .achievement-popup .ach-icon {
+            font-size: 2.5rem;
+            animation: achievePulse 0.5s ease-out;
+        }
+
+        .achievement-popup .ach-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .achievement-popup .ach-title {
+            font-family: var(--f-title);
+            font-size: 0.75rem;
+            color: var(--primary);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .achievement-popup .ach-name {
+            font-family: var(--f-title);
+            font-size: 1.1rem;
+            color: #fff;
+            margin-top: 2px;
+        }
+
+        .achievement-popup .ach-desc {
+            font-family: var(--f-mono);
+            font-size: 0.85rem;
+            color: var(--text-dim);
+            margin-top: 4px;
+        }
+
+        @keyframes achievePulse {
+            0% {
+                transform: scale(0) rotate(-180deg);
+            }
+
+            50% {
+                transform: scale(1.3) rotate(10deg);
+            }
+
+            100% {
+                transform: scale(1) rotate(0deg);
+            }
+        }
+
+        /* Achievement Gallery Button */
+        .ach-gallery-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            z-index: 9999;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .ach-gallery-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px var(--primary);
+            background: var(--primary);
+            color: #000;
+        }
+
+        .ach-gallery-btn .ach-count {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--danger);
+            color: #fff;
+            font-size: 0.7rem;
+            font-family: var(--f-title);
+            padding: 2px 6px;
+            border-radius: 10px;
+            min-width: 18px;
+            text-align: center;
+        }
+
+        /* Achievement Gallery Modal */
+        .ach-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 100002;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .ach-modal.show {
+            display: flex;
+        }
+
+        .ach-modal-content {
+            background: var(--glass-bg);
+            border: var(--glass-border);
+            border-radius: 16px;
+            padding: 30px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 0 50px rgba(255, 0, 0, 0.3);
+        }
+
+        .ach-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 0, 0, 0.3);
+        }
+
+        .ach-modal-title {
+            font-family: var(--f-title);
+            font-size: 1.5rem;
+            color: var(--primary);
+            letter-spacing: 3px;
+        }
+
+        .ach-modal-close {
+            background: none;
+            border: none;
+            color: var(--text-dim);
+            font-size: 2rem;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .ach-modal-close:hover {
+            color: var(--danger);
+        }
+
+        .ach-progress-text {
+            font-family: var(--f-mono);
+            color: var(--text-dim);
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+
+        .ach-grid {
+            /* Changed to flex column for sectioned layout */
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            padding-bottom: 20px;
+        }
+
+        .ach-tier-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 15px;
+        }
+
+        .tier-header {
+            font-family: var(--f-title);
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* Tier Header Colors */
+        .tier-header.tier-common {
+            color: #cd7f32;
+            border-color: #cd7f32;
+            text-shadow: 0 0 10px rgba(205, 127, 50, 0.5);
+        }
+
+        .tier-header.tier-rare {
+            color: #00f3ff;
+            border-color: #00f3ff;
+            text-shadow: 0 0 10px rgba(0, 243, 255, 0.5);
+        }
+
+        .tier-header.tier-epic {
+            color: #ff003c;
+            border-color: #ff003c;
+            text-shadow: 0 0 10px rgba(255, 0, 60, 0.5);
+        }
+
+        .tier-header.tier-legendary {
+            color: #ffd700;
+            border-color: #ffd700;
+            text-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
+        }
+
+        /* Mobile adjust */
+        @media (max-width: 600px) {
+            .ach-tier-group {
+                grid-template-columns: 1fr;
+            }
+        }
+
+
+        .ach-card {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(100, 100, 100, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.3s ease;
+            opacity: 0.4;
+            filter: grayscale(100%);
+        }
+
+        .ach-card.unlocked {
+            opacity: 1;
+            filter: grayscale(0%);
+            border-color: var(--primary);
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.2);
+        }
+
+        .ach-card .ach-card-icon {
+            font-size: 2rem;
+            min-width: 50px;
+            text-align: center;
+        }
+
+        .ach-card .ach-card-info {
+            flex: 1;
+        }
+
+        .ach-card .ach-card-name {
+            font-family: var(--f-title);
+            font-size: 0.9rem;
+            color: #fff;
+            margin-bottom: 4px;
+        }
+
+        .ach-card .ach-card-desc {
+            font-family: var(--f-mono);
+            font-size: 0.75rem;
+            color: var(--text-dim);
+        }
+
+        .ach-card.locked .ach-card-icon {
+            filter: blur(2px);
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 600px) {
+            .ach-modal-content {
+                padding: 20px;
+            }
+
+            .ach-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .achievement-popup {
+                width: 90%;
+                padding: 12px 15px;
+            }
+
+            .achievement-popup .ach-icon {
+                font-size: 2rem;
+            }
+        }
+    </style>
+
+    <!-- Achievement Notification Popup -->
+    <div class="achievement-popup" id="achievement-popup">
+        <span class="ach-icon" id="ach-popup-icon">🏆</span>
+        <div class="ach-info">
+            <span class="ach-title">ACHIEVEMENT UNLOCKED</span>
+            <span class="ach-name" id="ach-popup-name">First Blood</span>
+            <span class="ach-desc" id="ach-popup-desc">Answer your first question correctly</span>
+        </div>
+    </div>
+
+    <!-- Achievement Gallery Button -->
+    <button class="ach-gallery-btn" id="ach-gallery-btn" onclick="openAchievements()">
+        🏆
+        <span class="ach-count" id="ach-count">0/12</span>
+    </button>
+
+    <!-- Achievement Gallery Modal -->
+    <div class="ach-modal" id="ach-modal">
+        <div class="ach-modal-content">
+            <div class="ach-modal-header">
+                <h2 class="ach-modal-title">⚡ NEURAL ACHIEVEMENTS ⚡</h2>
+                <button class="ach-modal-close" onclick="closeAchievements()">×</button>
+            </div>
+            <p class="ach-progress-text" id="ach-progress">0 of 12 achievements unlocked</p>
+            <div class="ach-grid" id="ach-grid">
+                <!-- Achievements populated by JS -->
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>
