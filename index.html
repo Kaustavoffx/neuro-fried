@@ -4690,76 +4690,138 @@
         // =============================================
         // TYPEWRITER SYSTEM - Story Narrative Effect
         // =============================================
+        // =============================================
+        // TYPEWRITER SYSTEM - The "Ghost in the Machine"
+        // (Simulates frantic/human typing with variance)
+        // =============================================
         const TypeWriter = {
-            speed: 30, // ms per character
-            lineDelay: 500, // ms between lines
+            baseSpeed: 30, // Base ms per char (tweak if too slow)
+            lineDelay: 600, // Breathing room between lines
 
-            async type(elementId, text, speed = this.speed) {
+            async type(elementId, text) {
                 const el = document.getElementById(elementId);
+                // Fail silently if element is gone (don't crash the party)
                 if (!el) return;
+
+                // duck volume for dramatic effect
+                if (typeof AudioSystem !== 'undefined') AudioSystem.fadeTo(0.1, 500);
 
                 el.textContent = '';
                 el.classList.add('typewriter-text');
                 el.classList.remove('done');
 
                 for (let i = 0; i < text.length; i++) {
-                    el.textContent += text[i];
-                    // Typing sound effect (subtle)
-                    if (text[i] !== ' ' && i % 3 === 0) {
+                    const char = text[i];
+                    el.textContent += char;
+
+                    // Sound logic: Don't spam it. 
+                    // Every 2-3 chars feels more natural than machine-gun fire.
+                    if (char !== ' ' && i % 3 === 0) {
                         this.playTypingSound();
                     }
-                    await this.wait(speed);
+
+                    // --- HUMANIZATION MAGIC ---
+                    // No one types at perfect constant speed.
+                    // Add some jitter (+/- 10ms)
+                    let delay = this.baseSpeed + (Math.random() * 20 - 10);
+
+                    // Pause at punctuation (caught in thought?)
+                    if (char === '.' || char === '!' || char === '?') {
+                        delay += 350; // Dramatic pause
+                    } else if (char === ',' || char === ';') {
+                        delay += 150; // Brief pause
+                    }
+
+                    // Sanity check: don't let it be negative
+                    await this.wait(Math.max(5, delay));
                 }
 
                 el.classList.add('done');
+
+                // Restore volume
+                if (typeof AudioSystem !== 'undefined') AudioSystem.fadeTo(0.25, 800);
             },
 
-            async typeLines(containerId, lines, lineSpeed = this.speed) {
+            async typeLines(containerId, lines) {
                 const container = document.getElementById(containerId);
                 if (!container) return;
+
+                // duck volume
+                if (typeof AudioSystem !== 'undefined') AudioSystem.fadeTo(0.1, 500);
 
                 container.innerHTML = '';
 
                 for (const line of lines) {
                     const p = document.createElement('p');
                     p.className = 'story-line typewriter-text';
-                    p.style.cssText = line.style || '';
+                    // Inject custom styles if needed (e.g. red warning text)
+                    if (line.style) p.style.cssText = line.style;
                     container.appendChild(p);
 
-                    await this.wait(200);
+                    // Brief pause before starting a new line
+                    await this.wait(150);
                     p.classList.add('visible');
 
                     for (let i = 0; i < line.text.length; i++) {
-                        p.textContent += line.text[i];
-                        if (line.text[i] !== ' ' && i % 4 === 0) {
+                        const char = line.text[i];
+                        p.textContent += char;
+
+                        // Sound: randomness makes it organic
+                        if (char !== ' ' && Math.random() > 0.6) {
                             this.playTypingSound();
                         }
-                        await this.wait(lineSpeed);
+
+                        // Jittery typing speed
+                        let delay = this.baseSpeed + (Math.random() * 25 - 10);
+
+                        // Dramatic pauses for effect
+                        if (['.', '!', '?'].includes(char)) delay += 400;
+                        if ([':', ',', '-'].includes(char)) delay += 200;
+
+                        await this.wait(Math.max(5, delay));
                     }
 
                     p.classList.add('done');
+                    // Wait before next line (let the user read!)
                     await this.wait(this.lineDelay);
+                }
+
+                // Restore volume
+                if (typeof AudioSystem !== 'undefined') AudioSystem.fadeTo(0.25, 800);
+            },
+
+            // The subtle "click" of a mechanical keyboard provided by Web Audio API
+            playTypingSound() {
+                try {
+                    // Always try to wake up the audio context if it's sleeping
+                    if (typeof AudioSystem !== 'undefined') {
+                        if (!AudioSystem.ctx) AudioSystem.init();
+                        AudioSystem.resume();
+
+                        if (AudioSystem.ctx) {
+                            const osc = AudioSystem.ctx.createOscillator();
+                            const gain = AudioSystem.ctx.createGain();
+                            osc.connect(gain);
+                            gain.connect(AudioSystem.ctx.destination);
+
+                            // Randomize pitch slightly for realism
+                            // (No two keypresses sound exactly identical)
+                            osc.frequency.value = 800 + Math.random() * 250;
+                            osc.type = 'square'; // Square wave gives that 8-bit clicky feel
+
+                            gain.gain.value = 0.025; // Keep it subtle, don't blow ears out
+
+                            osc.start();
+                            osc.stop(AudioSystem.ctx.currentTime + 0.025);
+                        }
+                    }
+                } catch (e) {
+                    // If audio fails, game plays on. No biggie.
                 }
             },
 
-            playTypingSound() {
-                try {
-                    if (typeof AudioSystem !== 'undefined' && AudioSystem.ctx) {
-                        const osc = AudioSystem.ctx.createOscillator();
-                        const gain = AudioSystem.ctx.createGain();
-                        osc.connect(gain);
-                        gain.connect(AudioSystem.ctx.destination);
-                        osc.frequency.value = 800 + Math.random() * 200;
-                        osc.type = 'square';
-                        gain.gain.value = 0.02;
-                        osc.start();
-                        osc.stop(AudioSystem.ctx.currentTime + 0.02);
-                    }
-                } catch (e) { }
-            },
-
             wait(ms) {
-                return new Promise(resolve => setTimeout(resolve, ms));
+                return new Promise(r => setTimeout(r, ms));
             }
         };
 
@@ -4801,11 +4863,8 @@
         function checkMobileBlock() {
             const blocker = document.getElementById('mobile-blocker');
             if (blocker) {
-                if (isMobileDevice()) {
-                    blocker.classList.add('active');
-                } else {
-                    blocker.classList.remove('active');
-                }
+                // Mobile restriction removed as per user request
+                blocker.classList.remove('active');
             }
         }
 
@@ -5335,6 +5394,9 @@
             const creepyContinue = document.getElementById('creepy-continue');
             if (creepyContinue) {
                 creepyContinue.addEventListener('click', () => {
+                    // Play horror sound
+                    if (typeof AudioSystem !== 'undefined') AudioSystem.playCreepyBoom();
+
                     // Trigger horror glitch
                     HorrorEffects.glitch();
                     HorrorEffects.shake();
@@ -5344,12 +5406,19 @@
                         // Reset game state
                         currentGameMode = null;
                         gameInProgress = false;
+
                         // Return to title screen
                         document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
                         document.getElementById('s-title').classList.remove('hidden');
+
+                        // Restart Story System logic (Crucial Fix)
+                        if (typeof StorySystem !== 'undefined') {
+                            StorySystem.playStory('title', 'title', 'init-btn');
+                        }
+
                         // Restart music
                         try { startBGM(); } catch (e) { }
-                    }, 300);
+                    }, 800); // Slightly longer delay for effect
                 });
             }
         });
@@ -5399,6 +5468,31 @@
             resume() {
                 if (!soundEnabled) return; // Respect global sound toggle
                 if (this.ctx && this.ctx.state === 'suspended') this.ctx.resume();
+            },
+
+            // Smooth volume transition helper
+            fadeTo(targetVol, duration = 1000) {
+                if (typeof bgMusic === 'undefined' || !bgMusic) return;
+
+                // Don't fade if sound is globally disabled, just set internal state
+                if (!soundEnabled) return;
+
+                const startVol = bgMusic.volume;
+                const startTime = Date.now();
+
+                // Clear any existing fade interval
+                if (this.fadeInterval) clearInterval(this.fadeInterval);
+
+                this.fadeInterval = setInterval(() => {
+                    const elapsed = Date.now() - startTime;
+                    const progress = Math.min(elapsed / duration, 1);
+
+                    // Linear interpolation
+                    const newVol = startVol + (targetVol - startVol) * progress;
+                    bgMusic.volume = Math.max(0, Math.min(1, newVol));
+
+                    if (progress >= 1) clearInterval(this.fadeInterval);
+                }, 50);
             },
 
             // Correct Answer - Satisfying "ding"
@@ -5518,6 +5612,28 @@
                 gain.connect(this.ctx.destination);
                 osc.start();
                 osc.stop(this.ctx.currentTime + 0.1);
+            },
+
+            // Horror Boom Effect
+            playCreepyBoom() {
+                if (!this.ctx) this.init(); this.resume();
+                if (!this.ctx) return;
+
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                // Low frequency noise/rumble
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(100, this.ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(30, this.ctx.currentTime + 1.5);
+
+                gain.gain.setValueAtTime(0.5, this.ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 1.5);
+
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+
+                osc.start();
+                osc.stop(this.ctx.currentTime + 1.5);
             }
         };
 
@@ -7079,6 +7195,12 @@
 
         // CLICK TO START HANDLER
         document.getElementById('click-to-start').addEventListener('click', async function () {
+            // Unlocks Audio Context immediately on interaction (Crucial for Chrome/Edge)
+            if (typeof AudioSystem !== 'undefined') {
+                if (!AudioSystem.ctx) AudioSystem.init();
+                AudioSystem.resume();
+            }
+
             const startScreen = document.getElementById('click-to-start');
             startScreen.style.transition = 'opacity 0.8s ease';
             startScreen.style.opacity = '0';
