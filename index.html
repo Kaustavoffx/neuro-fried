@@ -3422,85 +3422,6 @@
             }
         }
 
-        /* RE-IMPLEMENTED BLACK HOLE EXIT ANIMATION */
-        @keyframes blackHoleSuck {
-            0% {
-                transform: scale(1) rotate(0deg);
-                filter: brightness(1) contrast(1);
-                opacity: 1;
-            }
-
-            40% {
-                transform: scale(0.9) rotate(5deg);
-                filter: brightness(1.2) contrast(1.5) hue-rotate(90deg);
-                opacity: 1;
-            }
-
-            100% {
-                transform: scale(0) rotate(720deg);
-                filter: brightness(0) contrast(5);
-                opacity: 0;
-            }
-        }
-
-        body.sucked-into-void .screen.active,
-        body.sucked-into-void .fail-modal.active,
-        body.sucked-into-void #s-over {
-            animation: blackHoleSuck 1.5s cubic-bezier(0.7, 0, 0.3, 1) forwards !important;
-        }
-
-        body.sucked-into-void {
-            background: black !important;
-            overflow: hidden;
-            pointer-events: none;
-        }
-
-        /* DUEL MODE: CREEPY GLASS AESTHETIC */
-        .duel-glass-overlay {
-            position: absolute;
-            inset: 0;
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(8px);
-            z-index: 10;
-            pointer-events: none;
-            border-radius: 4px;
-            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8);
-        }
-
-        .opt-btn.ai-glass {
-            position: relative;
-            background: #000;
-            color: transparent !important;
-            border: 1px solid #333;
-            overflow: hidden;
-            transition: all 0.5s;
-        }
-
-        .opt-btn.ai-glass::after {
-            content: "👁️";
-            position: absolute;
-            inset: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            color: rgba(255, 255, 255, 0.1);
-            filter: blur(2px);
-        }
-
-        .opt-btn.ai-glass.selected {
-            border-color: var(--primary);
-            box-shadow: 0 0 15px var(--primary);
-        }
-
-        .opt-btn.ai-glass.selected::after {
-            content: "LOCKED";
-            color: var(--primary);
-            filter: blur(0px);
-            letter-spacing: 2px;
-            animation: glitchText 0.3s infinite;
-        }
-
         /* =========================================
            GAME OVER SCREEN STYLES
            ========================================= */
@@ -4103,6 +4024,24 @@
         </div>
     </div>
 
+    <div id="s-register" class="screen hidden" style="background: black; z-index: 5500;">
+        <div class="register-box">
+            <h2 style="font-family:var(--f-title); color:var(--primary); margin-bottom:10px;">IDENTITY REGISTRATION</h2>
+            <p style="font-family:var(--f-mono); color:#888; margin-bottom:30px;">REQUIRED FOR NEURAL SYNC</p>
+
+            <label for="reg-photo" class="avatar-upload">
+                <span id="reg-upload-text" style="color:var(--secondary); font-family:var(--f-mono);">+ PHOTO</span>
+                <img id="reg-preview" class="avatar-preview">
+                <input type="file" id="reg-photo" hidden accept="image/*" onchange="previewAvatar(this)">
+            </label>
+
+            <input type="text" id="reg-name" class="cyber-input" placeholder="ENTER CODENAME" maxlength="12"
+                autocomplete="off">
+
+            <button class="mega-btn" onclick="registerAndStart()">INITIATE SYNC</button>
+        </div>
+    </div>
+
     <div id="s-hype" class="screen hidden" style="background: rgba(0,0,0,0.9); z-index: 5000;">
         <div id="hype-count" class="hype-num">3</div>
         <div id="hype-msg-cont" class="hype-msg-cont hidden"></div>
@@ -4175,29 +4114,10 @@
 
             <!-- RIGHT: Controls Panel -->
             <div class="controls-panel">
-                <!-- Name Input -->
-                <div class="control-row name-row">
-                    <span style="color:var(--green); font-size:1.2rem;">✎</span>
-                    <input type="text" id="name-input" placeholder="ENTER NAME"
-                        oninput="document.getElementById('final-name').innerText=this.value.toUpperCase()||'UNKNOWN'">
-                </div>
-
-
-                <label class="control-btn upload-btn">
-                    🪪 MINT AGENT ID
-                    <input type="file" hidden accept="image/*"
-                        onchange="if(this.files[0]){let r=new FileReader();r.onload=e=>document.getElementById('card-img').src=e.target.result;r.readAsDataURL(this.files[0]);}" />
-                </label>
-
-                <!-- Share Message -->
-                <div class="share-message-box">
-                    <div style="color:var(--green); font-family:var(--f-title); font-size:1rem; line-height:1.4;">
-                        TAKE A SCREENSHOT<br>AND REVIVE YOUR<br>HAPPINESS
-                    </div>
-                    <div
-                        style="color:#888; font-family:var(--f-mono); font-size:0.8rem; margin-top:8px; letter-spacing:1px;">
-                        SHARE AMONG ALL
-                    </div>
+                <!-- User Info Readout -->
+                <div class="control-row name-row" style="justify-content: center; margin-bottom: 20px;">
+                    <span style="color:var(--primary); font-family:var(--f-mono); font-size:1.2rem;">IDENTITY
+                        VERIFIED</span>
                 </div>
 
                 <!-- Feedback Button - Opens Google Form -->
@@ -4205,8 +4125,32 @@
 
                 <!-- Reboot Button -->
                 <button class="control-btn reboot-btn" onclick="location.reload()">🔄 REBOOT SYSTEM</button>
+
+                <!-- Leaderboard Button -->
+                <button class="control-btn" onclick="showLeaderboard()" style="margin-top:10px;">🏆 LEADERBOARD</button>
             </div>
+
+            <!-- Share Message -->
+            <div class="share-message-box">
+                <div style="color:var(--green); font-family:var(--f-title); font-size:1rem; line-height:1.4;">
+                    TAKE A SCREENSHOT<br>AND REVIVE YOUR<br>HAPPINESS
+                </div>
+                <div
+                    style="color:#888; font-family:var(--f-mono); font-size:0.8rem; margin-top:8px; letter-spacing:1px;">
+                    SHARE AMONG ALL
+                </div>
+            </div>
+
+            <!-- Feedback Button - Opens Google Form -->
+            <button class="send-feedback-btn" onclick="sendFeedback()">📝 SHARE FEEDBACK</button>
+
+            <!-- Reboot Button -->
+            <button class="control-btn reboot-btn" onclick="location.reload()">🔄 REBOOT SYSTEM</button>
+
+            <!-- Leaderboard Button -->
+            <button class="control-btn" onclick="showLeaderboard()" style="margin-top:10px;">🏆 LEADERBOARD</button>
         </div>
+    </div>
     </div>
 
     <script>
@@ -4735,31 +4679,23 @@
                 // Start new track
                 this.currentTrack = newTrack;
                 newTrack.currentTime = 0;
+                newTrack.volume = 0;
 
-                // FORCE PLAY GAMEOVER (No Fade-In) - User Request Fix
-                if (trackName === 'gameover') {
-                    newTrack.volume = this.baseVolume;
-                    const playPromise = newTrack.play();
-                    if (playPromise !== undefined) {
-                        playPromise.catch(e => console.error("Game Over BGM Fail:", e));
-                    }
-                } else {
-                    // Standard Fade-In
-                    newTrack.volume = 0;
-                    const playPromise = newTrack.play();
-                    if (playPromise !== undefined) {
-                        playPromise.catch(error => {
-                            console.log("Auto-play prevented (will resume on click):", error);
-                            document.addEventListener('click', () => {
-                                if (this.currentTrack === newTrack && newTrack.paused) {
-                                    newTrack.play();
-                                    this.fadeIn(newTrack);
-                                }
-                            }, { once: true });
-                        });
-                    }
-                    this.fadeIn(newTrack);
+                const playPromise = newTrack.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch(error => {
+                        console.log("Auto-play prevented (will resume on click):", error);
+                        // Add one-time click handler to resume if blocked
+                        document.addEventListener('click', () => {
+                            if (this.currentTrack === newTrack && newTrack.paused) {
+                                newTrack.play();
+                                this.fadeIn(newTrack);
+                            }
+                        }, { once: true });
+                    });
                 }
+
+                this.fadeIn(newTrack);
             },
 
             stop() {
@@ -5372,12 +5308,9 @@
                 this.active = true;
                 document.body.classList.add('time-day');
 
-                // SHOW TIMER for Duel Mode (User Request)
+                // HIDE TIMER & HUD ELEMENTS FOR DUEL
                 const timerPanel = document.getElementById('timer-panel');
-                if (timerPanel) timerPanel.classList.remove('hidden');
-
-                // Force Timer Start for Duel Mode
-                TimerSystem.start(TimerSystem.maxTime || 60);
+                if (timerPanel) timerPanel.classList.add('hidden');
 
                 this.startDayNightCycle();
 
@@ -5475,11 +5408,12 @@
                 });
 
                 // Generate options for AI (same order)
+                const aiArea = document.getElementById('opt-area-ai');
                 aiArea.innerHTML = '';
                 options.forEach(txt => {
                     const b = document.createElement('div');
-                    b.className = 'opt-btn ai-glass'; // NEW CLASS
-                    b.innerText = txt; // Text is hidden via CSS color:transparent
+                    b.className = 'opt-btn';
+                    b.innerText = txt;
                     b.dataset.answer = txt;
                     aiArea.appendChild(b);
                 });
@@ -5494,6 +5428,7 @@
 
                 setTimeout(() => {
                     if (!this.active) return;
+
                     if (typeof TimerSystem !== 'undefined' && TimerSystem.frozen) {
                         setTimeout(() => this.simulateAIAnswer(questionData, options), 500);
                         return;
@@ -5502,25 +5437,29 @@
                     const correct = Math.random() < 0.65;
                     const aiOpts = document.querySelectorAll('#opt-area-ai .opt-btn');
 
-                    // Pick an answer (Correct or Random Wrong)
-                    let chosenBtn = null;
-                    const correctBtn = Array.from(aiOpts).find(b => b.dataset.answer === questionData.a);
+                    aiOpts.forEach(opt => {
+                        // Creepy/Hidden AI Selection Logic
+                        if (correct && opt.dataset.answer === questionData.a) {
+                            // "Faded portion" & "Hide type"
+                            opt.style.transition = 'all 2s ease';
+                            opt.style.background = 'rgba(0, 0, 0, 0.8)'; // Dark void
+                            opt.style.borderColor = 'rgba(57, 255, 20, 0.1)'; // Very faint green hint
+                            opt.style.color = 'transparent'; // HIDE TEXT
+                            opt.style.textShadow = 'none';
+                            opt.style.filter = 'blur(3px) grayscale(100%)';
+                            opt.style.transform = 'scale(0.95)';
+                            opt.innerHTML = ''; // Ensure text is gone
 
-                    if (correct && correctBtn) {
-                        chosenBtn = correctBtn;
-                        this.aiScore += 100;
-                    } else {
-                        // Pick random wrong
-                        const wrongBtns = Array.from(aiOpts).filter(b => b.dataset.answer !== questionData.a);
-                        if (wrongBtns.length > 0) chosenBtn = wrongBtns[Math.floor(Math.random() * wrongBtns.length)];
-                    }
-
-                    // Visual Feedback: Creepy Glass Selection
-                    if (chosenBtn) {
-                        chosenBtn.classList.add('selected');
-                        // Do NOT reveal if it's correct/wrong to the player yet, just that they locked in.
-                        // User wanted it "hidden... covered with glass"
-                    }
+                            this.aiScore += 100;
+                        } else if (!correct && opt.dataset.answer !== questionData.a && Math.random() > 0.5) {
+                            // Decoy / Wrong
+                            opt.style.transition = 'all 2s ease';
+                            opt.style.background = 'rgba(0, 0, 0, 0.5)';
+                            opt.style.color = 'transparent';
+                            opt.style.borderColor = 'transparent';
+                            opt.style.filter = 'blur(5px)';
+                        }
+                    });
 
                     document.getElementById('ai-duel-score').textContent = this.aiScore;
                 }, delay);
@@ -5982,13 +5921,11 @@
 
                 if (this.interval) clearInterval(this.interval);
 
+                // DUEL MODE EXCEPTION: No timer countdown
                 if (typeof currentGameMode !== 'undefined' && currentGameMode === 'C') {
-                    // DUEL MODE: Allow ticking, but maybe handle expiration differently?
-                    // User said "show how much time is left".
-                    // So we let it run. If it hits 0, maybe just End Duel or Night comes faster?
-                    // For now, let's treat it as standard time limit for the QUESTION?
-                    // Or global time? 
-                    // Let's assume standard behavior: time runs out = game over or lost round.
+                    // Update once to clear/hide info but don't tick
+                    this.update();
+                    return;
                 }
 
                 this.interval = setInterval(() => {
@@ -6012,13 +5949,7 @@
 
                     if (this.timeLeft <= 0) {
                         this.stop();
-                        if (typeof currentGameMode !== 'undefined' && currentGameMode === 'C') {
-                            // Duel Mode Timeout: Trigger Night Immediately or Game Over?
-                            // Game.gameOver() fits standard rules.
-                            Game.gameOver();
-                        } else {
-                            Game.gameOver();
-                        }
+                        Game.gameOver(); // Time out = Game Over now
                     }
                 }, 100);
             },
@@ -6040,12 +5971,12 @@
                 if (!display || !bar) return;
 
                 // SPECIAL DISPLAY FOR DUEL MODE
-                // SPECIAL DISPLAY FOR DUEL MODE (REMOVED - SHOW TIMER)
-                /* if (typeof currentGameMode !== 'undefined' && currentGameMode === 'C') {
+                if (typeof currentGameMode !== 'undefined' && currentGameMode === 'C') {
                     display.textContent = "NO TIME";
                     bar.style.width = "100%";
+                    bar.style.backgroundColor = (document.body.classList.contains('time-day')) ? '#000' : '#444';
                     return;
-                } */
+                }
 
                 display.textContent = this.timeLeft.toFixed(1);
                 // Bar is relative to 60s (Initial Max) visually, or dynamic?
@@ -6571,7 +6502,7 @@
                 [d.a, ...d.w].sort(() => Math.random() - 0.5).forEach(txt => {
                     const b = document.createElement('div');
                     b.className = 'opt-btn'; b.innerText = txt;
-                    b.onclick = () => this.check(txt, d.a);
+                    b.onclick = (e) => this.check(txt, d.a, e);
                     gr.appendChild(b);
                 });
 
@@ -6697,13 +6628,14 @@
                 }
             },
 
-            check(ans, cor) {
+            check(ans, cor, e) {
                 if (!this.active) return;
                 this.active = false; // LOCK INPUT
 
 
                 if (ans === cor) {
                     AudioSystem.playCorrect();
+                    if (e && typeof showScorePop === 'function') showScorePop(e.clientX, e.clientY);
 
                     // GAIN TIME +5s
                     TimerSystem.addTime(5);
@@ -6869,6 +6801,7 @@
             gameWin() {
                 this.active = false;
                 TimerSystem.stop();
+                if (typeof saveScore === 'function') saveScore(this.score);
                 if (typeof MusicSystem !== 'undefined') MusicSystem.play('gameover');
                 AudioSystem.playCorrect();
                 gameInProgress = false;
@@ -6898,21 +6831,18 @@
                 this.runOutroSequence();
             },
 
-            triggerBlackHoleExit() {
-                AudioSystem.playRewind(); // Sound
-                document.body.classList.add('sucked-into-void');
-                setTimeout(() => window.location.reload(), 1400); // Reset
-            },
-
             gameOver() {
                 this.active = false; AudioSystem.playWrong();
+                // MusicSystem.play handles searching/stopping current track
                 gameInProgress = false;
                 document.getElementById('fail-modal').classList.remove('active');
                 document.body.classList.add('power-off-anim');
 
+                // Cleanup any active modes
                 if (currentGameMode === 'B') DreamMode.cleanup();
                 if (currentGameMode === 'C') DuelMode.cleanup();
 
+                // Reset headline to SIGNAL LOST for game over
                 this.isWin = false;
                 const headline = document.getElementById('game-over-headline');
                 if (headline) {
@@ -6921,6 +6851,7 @@
                     headline.style.textShadow = '0 0 30px var(--danger)';
                 }
 
+                // Cue the sad violin... or menacing drone in our case
                 if (typeof MusicSystem !== 'undefined') MusicSystem.play('gameover');
 
                 setTimeout(() => {
@@ -6962,16 +6893,6 @@
                     fin.classList.remove('hidden');
                     fin.style.opacity = 1;
                     wRes.style.opacity = 1;
-
-                    // ADDED: Black Hole Trigger Listener
-                    setTimeout(() => {
-                        const exitHandler = (e) => {
-                            if (e.target.matches('input') || e.target.closest('.send-feedback-btn')) return;
-                            document.removeEventListener('click', exitHandler);
-                            this.triggerBlackHoleExit();
-                        };
-                        document.addEventListener('click', exitHandler);
-                    }, 500);
 
                     setTimeout(() => {
                         wRes.style.textDecoration = 'line-through';
@@ -7392,6 +7313,9 @@
         if (typeof Game !== 'undefined') {
             const originalRunOutroSequence = Game.runOutroSequence;
             Game.runOutroSequence = function () {
+                // Save score on game over (loss/KIA)
+                if (typeof saveScore === 'function') saveScore(this.score || 0);
+
                 // Reset stamp before showing
                 KIAStampSystem.reset();
 
@@ -7496,6 +7420,99 @@
                 console.log('✅ Theme button listener attached');
             } else {
                 console.error('❌ Theme button not found!');
+            }
+            // Initialize +1 pop-up container (already in HTML)
+            // Initialize leaderboard modal handling
+            const leaderboardModal = document.getElementById('leaderboard-modal');
+            const closeLeaderboardBtn = document.getElementById('close-leaderboard');
+            if (closeLeaderboardBtn) {
+                closeLeaderboardBtn.addEventListener('click', () => {
+                    leaderboardModal.classList.add('hidden');
+                });
+            }
+            // Function to show leaderboard (populate list from localStorage)
+            function showLeaderboard() {
+                const scores = JSON.parse(localStorage.getItem('neuro_fried_scores') || '[]');
+                const list = document.getElementById('leaderboard-list');
+                if (list) {
+                    list.innerHTML = '';
+                    scores.slice(0, 3).forEach((s, i) => {
+                        const li = document.createElement('li');
+                        li.textContent = `${i + 1}. ${s}`;
+                        list.appendChild(li);
+                    });
+                }
+                leaderboardModal.classList.remove('hidden');
+            }
+            // Save score function (to be called on game over)
+            function saveScore(score) {
+                const scores = JSON.parse(localStorage.getItem('neuro_fried_scores') || '[]');
+                scores.push(score);
+                scores.sort((a, b) => b - a);
+                localStorage.setItem('neuro_fried_scores', JSON.stringify(scores));
+            }
+            // Dark mode toggle implementation
+            function toggleTheme() {
+                const html = document.documentElement;
+                const current = html.getAttribute('data-theme') || 'dark';
+                const next = current === 'dark' ? 'light' : 'dark';
+                html.setAttribute('data-theme', next);
+            }
+            // Blood drop generator (simple interval creating small divs)
+            function spawnBloodDrop() {
+                const container = document.getElementById('blood-drop-container');
+                if (!container) return;
+                const drop = document.createElement('div');
+                drop.style.position = 'absolute';
+                drop.style.width = '4px';
+                drop.style.height = '10px';
+                drop.style.background = 'rgba(139,0,0,0.7)';
+                drop.style.left = Math.random() * window.innerWidth + 'px';
+                drop.style.top = '-20px';
+                drop.style.opacity = '0.8';
+                drop.style.transform = 'rotate(' + Math.random() * 360 + 'deg)';
+                container.appendChild(drop);
+                // animate falling
+                const duration = 2000 + Math.random() * 1000;
+                drop.animate([
+                    { transform: `translateY(${window.innerHeight + 20}px)` },
+                    { opacity: 0 }
+                ], { duration, easing: 'ease-out' });
+                setTimeout(() => drop.remove(), duration);
+            }
+            // Start blood drops interval during gameplay
+            let bloodInterval = null;
+            function startBloodDrops() {
+                if (bloodInterval) return;
+                bloodInterval = setInterval(spawnBloodDrop, 300);
+            }
+            function stopBloodDrops() {
+                clearInterval(bloodInterval);
+                bloodInterval = null;
+            }
+            // BGM speed modulation
+            function rampBGM() {
+                if (typeof MusicSystem === 'undefined' || !MusicSystem.currentTrack) return;
+                const track = MusicSystem.currentTrack;
+                track.playbackRate = 0.7;
+                const targetRate = 1.0;
+                const step = 0.01;
+                const interval = setInterval(() => {
+                    if (track.playbackRate >= targetRate) {
+                        clearInterval(interval);
+                    } else {
+                        track.playbackRate = Math.min(targetRate, track.playbackRate + step);
+                    }
+                }, 500);
+            }
+            // Hook into game start to ramp BGM
+            if (typeof MusicSystem !== 'undefined') {
+                MusicSystem.play = (function (orig) {
+                    return function (name) {
+                        orig.call(this, name);
+                        if (name === 'start') rampBGM();
+                    };
+                })(MusicSystem.play);
             }
         });
 
@@ -7609,8 +7626,560 @@
                 }
             }, 300);
         };
+    </script>
+    <style>
+        /* +1 POP-UP */
+        #score-pop-container {
+            position: absolute;
+            pointer-events: none;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .score-pop {
+            position: absolute;
+            font-size: 2rem;
+            color: var(--green);
+            animation: popFade 1s ease-out forwards;
+        }
+
+        @keyframes popFade {
+            0% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+
+            100% {
+                opacity: 0;
+                transform: translateY(-50px) scale(1.5);
+            }
+        }
+
+        /* LEADERBOARD MODAL */
+        .modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+        }
+
+        .modal.hidden {
+            display: none;
+        }
+
+        .modal-content {
+            background: var(--glass-bg);
+            padding: 20px;
+            border: var(--glass-border);
+            border-radius: 8px;
+            color: var(--text-main);
+            min-width: 200px;
+        }
+
+        #leaderboard-list {
+            list-style: decimal;
+            margin-left: 20px;
+        }
+
+        /* DARK MODE TOGGLE */
+        .theme-toggle {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: var(--glass-bg);
+            color: var(--text-main);
+            border: var(--glass-border);
+            padding: 5px 10px;
+            cursor: pointer;
+            z-index: 10001;
+        }
+
+        /* BLOOD DROP CONTAINER */
+        #blood-drop-container {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 9994;
+        }
+
+        /* COIN LOGO ANIMATION */
+        #coin-logo {
+            width: 50px;
+            animation: coinSpin 3s linear infinite;
+        }
+
+        @keyframes coinSpin {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* REGISTER SCREEN STYLES */
+        .register-box {
+            background: rgba(10, 10, 15, 0.95);
+            border: 2px solid var(--primary);
+            box-shadow: 0 0 30px var(--primary), inset 0 0 50px rgba(0, 0, 0, 0.8);
+            padding: 40px;
+            width: 500px;
+            max-width: 90vw;
+            text-align: center;
+            position: relative;
+            clip-path: polygon(0 0, 100% 0, 100% 90%, 90% 100%, 0 100%);
+        }
+
+        .avatar-upload {
+            width: 150px;
+            height: 150px;
+            border: 2px dashed var(--secondary);
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            overflow: hidden;
+            position: relative;
+            transition: all 0.3s;
+        }
+
+        .avatar-upload:hover {
+            border-color: var(--primary);
+            box-shadow: 0 0 20px var(--primary);
+        }
+
+        .avatar-preview {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: none;
+        }
+
+        .cyber-input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid var(--secondary);
+            color: var(--primary);
+            font-family: var(--f-mono);
+            font-size: 1.5rem;
+            padding: 10px;
+            text-align: center;
+            margin-bottom: 30px;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .cyber-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 10px 20px -10px var(--primary);
+        }
+
+        .leaderboard-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 1px solid var(--primary);
+            margin-right: 10px;
+            object-fit: cover;
+            vertical-align: middle;
+        }
+
+        .black-glow {
+            text-shadow: 0 0 10px #000, 0 0 20px #000, 0 0 30px #000, 0 0 10px #000;
+        }
+    </style>
+    <style>
+        /* NEW LEADERBOARD STYLES */
+        .cyber-terminal {
+            background: rgba(10, 10, 15, 0.95);
+            border: 2px solid var(--primary);
+            box-shadow: 0 0 30px var(--primary), inset 0 0 20px rgba(0, 0, 0, 0.8);
+            color: var(--primary);
+            font-family: var(--f-mono);
+            width: 400px;
+            max-width: 90vw;
+            padding: 0;
+            /* Clear padding for custom layout */
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            clip-path: polygon(0 0, 100% 0, 100% 95%, 95% 100%, 0 100%);
+        }
+
+        .cyber-terminal::before {
+            /* Scanline effect */
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 0, 0, 0.5) 4px);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .terminal-header {
+            background: var(--primary);
+            color: #000;
+            padding: 10px;
+            font-family: var(--f-title);
+            font-size: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .leaderboard-container {
+            padding: 20px;
+        }
+
+        #leaderboard-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            font-family: var(--f-mono);
+            text-align: left;
+        }
+
+        #leaderboard-list li {
+            font-size: 1.2rem;
+            padding: 15px 10px;
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        #leaderboard-list li::before {
+            content: ">";
+            margin-right: 10px;
+            color: var(--danger);
+        }
+
+        .mega-btn {
+            width: 100%;
+            padding: 20px;
+            font-size: 1.5rem;
+            font-family: var(--f-title);
+            background: var(--danger);
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: all 0.2s;
+            position: relative;
+            z-index: 2;
+            /* Clickable above scanlines */
+        }
+
+        .mega-btn:hover {
+            background: #fff;
+            color: #000;
+            box-shadow: 0 0 30px var(--danger);
+        }
+    </style>
+    <script>
+        // Feature functions for Neuro-Fried enhancements
+        function showLeaderboard() {
+            const scores = JSON.parse(localStorage.getItem('neuro_fried_scores') || '[]');
+            const list = document.getElementById('leaderboard-list');
+            if (list) {
+                list.innerHTML = '';
+                scores.slice(0, 3).forEach((s, i) => { const li = document.createElement('li'); li.textContent = `${i + 1}. ${s}`; list.appendChild(li); });
+            }
+            document.getElementById('leaderboard-modal').classList.remove('hidden');
+        }
+        function saveScore(score) {
+            const scores = JSON.parse(localStorage.getItem('neuro_fried_scores') || '[]');
+            scores.push(score);
+            scores.sort((a, b) => b - a);
+            localStorage.setItem('neuro_fried_scores', JSON.stringify(scores));
+        }
+        function toggleTheme() {
+            const html = document.documentElement;
+            const cur = html.getAttribute('data-theme') || 'dark';
+            html.setAttribute('data-theme', cur === 'dark' ? 'light' : 'dark');
+        }
+        function spawnBloodDrop() {
+            const container = document.getElementById('blood-drop-container');
+            if (!container) return;
+            const drop = document.createElement('div');
+            drop.style.position = 'fixed';
+            drop.style.width = '4px';
+            drop.style.height = '10px';
+            drop.style.background = 'rgba(139,0,0,0.7)';
+            drop.style.left = Math.random() * window.innerWidth + 'px';
+            drop.style.top = '-20px';
+            drop.style.transform = 'rotate(' + Math.random() * 360 + 'deg)';
+            container.appendChild(drop);
+            const dur = 2000 + Math.random() * 1000;
+            drop.animate([{ transform: `translateY(${window.innerHeight + 20}px)` }, { opacity: 0 }], { duration: dur, easing: 'ease-out' });
+            setTimeout(() => drop.remove(), dur);
+        }
+        let bloodInterval = null;
+        function startBloodDrops() { if (bloodInterval) return; bloodInterval = setInterval(spawnBloodDrop, 300); }
+        function stopBloodDrops() { clearInterval(bloodInterval); bloodInterval = null; }
+        function rampBGM() {
+            if (!MusicSystem || !MusicSystem.currentTrack) return;
+            const track = MusicSystem.currentTrack;
+            track.playbackRate = 0.7;
+            const target = 1.0; const step = 0.01;
+            const int = setInterval(() => { if (track.playbackRate >= target) { clearInterval(int); } else { track.playbackRate = Math.min(target, track.playbackRate + step); } }, 500);
+        }
+        if (typeof MusicSystem !== 'undefined') {
+            const origPlay = MusicSystem.play;
+            MusicSystem.play = function (name) { origPlay.call(this, name); if (name === 'start') rampBGM(); };
+        }
+        // Attach theme toggle button
+        const themeBtn = document.getElementById('theme-toggle-btn');
+        if (themeBtn) {
+            themeBtn.addEventListener('click', toggleTheme);
+        }
+
+        // Start blood drops when game starts (if Game.start exists)
+        if (typeof Game !== 'undefined' && Game.start) {
+            const originalStart = Game.start;
+            Game.start = function () {
+                originalStart.call(this);
+                startBloodDrops();
+            };
+        }
+
+        // Function to show +1 pop-up at given coordinates
+        function showScorePop(x, y) {
+            const container = document.getElementById('score-pop-container');
+            if (!container) return;
+            const pop = document.createElement('div');
+            pop.className = 'score-pop';
+            pop.textContent = '+1';
+            pop.style.left = x + 'px';
+            pop.style.top = y + 'px';
+            container.appendChild(pop);
+            setTimeout(() => pop.remove(), 1000);
+        }
+    </script>
+    <!-- +1 pop-up container -->
+    <div id="score-pop-container"></div>
+
+    <script>
+        // --- PLAYER PROFILE SYSTEM ---
+        const UserProfile = {
+            name: "UNKNOWN",
+            photo: null,
+            registered: false
+        };
+
+        function registerAndStart() {
+            const nameInput = document.getElementById('reg-name');
+            const name = nameInput.value.toUpperCase().trim() || "AGENT";
+
+            UserProfile.name = name;
+            UserProfile.registered = true;
+
+            // Photo is already set by previewAvatar helper
+
+            // Save to LocalStorage for persistence
+            localStorage.setItem('neuro_fried_last_user', JSON.stringify({ name: UserProfile.name, photo: UserProfile.photo }));
+
+            // Update UI elements immediately
+            updateIdentityDisplays();
+
+            // Hide Register Screen -> Show Luck Screen (Game Start)
+            // Hide Register Screen -> Show Luck Screen (Game Start)
+            const regScreen = document.getElementById('s-register');
+            regScreen.classList.add('hidden');
+            regScreen.classList.remove('active');
+
+            const luckScreen = document.getElementById('s-luck');
+            luckScreen.classList.remove('hidden');
+            luckScreen.classList.add('active');
+
+            // Continue start sequence
+            if (typeof StorySystem !== 'undefined') StorySystem.playStory('fate', 'fate', 'luck-box-container');
+        }
+
+        function previewAvatar(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const preview = document.getElementById('reg-preview');
+                    const text = document.getElementById('reg-upload-text');
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                    text.style.display = 'none';
+                    UserProfile.photo = e.target.result; // Store base64
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function updateIdentityDisplays() {
+            // Update "Agent Card" on Game Over screen
+            const finalName = document.getElementById('final-name');
+            const cardImg = document.getElementById('card-img');
+
+            if (finalName) finalName.textContent = UserProfile.name;
+            if (cardImg && UserProfile.photo) {
+                cardImg.src = UserProfile.photo;
+                cardImg.style.filter = "none"; // Remove grayscale
+                cardImg.style.opacity = "1";
+            }
+        }
+
+        // Intercept Game Start
+        // We look for the "INITIALIZE SYSTEM" button click or similar start trigger
+        // Actually, Game.startSequence is called. Let's override it or the transition to it.
+        // It seems Game.startSequence switches to 's-luck'. We will intercept that.
+
+        if (typeof Game !== 'undefined') {
+            const originalStartSequence = Game.startSequence;
+            Game.startSequence = function () {
+                // Check if already registered in this session? 
+                // User asked to add options "when the start off the game".
+                // So we always show register screen first.
+
+                // Initialize Audio
+                try {
+                    if (typeof AudioSystem !== 'undefined') { AudioSystem.init(); AudioSystem.resume(); }
+                    if (typeof MusicSystem !== 'undefined') MusicSystem.play('start');
+                } catch (e) { }
+
+                gameInProgress = true;
+                LuckSystem.reset();
+                if (typeof StorySystem !== 'undefined') StorySystem.reset();
+
+                // SHOW REGISTER SCREEN INSTEAD OF LUCK
+                // Hide Title
+                document.getElementById('s-title').classList.add('hidden');
+                document.getElementById('s-title').classList.remove('active');
+
+                // Show Register
+                const regScreen = document.getElementById('s-register');
+                regScreen.classList.remove('hidden');
+                regScreen.classList.add('active');
+
+                // Pre-fill if exists
+                try {
+                    const saved = JSON.parse(localStorage.getItem('neuro_fried_last_user'));
+                    if (saved) {
+                        if (saved.name) document.getElementById('reg-name').value = saved.name;
+                        if (saved.photo) {
+                            UserProfile.photo = saved.photo;
+                            const preview = document.getElementById('reg-preview');
+                            const text = document.getElementById('reg-upload-text');
+                            preview.src = saved.photo;
+                            preview.style.display = 'block';
+                            text.style.display = 'none';
+                        }
+                    }
+                } catch (e) { }
+            };
+        }
+
+        // OVERRIDE SHOW LEADERBOARD TO INCLUDE PHOTO
+        const originalShowLeaderboard = showLeaderboard;
+        showLeaderboard = function () { // Override global function
+            const scores = JSON.parse(localStorage.getItem('neuro_fried_scores_v2') || '[]');
+            const list = document.getElementById('leaderboard-list');
+            if (list) {
+                list.innerHTML = '';
+                scores.slice(0, 5).forEach((item, i) => { // Top 5
+                    const li = document.createElement('li');
+
+                    let photoHtml = '';
+                    if (item.photo) {
+                        photoHtml = `<img src="${item.photo}" class="leaderboard-avatar">`;
+                    } else {
+                        photoHtml = `<div class="leaderboard-avatar" style="background:#333; display:inline-block;"></div>`;
+                    }
+
+                    li.innerHTML = `
+                        <div style="display:flex; align-items:center;">
+                            ${photoHtml}
+                            <span>${item.name || 'UNKNOWN'}</span>
+                        </div>
+                        <span>${item.score}</span>
+                    `;
+                    list.appendChild(li);
+                });
+            }
+            document.getElementById('leaderboard-modal').classList.remove('hidden');
+        };
+
+        // OVERRIDE SAVE SCORE TO INCLUDE PROFILE
+        saveScore = function (score) {
+            const scores = JSON.parse(localStorage.getItem('neuro_fried_scores_v2') || '[]');
+            scores.push({
+                score: parseInt(score),
+                name: UserProfile.name,
+                photo: UserProfile.photo
+            });
+            scores.sort((a, b) => b.score - a.score);
+            localStorage.setItem('neuro_fried_scores_v2', JSON.stringify(scores));
+        };
+
+        // Ensure UI is updated on load if persisted
+        document.addEventListener('DOMContentLoaded', () => {
+            try {
+                const saved = JSON.parse(localStorage.getItem('neuro_fried_last_user'));
+                if (saved) {
+                    UserProfile.name = saved.name;
+                    UserProfile.photo = saved.photo;
+                    updateIdentityDisplays();
+                }
+            } catch (e) { }
+        });
 
     </script>
+
+    <!-- Leaderboard modal -->
+    <div id="leaderboard-modal" class="modal hidden">
+        <div class="modal-content cyber-terminal">
+            <div class="terminal-header">
+                <span>/// SYSTEM_ARCHIVE</span>
+                <span class="blink">LIVE</span>
+            </div>
+            <div class="leaderboard-container">
+                <ol id="leaderboard-list"></ol>
+            </div>
+            <button id="close-leaderboard" class="mega-btn">CLOSE DATABASE</button>
+        </div>
+    </div>
+
+    <!-- Dark mode toggle -->
+    <button id="theme-toggle-btn" class="theme-toggle">Toggle Dark Mode</button>
+
+    <!-- Blood drops container -->
+    <div id="blood-drop-container"></div>
+
+    <!-- Coin logo in header -->
+    <header id="game-header">
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <img src="coin.png" alt="Coin Logo" id="coin-logo" class="coin-spin">
+            <div style="display: flex; flex-direction: column;">
+                <h1 class="black-glow"
+                    style="font-family: var(--f-title); font-size: 2rem; color: var(--primary); margin: 0; line-height: 1;">
+                    NEUROFRIED</h1>
+                <span style="font-family: var(--f-mono); font-size: 0.8rem; color: #888;">dev: kaustav chowdhury</span>
+            </div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <button onclick="showLeaderboard()"
+                style="background:none; border:none; font-size:1.5rem; cursor:pointer;">🏆</button>
+            <button id="theme-toggle-btn" class="theme-toggle" aria-label="Toggle Dark Mode">🌙</button>
+        </div>
+    </header>
 </body>
 
 </html>
+```
