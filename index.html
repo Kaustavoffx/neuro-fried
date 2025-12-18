@@ -96,6 +96,31 @@
             --particle-col: #fff;
         }
 
+        /* DUEL MODE THEMES (Day/Night) */
+        body.time-day {
+            --bg-color: #ffffff;
+            --bg-dark: #f0f0f0;
+            --primary: #000000;
+            --primary-light: #333333;
+            --secondary: #666666;
+            --current-bg: #ffffff;
+            --text-main: #000000;
+            --text-dim: #555555;
+            --particle-col: #000000;
+            --glass-bg: rgba(255, 255, 255, 0.9);
+            --glass-border: 1px solid rgba(0, 0, 0, 0.2);
+            --glass-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        body.time-night {
+            /* REVERT TO STANDARD HORROR */
+            --bg-color: #050000;
+            --primary: #ff1a1a;
+            --text-main: #ffffff;
+            --glass-bg: rgba(15, 0, 0, 0.9);
+            transition: background-color 3s ease, color 3s ease;
+        }
+
         * {
             box-sizing: border-box;
             user-select: none;
@@ -417,6 +442,22 @@
             color: var(--text-dim);
             margin-top: 15px;
             animation: blink 1s ease-in-out infinite;
+        }
+
+        .click-to-start .headphones-warning {
+            font-family: var(--f-ui);
+            font-size: 1.5rem;
+            /* Big focused font */
+            color: var(--secondary);
+            margin-top: 30px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            animation: pulsate 3s ease-in-out infinite;
+            text-shadow: 0 0 10px var(--secondary);
+            border: 1px solid var(--secondary);
+            padding: 10px 20px;
+            background: rgba(0, 0, 0, 0.5);
         }
 
         @keyframes pulsate {
@@ -3622,6 +3663,7 @@
     <!-- CLICK TO START SCREEN -->
     <div class="click-to-start" id="click-to-start">
         <div class="start-text">⚡ NEURO-FRIED ⚡</div>
+        <div class="headphones-warning">🎧 USE HEADPHONES FOR BETTER OPTIMIZATION 🎧</div>
         <div class="start-subtext">[ CLICK ANYWHERE TO BEGIN ]</div>
     </div>
 
@@ -4552,31 +4594,142 @@
         ];
 
 
-        // --- BACKGROUND MUSIC SYSTEM (Self Hosted) ---
-        const bgMusic = new Audio('https://raw.githubusercontent.com/Kaustavoffx/neuro-fried/main/bgm.mp3');
-        bgMusic.loop = true;
-        bgMusic.volume = 0.25;
+        // --- MULTI-TRACK MUSIC SYSTEM ---
+        // aka "The DJ of the Apocalypse"
+        // Swaps tracks based on how screwed the player is.
+        const MusicSystem = {
+            tracks: {
+                start: new Audio('gamestart bgm.mp3'),   // The calm before the storm
+                gameplay: new Audio('gameplay bgm.mp3'), // The storm
+                gameover: new Audio('gameover bgm.mp3')  // The... aftermath
+            },
+            currentTrack: null,
+            fadeInterval: null,
+            baseVolume: 0.25,
+            duckVolume: 0.1,
 
-        function startBGM() {
-            bgMusic.play().catch(() => {
-                document.body.addEventListener('click', () => bgMusic.play(), { once: true });
-            });
-        }
+            init() {
+                // Configure all tracks
+                Object.values(this.tracks).forEach(track => {
+                    track.loop = true;
+                    track.volume = 0; // Start silent for fade-in
+                });
+            },
 
-        function stopBGM() {
-            bgMusic.pause();
-            bgMusic.currentTime = 0;
-        }
+            play(trackName) {
+                if (!soundEnabled) return;
 
-        function freezeMusicEffect() {
-            bgMusic.volume = 0.1;
-            setTimeout(() => bgMusic.volume = 0.25, 5000); // Updated to match new volume
-        }
+                const newTrack = this.tracks[trackName];
+                if (!newTrack) return;
+
+                // If already playing this track, ensure it's playing but don't reset
+                if (this.currentTrack === newTrack && !newTrack.paused) return;
+
+                // Stop current track with rapid fade out
+                if (this.currentTrack) {
+                    const oldTrack = this.currentTrack;
+                    this.fadeOut(oldTrack);
+                }
+
+                // Start new track
+                this.currentTrack = newTrack;
+                newTrack.currentTime = 0;
+                newTrack.volume = 0;
+
+                const playPromise = newTrack.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch(error => {
+                        console.log("Auto-play prevented (will resume on click):", error);
+                        // Add one-time click handler to resume if blocked
+                        document.addEventListener('click', () => {
+                            if (this.currentTrack === newTrack && newTrack.paused) {
+                                newTrack.play();
+                                this.fadeIn(newTrack);
+                            }
+                        }, { once: true });
+                    });
+                }
+
+                this.fadeIn(newTrack);
+            },
+
+            stop() {
+                if (this.currentTrack) {
+                    this.fadeOut(this.currentTrack);
+                    this.currentTrack = null;
+                }
+            },
+
+            // Duck volume (for typewriter)
+            duck() {
+                if (this.currentTrack) {
+                    this.fadeGeneric(this.currentTrack, this.duckVolume, 500);
+                }
+            },
+
+            // Unduck/Restore volume
+            unduck() {
+                if (this.currentTrack) {
+                    this.fadeGeneric(this.currentTrack, this.baseVolume, 800);
+                }
+            },
+
+            fadeIn(track) {
+                this.fadeGeneric(track, this.baseVolume, 800);
+            },
+
+            fadeOut(track) {
+                // Rapid fade out then pause
+                if (track) {
+                    // Manual interval for fade out to ensure we pause at end
+                    let vol = track.volume;
+                    const interval = setInterval(() => {
+                        vol = Math.max(0, vol - 0.05);
+                        track.volume = vol;
+                        if (vol <= 0) {
+                            clearInterval(interval);
+                            track.pause();
+                            track.currentTime = 0;
+                        }
+                    }, 50);
+                }
+            },
+
+            // Generic fader
+            fadeGeneric(track, targetVol, duration) {
+                if (!soundEnabled) return;
+
+                const startVol = track.volume;
+                const startTime = Date.now();
+
+                // Unique interval key per track to prevent conflicts? 
+                // Simple approach: global interval is risky if switching tracks fast.
+                // We'll trust the single-threaded nature + short durations.
+
+                const step = () => {
+                    const elapsed = Date.now() - startTime;
+                    const progress = Math.min(elapsed / duration, 1);
+
+                    if (track !== this.currentTrack && targetVol > 0) return; // Stop fading in if track switched away
+
+                    const newVol = startVol + (targetVol - startVol) * progress;
+                    track.volume = Math.max(0, Math.min(1, newVol));
+
+                    if (progress < 1) {
+                        requestAnimationFrame(step);
+                    }
+                };
+                requestAnimationFrame(step);
+            }
+        };
+
+        // Let's get this party started
+        MusicSystem.init();
 
         // =============================================
         // GLOBAL TOGGLE SYSTEMS
         // =============================================
-        console.log('✅ TOGGLE SYSTEMS LOADED - Functions toggleSound() and toggleTheme() are ready!');
+        console.log('✅ UI Systems online. Don\'t break anything.');
 
         // --- SOUND TOGGLE ---
         let soundEnabled = true;
@@ -4591,8 +4744,8 @@
 
             if (soundEnabled) {
                 // Enable sound
-                if (typeof bgMusic !== 'undefined' && bgMusic) {
-                    bgMusic.volume = savedBgmVolume;
+                if (typeof MusicSystem !== 'undefined' && MusicSystem.currentTrack) {
+                    MusicSystem.currentTrack.volume = savedBgmVolume;
                 }
                 if (typeof AudioSystem !== 'undefined' && AudioSystem.ctx && AudioSystem.ctx.state === 'suspended') {
                     AudioSystem.resume();
@@ -4602,9 +4755,9 @@
                 btn.title = 'Sound ON - Click to mute';
             } else {
                 // Disable sound
-                if (typeof bgMusic !== 'undefined' && bgMusic) {
-                    savedBgmVolume = bgMusic.volume || 0.25;
-                    bgMusic.volume = 0;
+                if (typeof MusicSystem !== 'undefined' && MusicSystem.currentTrack) {
+                    savedBgmVolume = MusicSystem.currentTrack.volume;
+                    MusicSystem.currentTrack.volume = 0;
                 }
                 if (typeof AudioSystem !== 'undefined' && AudioSystem.ctx) {
                     AudioSystem.ctx.suspend();
@@ -4704,7 +4857,7 @@
                 if (!el) return;
 
                 // duck volume for dramatic effect
-                if (typeof AudioSystem !== 'undefined') AudioSystem.fadeTo(0.1, 500);
+                if (typeof MusicSystem !== 'undefined') MusicSystem.duck();
 
                 el.textContent = '';
                 el.classList.add('typewriter-text');
@@ -4739,7 +4892,7 @@
                 el.classList.add('done');
 
                 // Restore volume
-                if (typeof AudioSystem !== 'undefined') AudioSystem.fadeTo(0.25, 800);
+                if (typeof MusicSystem !== 'undefined') MusicSystem.unduck();
             },
 
             async typeLines(containerId, lines) {
@@ -4747,7 +4900,7 @@
                 if (!container) return;
 
                 // duck volume
-                if (typeof AudioSystem !== 'undefined') AudioSystem.fadeTo(0.1, 500);
+                if (typeof MusicSystem !== 'undefined') MusicSystem.duck();
 
                 container.innerHTML = '';
 
@@ -4787,7 +4940,7 @@
                 }
 
                 // Restore volume
-                if (typeof AudioSystem !== 'undefined') AudioSystem.fadeTo(0.25, 800);
+                if (typeof MusicSystem !== 'undefined') MusicSystem.unduck();
             },
 
             // The subtle "click" of a mechanical keyboard provided by Web Audio API
@@ -5118,9 +5271,44 @@
             startDayNightCycle() {
                 // Random time between 45-90 seconds for night to trigger
                 const nightDelay = (Math.random() * 45 + 45) * 1000;
+                this.nightDuration = nightDelay; // Save for rewind logic
+                this.startTime = Date.now();
+
                 this.nightTimeout = setTimeout(() => {
                     this.triggerNight();
                 }, nightDelay);
+            },
+
+            rewindTime(ms) {
+                // Extend the day phase
+                if (this.nightTriggered) return; // Can't rewind once night starts (it's too late)
+
+                clearTimeout(this.nightTimeout);
+
+                // Calculate how much time was left
+                const elapsed = Date.now() - this.startTime;
+                let remaining = this.nightDuration - elapsed;
+
+                // Add bonus time (rewind)
+                remaining += ms;
+                if (remaining < 1000) remaining = 1000; // Safety min
+
+                // Restart timeout with new remaining time
+                this.startTime = Date.now(); // Reset start base
+                this.nightDuration = remaining;
+
+                this.nightTimeout = setTimeout(() => {
+                    this.triggerNight();
+                }, remaining);
+
+                // Visual feedback of extended day
+                const dayEl = document.createElement('div');
+                dayEl.innerHTML = "☀️ DAYLIGHT EXTENDED";
+                dayEl.className = 'anomaly-alert';
+                dayEl.style.color = '#000';
+                dayEl.style.background = '#fff';
+                document.body.appendChild(dayEl);
+                setTimeout(() => dayEl.remove(), 2000);
             },
 
             triggerNight() {
@@ -5317,6 +5505,7 @@
                     setTimeout(() => {
                         document.getElementById('puzzle-modal').classList.remove('active');
                         DuelMode.cleanup();
+                        // Explicitly trigger Win State
                         if (typeof Game !== 'undefined') Game.gameWin();
                     }, 1500);
                 } else {
@@ -5417,7 +5606,7 @@
                         }
 
                         // Restart music
-                        try { startBGM(); } catch (e) { }
+                        if (typeof MusicSystem !== 'undefined') MusicSystem.play('start');
                     }, 800); // Slightly longer delay for effect
                 });
             }
@@ -5462,12 +5651,15 @@
             init() {
                 try {
                     this.ctx = new (window.AudioContext || window.webkitAudioContext)();
-                } catch (e) { console.error("Audio init failed", e); }
+                    console.log("AudioSystem: Waking up the beast...");
+                } catch (e) { console.error("AudioSystem: It's dead, Jim.", e); }
             },
 
             resume() {
-                if (!soundEnabled) return; // Respect global sound toggle
-                if (this.ctx && this.ctx.state === 'suspended') this.ctx.resume();
+                if (!soundEnabled) return; // User said "shut up", so we shut up.
+                if (this.ctx && this.ctx.state === 'suspended') {
+                    this.ctx.resume().then(() => console.log("AudioSystem: And... we're back!"));
+                }
             },
 
             // Smooth volume transition helper
@@ -5661,6 +5853,14 @@
                 this.update();
 
                 if (this.interval) clearInterval(this.interval);
+
+                // DUEL MODE EXCEPTION: No timer countdown
+                if (typeof currentGameMode !== 'undefined' && currentGameMode === 'C') {
+                    // Update once to clear/hide info but don't tick
+                    this.update();
+                    return;
+                }
+
                 this.interval = setInterval(() => {
                     if (this.frozen) return;
 
@@ -5702,6 +5902,14 @@
                 }
 
                 if (!display || !bar) return;
+
+                // SPECIAL DISPLAY FOR DUEL MODE
+                if (typeof currentGameMode !== 'undefined' && currentGameMode === 'C') {
+                    display.textContent = "NO TIME";
+                    bar.style.width = "100%";
+                    bar.style.backgroundColor = (document.body.classList.contains('time-day')) ? '#000' : '#444';
+                    return;
+                }
 
                 display.textContent = this.timeLeft.toFixed(1);
                 // Bar is relative to 60s (Initial Max) visually, or dynamic?
@@ -5784,8 +5992,17 @@
             // Rewind: Adds Time but ACCELERATES COLLAPSE
             useRewind() {
                 if (this.rewindCharges <= 0 || (!Game.active && (typeof DuelMode === 'undefined' || !DuelMode.active))) return false;
-                this.rewindCharges--;
 
+                // Special Duel Mode Handling
+                if (typeof DuelMode !== 'undefined' && DuelMode.active) {
+                    this.rewindCharges--;
+                    DuelMode.rewindTime(15000); // Add 15s to day cycle
+                    AudioSystem.playRewind();
+                    this.updatePowerUI();
+                    return true;
+                }
+
+                this.rewindCharges--;
                 Game.triggerRewindEffect();
                 return true;
             },
@@ -5941,7 +6158,15 @@
             rewindUsedInRound: false,
 
             startSequence() {
-                try { AudioSystem.init(); AudioSystem.resume(); startBGM(); } catch (e) { }
+                // Here we go...
+                console.log("Game: Starting sequence. Hold onto your butts.");
+                try {
+                    if (typeof AudioSystem !== 'undefined') { AudioSystem.init(); AudioSystem.resume(); }
+                    // Cue the dramatic intro music
+                    if (typeof MusicSystem !== 'undefined') MusicSystem.play('start');
+                } catch (e) {
+                    console.log("Game: Audio glitch. Classic.", e);
+                }
                 gameInProgress = true;
                 LuckSystem.reset();
                 if (typeof StorySystem !== 'undefined') StorySystem.reset();
@@ -6099,6 +6324,8 @@
                     TimePowers.reset();
                     // Ensure Timer is stopped before starting new
                     TimerSystem.stop();
+
+                    if (typeof MusicSystem !== 'undefined') MusicSystem.play('gameplay');
 
                     document.getElementById('hud').classList.remove('hidden');
                     document.getElementById('hud-score').innerText = "0";
@@ -6506,7 +6733,7 @@
             gameWin() {
                 this.active = false;
                 TimerSystem.stop();
-                stopBGM();
+                if (typeof MusicSystem !== 'undefined') MusicSystem.stop();
                 AudioSystem.playCorrect();
                 gameInProgress = false;
 
@@ -6537,7 +6764,7 @@
 
             gameOver() {
                 this.active = false; AudioSystem.playWrong();
-                stopBGM();
+                if (typeof MusicSystem !== 'undefined') MusicSystem.stop();
                 gameInProgress = false;
                 document.getElementById('fail-modal').classList.remove('active');
                 document.body.classList.add('power-off-anim');
@@ -6554,6 +6781,9 @@
                     headline.style.color = 'var(--danger)';
                     headline.style.textShadow = '0 0 30px var(--danger)';
                 }
+
+                // Cue the sad violin... or menacing drone in our case
+                if (typeof MusicSystem !== 'undefined') MusicSystem.play('gameover');
 
                 setTimeout(() => {
                     document.body.classList.remove('power-off-anim');
@@ -7200,6 +7430,9 @@
                 if (!AudioSystem.ctx) AudioSystem.init();
                 AudioSystem.resume();
             }
+
+            // Start BGM (Intro)
+            if (typeof MusicSystem !== 'undefined') MusicSystem.play('start');
 
             const startScreen = document.getElementById('click-to-start');
             startScreen.style.transition = 'opacity 0.8s ease';
