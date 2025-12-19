@@ -3845,10 +3845,364 @@
             animation: pulse 2s infinite;
             letter-spacing: 2px;
         }
+
+        /* QUALITY TOGGLE BUTTONS */
+        .quality-controls {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 10001;
+            pointer-events: auto;
+        }
+
+        .quality-btn {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: rgba(0, 0, 5, 0.9);
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            cursor: pointer;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 15px rgba(79, 70, 229, 0.3);
+        }
+
+        .quality-btn:hover {
+            background: rgba(79, 70, 229, 0.2);
+            box-shadow: 0 0 30px rgba(79, 70, 229, 0.5);
+            transform: scale(1.1);
+        }
+
+        .quality-btn.active {
+            border-color: var(--green);
+            color: var(--green);
+            box-shadow: 0 0 15px rgba(57, 255, 20, 0.5);
+        }
+
+        /* HIDE ANY STRAY SUBMIT BUTTONS */
+        button[type="submit"],
+        input[type="submit"],
+        form button:not(.tech-btn):not(.mega-btn):not(.quality-btn),
+        .puzzle-modal button,
+        .puzzle-box button {
+            display: none !important;
+        }
+
+        /* =========================================
+           PREMIUM ASSET INTEGRATION 
+           ========================================= */
+
+        /* SHARED ICON STYLE */
+        .icon-img {
+            width: 48px;
+            height: 48px;
+            object-fit: contain;
+            mix-blend-mode: screen;
+            /* REMOVES BLACK BACKGROUND */
+            border-radius: 6px;
+            margin-bottom: 5px;
+            display: block;
+            pointer-events: none;
+        }
+
+        /* BACKGROUNDS */
+        #click-to-start,
+        #s-luck,
+        #s-register,
+        #s-roulette {
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('assets/bg_menu.jpg') no-repeat center center;
+            background-size: cover;
+        }
+
+        #s-game {
+            background: linear-gradient(rgba(0, 0, 10, 0.8), rgba(0, 0, 10, 0.8)), url('assets/bg_game.jpg') no-repeat center center;
+            background-size: cover;
+        }
+
+        /* Dynamic Boss Mode Background */
+        #s-game.boss-mode-active {
+            background: linear-gradient(rgba(0, 20, 0, 0.7), rgba(0, 20, 0, 0.7)), url('assets/bg_boss.jpg') no-repeat center center !important;
+            background-size: cover !important;
+        }
+
+        #s-game-paradox {
+            background: linear-gradient(rgba(20, 0, 0, 0.6), rgba(20, 0, 0, 0.8)), url('assets/bg_paradox.jpg') no-repeat center center;
+            background-size: cover;
+        }
+
+        #s-over,
+        #s-outro {
+            background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url('assets/bg_gameover.jpg') no-repeat center center;
+            background-size: cover;
+        }
+
+        #victory-screen {
+            background: linear-gradient(rgba(0, 20, 0, 0.7), rgba(0, 20, 0, 0.7)), url('assets/bg_victory.jpg') no-repeat center center;
+            background-size: cover;
+        }
+
+        /* COIN REPLACEMENT */
+        .retro-coin {
+            background: url('assets/coin_score.png') no-repeat center center !important;
+            background-size: contain !important;
+            width: 32px !important;
+            height: 32px !important;
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+            animation: spinCoin 3s linear infinite;
+        }
+
+        @keyframes spinCoin {
+            0% {
+                transform: rotateY(0deg);
+            }
+
+            50% {
+                transform: rotateY(180deg);
+            }
+
+            100% {
+                transform: rotateY(360deg);
+            }
+        }
+
+        /* LOGO REPLACEMENT */
+        .game-logo-img {
+            width: 100%;
+            max-width: 500px;
+            height: auto;
+            mix-blend-mode: screen;
+            filter: drop-shadow(0 0 20px rgba(255, 0, 80, 0.5));
+            animation: logoGlitch 3s infinite;
+        }
+
+        @keyframes logoGlitch {
+            0% {
+                transform: translate(0);
+                filter: drop-shadow(0 0 20px rgba(255, 0, 80, 0.5));
+            }
+
+            2% {
+                transform: translate(-2px, 2px);
+                filter: drop-shadow(2px -2px 20px rgba(0, 255, 255, 0.5));
+            }
+
+            4% {
+                transform: translate(2px, -2px);
+            }
+
+            6% {
+                transform: translate(0);
+            }
+        }
+
+        /* HUD BUTTON ICONS */
+        .big-freeze-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding-top: 10px;
+        }
+
+        /* Disable text shadow on icons to avoid artifacts */
+        .icon-img {
+            text-shadow: none !important;
+        }
+
+        /* MYSTERY BOX FOR LUCK SLOTS */
+        .luck-slot {
+            background-image: url('assets/icon_mystery.png');
+            background-size: 60%;
+            background-position: center;
+            background-repeat: no-repeat;
+            color: transparent !important;
+            /* Hide the standard "?" text */
+        }
+
+        .luck-slot.selected,
+        .luck-slot.spinning {
+            color: var(--primary) !important;
+            background-image: none !important;
+        }
+
+        /* STAT ICONS FOR GAME OVER */
+        .stat-icon-accel {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            background: url('assets/icon_accel.png') no-repeat center/contain;
+            mix-blend-mode: screen;
+            vertical-align: middle;
+            margin-right: 5px;
+        }
+
+        .stat-icon-sync {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            background: url('assets/icon_sync.png') no-repeat center/contain;
+            mix-blend-mode: screen;
+            vertical-align: middle;
+            margin-right: 5px;
+        }
+
+        /* CHRONO COIN FOR VICTORY */
+        .chrono-coin-display {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            background: url('assets/coin_chrono.png') no-repeat center/contain;
+            mix-blend-mode: screen;
+            vertical-align: middle;
+            margin-left: 10px;
+            animation: pulse 2s infinite;
+        }
+
+        /* Disable text shadow on icons */
+        .stat-icon-accel,
+        .stat-icon-sync,
+        .chrono-coin-display {
+            text-shadow: none !important;
+        }
+
+        /* PREMIUM BACKGROUNDS (PNG ASSETS) */
+        #click-to-start,
+        #s-luck,
+        #s-register,
+        #s-roulette {
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('assets/bg_menu.png') no-repeat center center fixed !important;
+            background-size: cover !important;
+        }
+
+        #s-game {
+            background: linear-gradient(rgba(0, 0, 20, 0.8), rgba(0, 0, 20, 0.8)), url('assets/bg_game.png') no-repeat center center fixed !important;
+            background-size: cover !important;
+        }
+
+        #s-game-paradox {
+            background: linear-gradient(rgba(50, 0, 0, 0.8), rgba(20, 0, 0, 0.9)), url('assets/bg_paradox.png') no-repeat center center fixed !important;
+            background-size: cover !important;
+        }
+
+        #s-over,
+        #s-outro {
+            background: linear-gradient(rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.95)), url('assets/bg_gameover.png') no-repeat center center fixed !important;
+            background-size: cover !important;
+        }
+
+        #victory-screen {
+            background: linear-gradient(rgba(0, 20, 0, 0.85), rgba(0, 10, 0, 0.9)), url('assets/bg_victory.png') no-repeat center center fixed !important;
+            background-size: cover !important;
+        }
+
+        .boss-mode-active {
+            background: linear-gradient(rgba(50, 0, 10, 0.8), rgba(30, 0, 5, 0.9)), url('assets/bg_boss.png') no-repeat center center fixed !important;
+            background-size: cover !important;
+        }
+
+        /* STAT ICONS FOR GAME OVER */
+
+        /* BUTTON BACKGROUND IMAGES */
+        .btn-safe-bg {
+            background: url('assets/safe_btn.jpg') no-repeat center center !important;
+            background-size: 100% 100% !important;
+            border: none !important;
+            box-shadow: none !important;
+            /* Let the image handle the glow/depth if present */
+            padding: 15px 30px !important;
+            /* Ensure enough space */
+            color: #fff !important;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+        }
+
+        .btn-unsafe-bg {
+            background: url('assets/unsafe_btn.jpg') no-repeat center center !important;
+            background-size: 100% 100% !important;
+            border: none !important;
+            box-shadow: none !important;
+            padding: 15px 30px !important;
+            color: #fff !important;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+        }
+
+        /* QUIZ BUTTON BACKGROUND (Normal & Paradox) */
+        .opt-btn,
+        .paradox-btn {
+            background: url('assets/quiz_btn.jpg') no-repeat center center !important;
+            background-size: 100% 100% !important;
+            border: none !important;
+            box-shadow: none !important;
+            color: white !important;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+            /* Reset padding if needed, or keep default */
+        }
+
+        /* HOVER EFFECTS FOR IMAGE BUTTONS */
+        .btn-safe-bg:hover,
+        .btn-unsafe-bg:hover,
+        .opt-btn:hover,
+        .paradox-btn:hover {
+            filter: brightness(1.2) contrast(1.1);
+            transform: translateY(-2px);
+            cursor: pointer;
+        }
+
+        .btn-safe-bg:active,
+        .btn-unsafe-bg:active,
+        .opt-btn:active,
+        .paradox-btn:active {
+            filter: brightness(0.9);
+            transform: translateY(1px);
+        }
+
+        /* BOARD BACKGROUND FOR STORY & RULES (Tutorial) */
+        .story-container {
+            background: url('assets/board.png') no-repeat center center !important;
+            background-size: 100% 100% !important;
+            /* Fill the container */
+            padding: 30px !important;
+            border: 1px solid rgba(255, 215, 0, 0.3) !important;
+            /* Gold hint */
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8) !important;
+            color: #fff !important;
+            text-shadow: 0 2px 5px #000 !important;
+            border-radius: 8px;
+        }
+
+        /* Rules Overlay Inner Box */
+        /* Assuming a specific class or ID for the box inside the overlay */
+        /* Rules Overlay Inner Box - Broad selector coverage */
+        #rules-overlay,
+        .rules-modal,
+        .rules-content,
+        #rules-box {
+            background: url('assets/board.png') no-repeat center center !important;
+            background-size: 100% 100% !important;
+            border: 1px solid rgba(255, 215, 0, 0.3) !important;
+            padding: 40px !important;
+            border-radius: 10px;
+        }
     </style>
 </head>
 
 <body>
+
+    <!-- QUALITY CONTROLS -->
+    <div class="quality-controls">
+        <button class="quality-btn" id="graphics-toggle" onclick="toggleGraphics()" title="Graphics Quality: HIGH">
+            ✨
+        </button>
+        <button class="quality-btn" id="safe-mode-toggle" onclick="toggleSafeMode()" title="Photosensitivity: OFF">
+            👁️
+        </button>
+    </div>
 
     <!-- DARKNESS OVERLAY for cinematic transitions -->
     <div class="darkness-overlay" id="darkness-overlay"></div>
@@ -3913,7 +4267,7 @@
                         </div>
                         <div class="luck-result" id="luck-result"></div>
                     </div>
-                    <button class="tech-btn" id="spin-luck-btn" style="margin-top:30px;">SPIN FATE</button>
+                    <button class="tech-btn btn-safe-bg" id="spin-luck-btn" style="margin-top:30px;">SPIN FATE</button>
                 </div>
             </div>
 
@@ -4011,7 +4365,7 @@
                     <div class="stat-row"
                         style="display: flex; justify-content: space-between; margin: 15px 0; border-bottom: 1px solid rgba(57, 255, 20, 0.2); padding-bottom: 10px;">
                         <span class="stat-label" style="font-family: var(--f-ui); color: rgba(255,255,255,0.7);">FINAL
-                            SCORE</span>
+                            SCORE <div class="chrono-coin-display"></div></span>
                         <span class="stat-val" id="final-score"
                             style="font-family: var(--f-mono); font-size: 1.5rem; color: var(--green); text-shadow: 0 0 10px var(--green);">0</span>
                     </div>
@@ -4024,15 +4378,18 @@
                     </div>
                     <div class="stat-row"
                         style="display: flex; justify-content: space-between; margin: 15px 0; border-bottom: 1px solid rgba(57, 255, 20, 0.2); padding-bottom: 10px;">
-                        <span class="stat-label"
-                            style="font-family: var(--f-ui); color: rgba(255,255,255,0.7);">QUESTIONS
-                            CLEARED</span>
+                        <span class="stat-label" style="font-family: var(--f-ui); color: rgba(255,255,255,0.7);">
+                            <div class="stat-icon-sync"></div> QUESTIONS
+                            CLEARED
+                        </span>
                         <span class="stat-val" id="questions-cleared"
                             style="font-family: var(--f-mono); font-size: 1.5rem; color: var(--text-main);">0</span>
                     </div>
                     <div class="stat-row" style="display: flex; justify-content: space-between; margin: 15px 0;">
-                        <span class="stat-label" style="font-family: var(--f-ui); color: rgba(255,255,255,0.7);">MAX
-                            SPEED</span>
+                        <span class="stat-label" style="font-family: var(--f-ui); color: rgba(255,255,255,0.7);">
+                            <div class="stat-icon-accel"></div> MAX
+                            SPEED
+                        </span>
                         <span class="stat-val" id="max-speed"
                             style="font-family: var(--f-mono); font-size: 1.5rem; color: var(--danger); text-shadow: 0 0 10px var(--danger);">1x</span>
                     </div>
@@ -4093,7 +4450,11 @@
                         </div>
                         <div class="stat-val" id="hud-score">0</div>
                     </div>
-                    <div class="stat-label" style="margin-top:10px;">REALITY ANCHORS</div>
+                    <div class="stat-label"
+                        style="margin-top:10px; display:flex; align-items:center; justify-content:flex-end; gap:5px;">
+                        REALITY ANCHORS <img src="assets/icon_fire.png"
+                            style="width:24px; height:24px; mix-blend-mode:screen;" alt="🔥">
+                    </div>
                     <div id="hud-streak"
                         style="font-family:var(--f-mono); color:var(--green); font-size:1.2rem; min-height:1.5rem;">
                     </div>
@@ -4106,19 +4467,20 @@
 
                 <div class="freeze-container"
                     style="left: 150px; bottom: 70px; position: absolute; display: flex; gap: 20px; pointer-events: auto; z-index: 10000; transform: translateZ(200px);">
-                    <button class="big-freeze-btn" id="btn-freeze" onclick="TimePowers.useFreeze()">
-                        FREEZE
-                        <span>[SPACE]</span>
+                    <button class="big-freeze-btn btn-safe-bg" id="btn-freeze" onclick="TimePowers.useFreeze()">
+                        <img src="assets/icon_freeze.png" class="icon-img">
+                        <div style="line-height:1.2">FREEZE<br><span style="font-size:0.7em">[SPACE]</span></div>
                     </button>
-                    <button class="big-freeze-btn btn-hud-rewind" id="btn-rewind-hud" onclick="TimePowers.useRewind()">
-                        REWIND
-                        <span>[R]</span>
+                    <button class="big-freeze-btn btn-hud-rewind btn-unsafe-bg" id="btn-rewind-hud"
+                        onclick="TimePowers.useRewind()">
+                        <img src="assets/icon_rewind.png" class="icon-img">
+                        <div style="line-height:1.2">REWIND<br><span style="font-size:0.7em">[R]</span></div>
                     </button>
                 </div>
             </div>
 
             <div id="s-title" class="screen active">
-                <h1 class="glitch-title" data-text="NEURO FRIED">NEURO<br>FRIED</h1>
+                <img src="assets/logo.png" class="game-logo-img" alt="NEURO FRIED">
 
                 <div class="protocol-container">
                     <div class="protocol-trigger">[ TRANSMISSION INTERCEPTED ]</div>
@@ -4127,7 +4489,7 @@
                     </div>
                 </div>
 
-                <button class="tech-btn" id="init-btn" style="opacity:0; pointer-events:none;">INITIALIZE
+                <button class="tech-btn btn-safe-bg" id="init-btn" style="opacity:0; pointer-events:none;">INITIALIZE
                     SYSTEM</button>
             </div>
 
@@ -4146,9 +4508,9 @@
                         </div>
                     </div>
                     <div id="roulette-actions" class="hidden" style="margin-top:10px;">
-                        <button class="tech-btn" onclick="Game.confirmTopic()"
+                        <button class="tech-btn btn-safe-bg" onclick="Game.confirmTopic()"
                             style="border-color:var(--primary); color:var(--primary);">ACCEPT</button>
-                        <button class="tech-btn" onclick="Game.reroll()"
+                        <button class="tech-btn btn-unsafe-bg" onclick="Game.reroll()"
                             style="border-color:var(--danger); color:var(--danger);">REROLL</button>
                     </div>
                 </div>
@@ -4165,9 +4527,11 @@
                             1935 <span style="opacity:0.5">&lt;---&gt;</span> 2035
                         </div>
                         <div class="btn-row">
-                            <button class="tech-btn" style="border-color:var(--primary); color:var(--primary);"
+                            <button class="tech-btn btn-safe-bg"
+                                style="border-color:var(--primary); color:var(--primary);"
                                 onclick="Game.startGame('asc')">CHRONOLOGICAL</button>
-                            <button class="tech-btn" style="border-color:var(--danger); color:var(--danger);"
+                            <button class="tech-btn btn-unsafe-bg"
+                                style="border-color:var(--danger); color:var(--danger);"
                                 onclick="Game.startGame('desc')">REWIND FLOW</button>
                         </div>
                     </div>
@@ -4190,7 +4554,7 @@
                     <input type="text" id="reg-name" class="cyber-input" placeholder="ENTER CODENAME" maxlength="12"
                         autocomplete="off">
 
-                    <button class="mega-btn" onclick="registerAndStart()">INITIATE SYNC</button>
+                    <button class="mega-btn btn-safe-bg" onclick="registerAndStart()">INITIATE SYNC</button>
                 </div>
             </div>
 
@@ -4273,19 +4637,21 @@
                         </div>
 
                         <!-- Feedback Button - Opens Google Form -->
-                        <button class="send-feedback-btn" onclick="sendFeedback()">📝 SHARE FEEDBACK</button>
+                        <button class="send-feedback-btn btn-safe-bg" onclick="sendFeedback()">📝 SHARE
+                            FEEDBACK</button>
 
                         <!-- Reboot Button -->
-                        <button class="control-btn reboot-btn" onclick="location.reload()">🔄 REBOOT SYSTEM</button>
+                        <button class="control-btn reboot-btn btn-unsafe-bg" onclick="location.reload()">🔄 REBOOT
+                            SYSTEM</button>
 
                         <!-- Capture Button -->
-                        <button class="control-btn" onclick="initiateCapture()"
+                        <button class="control-btn btn-safe-bg" onclick="initiateCapture()"
                             style="margin-top:10px; border-color:var(--green); color:var(--green);">📸 CAPTURE
                             RECALL</button>
 
 
                         <!-- Leaderboard Button -->
-                        <button class="control-btn" onclick="showLeaderboard()" style="margin-top:10px;">🏆
+                        <button class="control-btn btn-safe-bg" onclick="showLeaderboard()" style="margin-top:10px;">🏆
                             LEADERBOARD</button>
                     </div>
 
@@ -9530,6 +9896,244 @@
                 console.log("Share skipped/failed", err);
             }
         }
+
+        // =============================================
+        // IMPROVEMENT 1: GRAPHICS QUALITY TOGGLE
+        // =============================================
+        let graphicsQuality = 'high';
+
+        function toggleGraphics() {
+            const btn = document.getElementById('graphics-toggle');
+            graphicsQuality = graphicsQuality === 'high' ? 'low' : 'high';
+
+            if (graphicsQuality === 'low') {
+                // LOW POWER MODE
+                document.body.style.setProperty('--glass-blur', 'blur(0px)');
+                document.querySelectorAll('.blood-veins, .blood-drip, .scanlines').forEach(el => {
+                    if (el) el.style.display = 'none';
+                });
+                btn.innerHTML = '⚡';
+                btn.title = 'Graphics Quality: LOW (Performance Mode)';
+                console.log('⚡ LOW POWER MODE: Effects reduced');
+            } else {
+                // HIGH GRAPHICS
+                document.body.style.setProperty('--glass-blur', 'blur(30px)');
+                document.querySelectorAll('.blood-veins, .blood-drip, .scanlines').forEach(el => {
+                    if (el) el.style.display = '';
+                });
+                btn.innerHTML = '✨';
+                btn.title = 'Graphics Quality: HIGH';
+                console.log('✨ HIGH GRAPHICS: All effects enabled');
+            }
+            btn.classList.toggle('active');
+        }
+
+        // =============================================
+        // IMPROVEMENT 2: PHOTOSENSITIVITY SAFE MODE
+        // =============================================
+        let safeMode = false;
+
+        function toggleSafeMode() {
+            const btn = document.getElementById('safe-mode-toggle');
+            safeMode = !safeMode;
+
+            if (safeMode) {
+                // ENABLE SAFE MODE - Disable flashing/shaking
+                const style = document.createElement('style');
+                style.id = 'safe-mode-override';
+                style.textContent = `
+                    .horror-shake, .glitch-active, body.paradox-hit { animation: none !important; }
+                    @keyframes horrorShake { 0%, 100% { transform: translate(0); } }
+                    @keyframes glitchScreen { 0%, 100% { transform: skewX(0); filter: none; } }
+                    @keyframes screenShake { 0%, 100% { transform: translate(0); } }
+                    @keyframes flashWarn { 0%, 100% { opacity: 0.8; } }
+                `;
+                document.head.appendChild(style);
+                btn.innerHTML = '✅';
+                btn.title = 'SAFE MODE: ON (Reduced Motion)';
+                btn.classList.add('active');
+                console.log('✅ SAFE MODE: Reduced motion & flashing enabled');
+            } else {
+                // DISABLE SAFE MODE
+                const style = document.getElementById('safe-mode-override');
+                if (style) style.remove();
+                btn.innerHTML = '👁️';
+                btn.title = 'Photosensitivity: OFF';
+                btn.classList.remove('active');
+                console.log('👁️ SAFE MODE: Disabled');
+            }
+        }
+
+        // =============================================
+        // IMPROVEMENT 3: BOSS NODE SYSTEM
+        // =============================================
+        // Add boss mode flag to TimerSystem
+        if (typeof TimerSystem !== 'undefined') {
+            TimerSystem.bossMode = false;
+
+            // Store original update function
+            const originalUpdate = TimerSystem.update;
+
+            // Override with boss mode support
+            TimerSystem.update = function () {
+                if (!this.running) return;
+
+                // 2x speed during boss mode
+                const dropRate = this.bossMode ? 0.04 : 0.02;
+                this.timeLeft -= dropRate;
+
+                if (this.timeLeft < 0) this.timeLeft = 0;
+
+                // Update displays
+                const display = document.getElementById('time-display');
+                if (display) display.textContent = this.timeLeft.toFixed(1);
+
+                const bar = document.getElementById('time-bar');
+                if (bar) {
+                    const percent = (this.timeLeft / this.totalTime) * 100;
+                    bar.style.width = percent + '%';
+
+                    if (percent < 20) {
+                        bar.classList.add('danger');
+                        if (!document.body.classList.contains('time-critical')) {
+                            document.body.classList.add('time-critical');
+                        }
+                    } else {
+                        bar.classList.remove('danger');
+                        document.body.classList.remove('time-critical');
+                    }
+                }
+
+                if (this.timeLeft <= 0) {
+                    this.stop();
+                    if (typeof Game !== 'undefined' && typeof Game.handleTimeOut === 'function') {
+                        Game.handleTimeOut();
+                    }
+                }
+            };
+        }
+
+        // Enhance Game.nextRound with Boss Node logic
+        if (typeof Game !== 'undefined') {
+            const originalNextRound = Game.nextRound;
+
+            Game.nextRound = function () {
+                // Check for Boss Node (every 5th question)
+                const isBossNode = (this.round + 1) % 5 === 0 && this.round > 0;
+
+                if (isBossNode) {
+                    // BOSS NODE ACTIVATED
+                    console.log('🔥 BOSS NODE ACTIVATED!');
+
+                    // Visual change - Matrix green
+                    document.documentElement.style.setProperty('--primary', '#00ff00');
+                    document.documentElement.style.setProperty('--glass-bg', 'rgba(0, 20, 0, 0.9)');
+
+                    // Show Boss Alert
+                    const bossAlert = document.createElement('div');
+                    bossAlert.className = 'anomaly-alert';
+                    bossAlert.innerHTML = '🔥 <strong>DATA BREACH DETECTED</strong> 🔥<br>RAPID RESPONSE REQUIRED';
+                    bossAlert.style.borderColor = '#00ff00';
+                    bossAlert.style.color = '#00ff00';
+                    bossAlert.style.backgroundColor = 'rgba(0, 50, 0, 0.9)';
+                    document.body.appendChild(bossAlert);
+                    setTimeout(() => bossAlert.remove(), 3000);
+
+                    // Enable boss mode (2x timer speed)
+                    if (typeof TimerSystem !== 'undefined') {
+                        TimerSystem.bossMode = true;
+                    }
+
+                    // Dramatic sound
+                    if (typeof AudioSystem !== 'undefined') {
+                        AudioSystem.playWrong();
+                    }
+                } else {
+                    // Reset from boss mode
+                    document.documentElement.style.setProperty('--primary', '#ff1a1a');
+                    document.documentElement.style.setProperty('--glass-bg', 'rgba(15, 0, 0, 0.9)');
+
+                    if (typeof TimerSystem !== 'undefined') {
+                        TimerSystem.bossMode = false;
+                    }
+                }
+
+                // Call original function
+                originalNextRound.call(this);
+            };
+
+            // Reward on boss node completion
+            const originalCheck = Game.check;
+
+            Game.check = function (ans, cor, e) {
+                const wasBossNode = (this.round % 5 === 0 && this.round > 0);
+
+                // Call original check
+                originalCheck.call(this, ans, cor, e);
+
+                // Boss node completion bonus
+                if (wasBossNode && ans === cor) {
+                    console.log('✅ BOSS NODE CLEARED - SYSTEM RESTORED');
+
+                    // Bonus time and score
+                    if (typeof TimerSystem !== 'undefined') {
+                        TimerSystem.addTime(10); // +5s extra
+                    }
+
+                    // Show success message
+                    const successMsg = document.createElement('div');
+                    successMsg.className = 'anomaly-alert';
+                    successMsg.innerHTML = '✅ <strong>SYSTEM RESTORED</strong> ✅<br>+10 SECONDS BONUS';
+                    successMsg.style.borderColor = '#00ff00';
+                    successMsg.style.color = '#00ff00';
+                    document.body.appendChild(successMsg);
+                    setTimeout(() => successMsg.remove(), 2000);
+                }
+            };
+        }
+
+        // =============================================
+        // IMPROVEMENT 4: FIRST-TIME BOOT TUTORIAL
+        // =============================================
+        setTimeout(() => {
+            if (!localStorage.getItem('neuro-fried-played')) {
+                const tutorial = document.createElement('div');
+                tutorial.id = 'boot-tutorial';
+                tutorial.style.cssText = `
+                    position: fixed; inset: 0; z-index: 100000;
+                    background: rgba(0,0,0,0.95); backdrop-filter: blur(10px);
+                    display: flex; flex-direction: column;
+                    justify-content: center; align-items: center;
+                    padding: 40px; text-align: center;
+                    font-family: var(--f-mono);
+                `;
+
+                tutorial.innerHTML = `
+                    <div style="max-width: 700px; animation: fadeIn 0.5s ease;">
+                        <h1 style="color: var(--primary); font-family: var(--f-title); font-size: 3rem; margin-bottom: 20px; text-shadow: 0 0 20px var(--primary);">
+                            ⚡ NEURAL INTERFACE BOOT ⚡
+                        </h1>
+                        <div style="text-align: left; color: #ccc; line-height: 2; margin-bottom: 30px; font-size: 1.1rem;">
+                            <p>⏱️ <strong style="color: var(--primary);">TIMER</strong>: Answer fast. Time = Life. Gain +5s per correct answer.</p>
+                            <p>🎯 <strong style="color: var(--primary);">STREAK</strong>: Chain correct answers for score multiplier.</p>
+                            <p>⏪ <strong style="color: var(--primary);">REWIND</strong>: Press <kbd style="background: rgba(255,0,0,0.2); padding: 2px 8px; border-radius: 4px;">R</kbd> to undo wrong answers (limited uses).</p>
+                            <p>❄️ <strong style="color: var(--primary);">FREEZE</strong>: Press <kbd style="background: rgba(0,200,255,0.2); padding: 2px 8px; border-radius: 4px;">SPACE</kbd> to pause timer briefly.</p>
+                            <p>🔥 <strong style="color: #00ff00;">BOSS NODES</strong>: Every 5th question runs at 2x speed! Clear for +10s bonus.</p>
+                            <p>✨ <strong style="color: var(--primary);">GRAPHICS</strong>: Top-right buttons control quality & safety.</p>
+                        </div>
+                        <button class="tech-btn" style="font-size: 1.3rem; padding: 20px 50px;" onclick="this.parentElement.parentElement.remove(); localStorage.setItem('neuro-fried-played', '1');">
+                            🚀 BEGIN NEURAL SYNC
+                        </button>
+                        <p style="color: #666; font-size: 0.9rem; margin-top: 20px;">
+                            This tutorial won't show again. Good luck, operative.
+                        </p>
+                    </div>
+                `;
+
+                document.body.appendChild(tutorial);
+                console.log('📚 First-time tutorial displayed');
+            }
+        }, 3000); // Show after 3 seconds on first load
     </script>
 </body>
 
