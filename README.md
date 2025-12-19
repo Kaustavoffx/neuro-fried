@@ -22,17 +22,12 @@ Answer questions correctly to maintain your signal integrity. Fail, and face the
     *   If you fail, you loop back with a penalty, trapped until you stabilize the timeline.
 
 3.  **⚔️ PARADOX MODE (PvE)**
-    *   **Chaos • Corrupt System • Restore Sanity**
-    *   **You vs. The Entity (AI)**.
-    *   **Day/Night Cycle:** The environment shifts dynamically.
-    *   **Creepy Glass UI:** The Entity's choices are obscured by a dark, frosted glass interface—you know it's watching, but you don't know what it knows.
-    *   **Puzzle Finale:** Survive the questions to face a final logic puzzle.
-    *   **Core Rules:**
-        *   **Sanity Meter** replaces Health.
-        *   **Wrong answers** damage your Sanity.
-        *   **LOGIC INVERSION:** If text glitches, pick the **WRONG** answer.
-        *   **Chaos Level** rises over time.
-        *   **Objective:** Survive against your own mind.
+
+    *   **Sanity Meter** replaces Health.
+    *   **Wrong answers** damage your Sanity.
+    *   **LOGIC INVERSION:** If text glitches, pick the **WRONG** answer.
+    *   **Chaos Level** rises over time.
+    *   **Objective:** Survive against your own mind.
 
 ## 🛠️ Technical Features
 
