@@ -2389,375 +2389,6 @@
             }
         }
 
-        /* =========================================
-           MODE C: TIMELINE DUEL (SPLIT SCREEN)
-           ========================================= */
-        .duel-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            width: 100%;
-            max-width: 1400px;
-            padding: 20px;
-            margin-top: 60px;
-            border-radius: 16px;
-            /* Ensure Grid is used for side-by-side */
-            align-items: stretch;
-
-            /* 'High' Feel - Floating intensity */
-            animation: highFloat 6s ease-in-out infinite;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        @keyframes highFloat {
-
-            0%,
-            100% {
-                transform: translateY(0);
-                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            }
-
-            50% {
-                transform: translateY(-10px);
-                box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
-                border-color: rgba(255, 255, 255, 0.3);
-            }
-        }
-
-        .duel-side {
-            background: rgba(0, 0, 0, 0.95);
-            border: 2px solid var(--primary);
-            border-radius: 16px;
-            padding: 25px;
-            min-height: 450px;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .duel-side.player {
-            border-color: var(--primary);
-            box-shadow: 0 0 30px rgba(255, 0, 0, 0.2);
-        }
-
-        .duel-side.ai {
-            background: rgba(0, 0, 0, 0.95);
-            border-color: var(--primary);
-            box-shadow: 0 0 30px rgba(255, 0, 0, 0.2);
-            opacity: 0.9;
-        }
-
-        .duel-side.ai .opt-btn {
-            pointer-events: none;
-        }
-
-        .duel-label {
-            font-family: var(--f-title);
-            font-size: 1.2rem;
-            margin-bottom: 15px;
-            text-align: center;
-            padding: 10px;
-            border-radius: 8px;
-            background: rgba(0, 0, 0, 0.3);
-        }
-
-        .duel-side.player .duel-label {
-            color: var(--primary);
-            border-bottom: 2px solid var(--primary);
-        }
-
-        .duel-side.ai .duel-label {
-            color: var(--secondary);
-            border-bottom: 2px solid var(--secondary);
-        }
-
-        .duel-side .opt-grid {
-            grid-template-columns: 1fr;
-        }
-
-        .duel-side .opt-btn {
-            padding: 20px;
-            font-size: 1.1rem;
-        }
-
-        /* Day/Night Theme Transitions */
-        body.time-day {
-            --bg-color: #0a0a15;
-            animation: dayAmbient 4s infinite alternate;
-        }
-
-        body.time-day::before {
-            content: '☀️ DAY';
-            position: fixed;
-            top: 70px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-family: var(--f-title);
-            font-size: 1rem;
-            color: #ffd700;
-            text-shadow: 0 0 20px #ffd700;
-            z-index: 100;
-            letter-spacing: 3px;
-        }
-
-        body.time-night::before {
-            content: '🌙 NIGHT';
-            position: fixed;
-            top: 70px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-family: var(--f-title);
-            font-size: 1rem;
-            color: var(--secondary);
-            text-shadow: 0 0 20px var(--secondary);
-            z-index: 100;
-            letter-spacing: 3px;
-            animation: nightPulseText 1s infinite alternate;
-        }
-
-        @keyframes dayAmbient {
-            0% {
-                filter: brightness(1.05);
-            }
-
-            100% {
-                filter: brightness(1);
-            }
-        }
-
-        body.time-night {
-            --bg-color: #000002;
-            animation: nightAmbient 2s infinite alternate;
-        }
-
-        @keyframes nightAmbient {
-            0% {
-                filter: brightness(0.85);
-            }
-
-            100% {
-                filter: brightness(0.95);
-            }
-        }
-
-        @keyframes nightPulseText {
-            0% {
-                opacity: 0.7;
-            }
-
-            100% {
-                opacity: 1;
-            }
-        }
-
-        /* Creepy Restart Overlay */
-        .creepy-overlay {
-            position: fixed;
-            inset: 0;
-            z-index: 9999;
-            background: #000;
-            display: none;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-        }
-
-        .creepy-overlay.active {
-            display: flex;
-        }
-
-        .creepy-text {
-            font-family: var(--f-title);
-            font-size: 2.5rem;
-            color: var(--danger);
-            text-shadow: 0 0 30px var(--danger), 0 0 60px rgba(255, 0, 60, 0.5);
-            animation: creepyFlicker 0.1s infinite;
-            max-width: 80%;
-            line-height: 1.4;
-        }
-
-        .creepy-subtext {
-            font-family: var(--f-mono);
-            color: var(--text-dim);
-            margin-top: 30px;
-            font-size: 1.2rem;
-            animation: creepyPulse 2s infinite;
-        }
-
-        @keyframes creepyFlicker {
-
-            0%,
-            90%,
-            100% {
-                opacity: 1;
-            }
-
-            91% {
-                opacity: 0.4;
-            }
-
-            92% {
-                opacity: 0.9;
-            }
-
-            93% {
-                opacity: 0.3;
-            }
-        }
-
-        @keyframes creepyPulse {
-
-            0%,
-            100% {
-                opacity: 0.5;
-            }
-
-            50% {
-                opacity: 1;
-            }
-        }
-
-        /* Puzzle Modal */
-        .puzzle-modal {
-            position: fixed;
-            inset: 0;
-            z-index: 6000;
-            background: rgba(0, 0, 0, 0.95);
-            display: none;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            backdrop-filter: blur(10px);
-        }
-
-        .puzzle-modal.active {
-            display: flex;
-        }
-
-        .puzzle-box {
-            background: var(--glass-bg);
-            border: 2px solid var(--primary);
-            border-radius: 16px;
-            padding: 50px;
-            text-align: center;
-            max-width: 500px;
-        }
-
-        .puzzle-title {
-            font-family: var(--f-title);
-            font-size: 1.5rem;
-            color: var(--primary);
-            margin-bottom: 20px;
-        }
-
-        .puzzle-question {
-            font-family: var(--f-mono);
-            font-size: 2rem;
-            color: var(--text-main);
-            margin: 30px 0;
-        }
-
-        .puzzle-input {
-            width: 200px;
-            padding: 15px;
-            font-family: var(--f-mono);
-            font-size: 1.5rem;
-            text-align: center;
-            background: rgba(0, 0, 0, 0.5);
-            border: 2px solid var(--primary);
-            color: var(--primary);
-            border-radius: 8px;
-            outline: none;
-        }
-
-        .puzzle-input:focus {
-            box-shadow: 0 0 20px rgba(79, 70, 229, 0.5);
-        }
-
-        .puzzle-submit {
-            margin-top: 20px;
-        }
-
-        /* COUNTDOWN TIMER - Add to your CSS */
-        .time-ring {
-            position: absolute;
-            top: 90px;
-            left: 40px;
-            width: 100px;
-            height: 100px;
-            z-index: 60;
-        }
-
-        .time-ring svg {
-            transform: rotate(-90deg);
-            width: 100%;
-            height: 100%;
-        }
-
-        .time-ring-bg {
-            fill: none;
-            stroke: rgba(255, 255, 255, 0.1);
-            stroke-width: 8;
-        }
-
-        .time-ring-progress {
-            fill: none;
-            stroke: var(--primary);
-            stroke-width: 8;
-            stroke-linecap: round;
-            stroke-dasharray: 251;
-            /* 2 * PI * 40 */
-            stroke-dashoffset: 0;
-            transition: stroke-dashoffset 0.1s linear, stroke 0.3s;
-            filter: drop-shadow(0 0 10px var(--primary));
-        }
-
-        .time-ring-progress.danger {
-            stroke: var(--danger);
-            filter: drop-shadow(0 0 15px var(--danger));
-            animation: pulseDanger 0.5s infinite;
-        }
-
-        @keyframes pulseDanger {
-
-            0%,
-            100% {
-                opacity: 1;
-            }
-
-            50% {
-                opacity: 0.6;
-            }
-        }
-
-        .time-ring-text {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-family: var(--f-title);
-            font-size: 1.8rem;
-            color: var(--primary);
-            text-shadow: 0 0 10px var(--primary);
-        }
-
-        .time-ring-text.danger {
-            color: var(--danger);
-            text-shadow: 0 0 15px var(--danger);
-            animation: shakeTimer 0.1s infinite;
-        }
-
-        @keyframes shakeTimer {
-
-            0%,
-            100% {
-                transform: translate(-50%, -50%) translateX(0);
-            }
-
-            50% {
-                transform: translate(-50%, -50%) translateX(2px);
-            }
-        }
 
         /* =============================================
            WIN SCREEN - TIME SAVED / TIMELINE RESTORED
@@ -4135,6 +3766,85 @@
             cursor: crosshair !important;
             /* Force a technical feel */
         }
+
+        /* RULES OVERLAY STYLES */
+        .rules-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
+            z-index: 20000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+
+        .rules-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .rules-card {
+            background: var(--glass-bg);
+            border: 2px solid var(--primary);
+            box-shadow: 0 0 50px rgba(255, 0, 0, 0.2);
+            padding: 40px;
+            max-width: 600px;
+            width: 90%;
+            border-radius: 16px;
+            text-align: center;
+            transform: scale(0.9);
+            transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .rules-overlay.active .rules-card {
+            transform: scale(1);
+        }
+
+        .rules-title {
+            font-family: var(--f-title);
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 30px;
+            text-shadow: 0 0 20px var(--primary);
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 15px;
+        }
+
+        .rules-list {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 30px 0;
+            text-align: left;
+            font-family: var(--f-mono);
+            font-size: 1.2rem;
+            color: var(--text-main);
+            line-height: 1.6;
+        }
+
+        .rules-list li {
+            margin-bottom: 15px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .rules-list li::before {
+            content: '>';
+            position: absolute;
+            left: 0;
+            color: var(--secondary);
+        }
+
+        .rules-hint {
+            font-family: var(--f-ui);
+            color: var(--text-dim);
+            font-size: 0.9rem;
+            animation: pulse 2s infinite;
+            letter-spacing: 2px;
+        }
     </style>
 </head>
 
@@ -4262,12 +3972,7 @@
             </div>
 
             <!-- CREEPY RESTART OVERLAY -->
-            <div class="creepy-overlay" id="creepy-overlay">
-                <div class="creepy-text" id="creepy-text">YOU CANNOT ESCAPE</div>
-                <div class="creepy-subtext" id="creepy-subtext">You must play again...</div>
-                <button class="tech-btn" id="creepy-continue"
-                    style="margin-top:40px; border-color:var(--danger); color:var(--danger);">CONTINUE</button>
-            </div>
+
 
             <div id="fail-modal" class="fail-modal">
                 <div class="fail-title">TIMELINE FRACTURED</div>
@@ -4334,6 +4039,17 @@
                 </div>
                 <button class="tech-btn" style="position: relative; z-index: 10;"
                     onclick="location.reload()">REBOOT</button>
+            </div>
+
+            <!-- RULES OVERLAY (New Feature) -->
+            <div id="rules-overlay" class="rules-overlay hidden">
+                <div class="rules-card">
+                    <h2 class="rules-title" id="rules-title">MODE RULES</h2>
+                    <ul class="rules-list" id="rules-list">
+                        <!-- Populated by JS -->
+                    </ul>
+                    <div class="rules-hint">[ TAP ANYWHERE TO START ]</div>
+                </div>
             </div>
 
             <div id="hud" class="hidden">
@@ -5508,10 +5224,10 @@
                 theme: 'dream'
             },
             C: {
-                name: 'TIMELINE DUEL',
+                name: 'PARADOX',
                 icon: '⚔️',
-                desc: 'You vs AI • Day to Night • Puzzle finale',
-                theme: 'duel'
+                desc: 'Chaos • Corrupt System • Restore Sanity',
+                theme: 'Power Up'
             }
         };
 
@@ -6082,29 +5798,8 @@
             },
 
             triggerCreepyRestart() {
-                const overlay = document.getElementById('creepy-overlay');
-                const creepyText = document.getElementById('creepy-text');
-                const creepySubtext = document.getElementById('creepy-subtext');
-
-                // Horror messages
-                const messages = [
-                    { text: 'YOU CANNOT ESCAPE', sub: 'You must play again...' },
-                    { text: 'THERE IS NO EXIT', sub: 'The timeline demands sacrifice...' },
-                    { text: 'YOU HAVE TO PLAY', sub: 'Otherwise you cannot leave...' },
-                    { text: 'FOREVER LOOPING', sub: 'Play. Or stay trapped.' }
-                ];
-
-                const msg = messages[Math.floor(Math.random() * messages.length)];
-                creepyText.textContent = msg.text;
-                creepySubtext.textContent = msg.sub;
-
-                overlay.classList.add('active');
-
-                // Stop BGM if playing
-                if (typeof stopBGM !== 'undefined') stopBGM();
-
-                document.getElementById('hud').classList.add('hidden');
-                document.getElementById('s-game-duel').classList.add('hidden');
+                // Fallback to standard game over since overlay is removed
+                if (typeof Game !== 'undefined') Game.gameOver();
             }
         };
 
@@ -6133,37 +5828,7 @@
                 });
             }
 
-            // Creepy continue button - restart game
-            const creepyContinue = document.getElementById('creepy-continue');
-            if (creepyContinue) {
-                creepyContinue.addEventListener('click', () => {
-                    // Play horror sound
-                    if (typeof AudioSystem !== 'undefined') AudioSystem.playCreepyBoom();
 
-                    // Trigger horror glitch
-                    HorrorEffects.glitch();
-                    HorrorEffects.shake();
-
-                    setTimeout(() => {
-                        document.getElementById('creepy-overlay').classList.remove('active');
-                        // Reset game state
-                        currentGameMode = null;
-                        gameInProgress = false;
-
-                        // Return to title screen
-                        document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
-                        document.getElementById('s-title').classList.remove('hidden');
-
-                        // Restart Story System logic (Crucial Fix)
-                        if (typeof StorySystem !== 'undefined') {
-                            StorySystem.playStory('title', 'title', 'init-btn');
-                        }
-
-                        // Restart music
-                        if (typeof MusicSystem !== 'undefined') MusicSystem.play('start');
-                    }, 800); // Slightly longer delay for effect
-                });
-            }
         });
 
         // =============================================
@@ -7078,10 +6743,80 @@
 
                     // Reset UI - No lives to reset
 
-                    // TRIGGER HYPE SEQUENCE
-                    this.switchScreen('s-timeline', 's-hype');
-                    this.runHypeSequence();
+                    // INTERCEPT: SHOW RULES INSTEAD OF HYPING DIRECTLY
+                    this.showRules();
+
                 } catch (e) { alert("Start Error: " + e.message); console.error(e); }
+            },
+
+            showRules() {
+                const overlay = document.getElementById('rules-overlay');
+                const title = document.getElementById('rules-title');
+                const list = document.getElementById('rules-list');
+
+                if (!overlay || !list) { this.runHypeSequence(); return; }
+
+                list.innerHTML = '';
+                let rules = [];
+
+                if (currentGameMode === 'A') {
+                    title.innerText = "MODE A: OWN LUCK";
+                    title.style.color = "var(--primary)";
+                    rules = [
+                        "Survive 60 seconds against the clock.",
+                        "Correct Answer: +5 Seconds & Score Multiplier.",
+                        "Wrong Answer: -5 Seconds penalty.",
+                        "Use SPACE to FREEZE time (Cost: 3-Streak Charge).",
+                        "Use R to REWIND death (Cost: Accel Difficulty)."
+                    ];
+                } else if (currentGameMode === 'B') {
+                    title.innerText = "MODE B: TIME LOOP";
+                    title.style.color = "var(--secondary)";
+                    rules = [
+                        "Death is not the end. It's a loop.",
+                        "If time runs out, you wake up in a Dream.",
+                        "Each loop HALVES your score.",
+                        "Survive the glitch sequence to break the cycle.",
+                        "Reality is unstable. Trust nothing."
+                    ];
+                } else if (currentGameMode === 'C') {
+                    title.innerText = "MODE C: PARADOX";
+                    title.style.color = "var(--danger)";
+                    rules = [
+                        "Sanity Meter replaces Health.",
+                        "Wrong answers damage your Sanity.",
+                        "LOGIC INVERSION: If text glitches, pick the WRONG answer.",
+                        "Chaos Level rises over time.",
+                        "Survive against your own mind."
+                    ];
+                }
+
+                rules.forEach(r => {
+                    const li = document.createElement('li');
+                    li.innerText = r;
+                    list.appendChild(li);
+                });
+
+                overlay.classList.remove('hidden');
+                // Force reflow
+                void overlay.offsetWidth;
+                overlay.classList.add('active');
+
+                // One-time click listener to dismiss
+                const dismiss = () => {
+                    overlay.classList.remove('active');
+                    setTimeout(() => {
+                        overlay.classList.add('hidden');
+                        this.switchScreen('s-timeline', 's-hype');
+                        this.runHypeSequence();
+                    }, 500); // Wait for transition
+                    document.removeEventListener('click', dismiss);
+                };
+
+                // Slight delay so user doesn't click through instantly
+                setTimeout(() => {
+                    document.addEventListener('click', dismiss);
+                }, 500);
             },
 
             runHypeSequence() {
@@ -7539,7 +7274,7 @@
                     document.getElementById('s-game').classList.add('hidden');
                     document.getElementById('s-game-paradox').classList.add('hidden'); // Fix: Hide Paradox Mode
                     this.runOutroSequence();
-                }, 700);
+                }, 50);
             },
 
             runOutroSequence() {
@@ -7564,9 +7299,9 @@
                     setTimeout(() => { el.classList.remove('anim-in'); el.classList.add('anim-out'); }, delay + dur);
                 };
 
-                play(t1, 500, 1000);
-                play(t2, 1800, 1000);
-                play(t3, 3100, 1500);
+                play(t1, 0, 500);
+                play(t2, 600, 500);
+                play(t3, 1200, 700);
 
                 setTimeout(() => {
                     fin.classList.remove('hidden');
@@ -7588,10 +7323,10 @@
                                 document.getElementById('final-aura-score').innerText = this.score;
                                 document.getElementById('s-over').classList.remove('hidden');
                                 setTimeout(() => document.getElementById('s-over').classList.add('active'), 50);
-                            }, 2000);
-                        }, 800);
-                    }, 800);
-                }, 5000);
+                            }, 1000);
+                        }, 500);
+                    }, 500);
+                }, 2100);
             },
 
             switchScreen(from, to) {
@@ -8214,7 +7949,7 @@
                     { text: '"The timeline fractures into three paths..."', style: 'color:#ff4444; font-style:italic;' },
                     { text: '◉ Your fate is not yours to choose.', style: 'color:#ffffff;' },
                     { text: '◉ The machine will decide.', style: 'color:#ffffff; opacity:0.9;' },
-                    { text: '◉ OWN LUCK... TIME LOOP... or TIMELINE DUEL?', style: 'color:#ffffff; opacity:0.85;' },
+                    { text: '◉ OWN LUCK... TIME LOOP... or PARADOX?', style: 'color:#ffffff; opacity:0.85;' },
                     { text: '"Spin the wheel. Accept your destiny."', style: 'color:#ff6666; font-weight:bold;' }
                 ],
                 timeline: [
