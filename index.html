@@ -2382,63 +2382,293 @@
         }
 
         /* =========================================
-           MODE C: PARADOX MODE (REVERSE TRIVIA)
-           Theme: Inverted, Glitchy, High Contrast
+           MODE C: TIMELINE DUEL (SPLIT SCREEN)
            ========================================= */
-        body.mode-paradox {
-            filter: invert(1) hue-rotate(180deg);
+        .duel-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            width: 100%;
+            max-width: 1400px;
+            padding: 20px;
+            margin-top: 60px;
+            border-radius: 16px;
+            /* Ensure Grid is used for side-by-side */
+            align-items: stretch;
+
+            /* 'High' Feel - Floating intensity */
+            animation: highFloat 6s ease-in-out infinite;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        body.mode-paradox .game-grid {
-            animation: paradoxPulse 4s infinite alternate;
+        @keyframes highFloat {
+
+            0%,
+            100% {
+                transform: translateY(0);
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            }
+
+            50% {
+                transform: translateY(-10px);
+                box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+                border-color: rgba(255, 255, 255, 0.3);
+            }
         }
 
-        @keyframes paradoxPulse {
+        .duel-side {
+            background: rgba(0, 0, 0, 0.95);
+            border: 2px solid var(--primary);
+            border-radius: 16px;
+            padding: 25px;
+            min-height: 450px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .duel-side.player {
+            border-color: var(--primary);
+            box-shadow: 0 0 30px rgba(255, 0, 0, 0.2);
+        }
+
+        .duel-side.ai {
+            background: rgba(0, 0, 0, 0.95);
+            border-color: var(--primary);
+            box-shadow: 0 0 30px rgba(255, 0, 0, 0.2);
+            opacity: 0.9;
+        }
+
+        .duel-side.ai .opt-btn {
+            pointer-events: none;
+        }
+
+        .duel-label {
+            font-family: var(--f-title);
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            text-align: center;
+            padding: 10px;
+            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .duel-side.player .duel-label {
+            color: var(--primary);
+            border-bottom: 2px solid var(--primary);
+        }
+
+        .duel-side.ai .duel-label {
+            color: var(--secondary);
+            border-bottom: 2px solid var(--secondary);
+        }
+
+        .duel-side .opt-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .duel-side .opt-btn {
+            padding: 20px;
+            font-size: 1.1rem;
+        }
+
+        /* Day/Night Theme Transitions */
+        body.time-day {
+            --bg-color: #0a0a15;
+            animation: dayAmbient 4s infinite alternate;
+        }
+
+        body.time-day::before {
+            content: '☀️ DAY';
+            position: fixed;
+            top: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: var(--f-title);
+            font-size: 1rem;
+            color: #ffd700;
+            text-shadow: 0 0 20px #ffd700;
+            z-index: 100;
+            letter-spacing: 3px;
+        }
+
+        body.time-night::before {
+            content: '🌙 NIGHT';
+            position: fixed;
+            top: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: var(--f-title);
+            font-size: 1rem;
+            color: var(--secondary);
+            text-shadow: 0 0 20px var(--secondary);
+            z-index: 100;
+            letter-spacing: 3px;
+            animation: nightPulseText 1s infinite alternate;
+        }
+
+        @keyframes dayAmbient {
             0% {
-                transform: scale(1);
-                filter: contrast(1);
+                filter: brightness(1.05);
             }
 
             100% {
-                transform: scale(1.01);
-                filter: contrast(1.2);
+                filter: brightness(1);
             }
         }
 
-        .paradox-card {
-            border: 3px solid var(--primary);
-            box-shadow: 0 0 30px var(--primary);
+        body.time-night {
+            --bg-color: #000002;
+            animation: nightAmbient 2s infinite alternate;
+        }
+
+        @keyframes nightAmbient {
+            0% {
+                filter: brightness(0.85);
+            }
+
+            100% {
+                filter: brightness(0.95);
+            }
+        }
+
+        @keyframes nightPulseText {
+            0% {
+                opacity: 0.7;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+        /* Creepy Restart Overlay */
+        .creepy-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
             background: #000;
-        }
-
-        .answer-display {
-            font-family: var(--f-title);
-            font-size: 3.5rem;
-            color: var(--primary);
-            text-shadow: 4px 4px 0px var(--secondary);
-            margin: 20px 0;
-            padding: 20px;
-            border-top: 2px solid var(--primary);
-            border-bottom: 2px solid var(--primary);
-            animation: glitchText 3s infinite;
-        }
-
-        .paradox-btn {
-            font-size: 1rem !important;
-            padding: 15px !important;
-            min-height: 80px;
-            display: flex;
-            align-items: center;
+            display: none;
+            flex-direction: column;
             justify-content: center;
-            text-align: left;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            align-items: center;
+            text-align: center;
         }
 
-        .paradox-btn:hover {
-            border-color: var(--primary);
-            transform: translateX(10px);
+        .creepy-overlay.active {
+            display: flex;
         }
 
+        .creepy-text {
+            font-family: var(--f-title);
+            font-size: 2.5rem;
+            color: var(--danger);
+            text-shadow: 0 0 30px var(--danger), 0 0 60px rgba(255, 0, 60, 0.5);
+            animation: creepyFlicker 0.1s infinite;
+            max-width: 80%;
+            line-height: 1.4;
+        }
+
+        .creepy-subtext {
+            font-family: var(--f-mono);
+            color: var(--text-dim);
+            margin-top: 30px;
+            font-size: 1.2rem;
+            animation: creepyPulse 2s infinite;
+        }
+
+        @keyframes creepyFlicker {
+
+            0%,
+            90%,
+            100% {
+                opacity: 1;
+            }
+
+            91% {
+                opacity: 0.4;
+            }
+
+            92% {
+                opacity: 0.9;
+            }
+
+            93% {
+                opacity: 0.3;
+            }
+        }
+
+        @keyframes creepyPulse {
+
+            0%,
+            100% {
+                opacity: 0.5;
+            }
+
+            50% {
+                opacity: 1;
+            }
+        }
+
+        /* Puzzle Modal */
+        .puzzle-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 6000;
+            background: rgba(0, 0, 0, 0.95);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .puzzle-modal.active {
+            display: flex;
+        }
+
+        .puzzle-box {
+            background: var(--glass-bg);
+            border: 2px solid var(--primary);
+            border-radius: 16px;
+            padding: 50px;
+            text-align: center;
+            max-width: 500px;
+        }
+
+        .puzzle-title {
+            font-family: var(--f-title);
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+
+        .puzzle-question {
+            font-family: var(--f-mono);
+            font-size: 2rem;
+            color: var(--text-main);
+            margin: 30px 0;
+        }
+
+        .puzzle-input {
+            width: 200px;
+            padding: 15px;
+            font-family: var(--f-mono);
+            font-size: 1.5rem;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            border-radius: 8px;
+            outline: none;
+        }
+
+        .puzzle-input:focus {
+            box-shadow: 0 0 20px rgba(79, 70, 229, 0.5);
+        }
+
+        .puzzle-submit {
+            margin-top: 20px;
+        }
 
         /* COUNTDOWN TIMER - Add to your CSS */
         .time-ring {
@@ -3537,23 +3767,182 @@
             position: fixed;
             bottom: 20px;
             right: 20px;
-            z-index: 4000;
-            padding: 15px 25px;
-            font-size: 1.2rem;
-            animation: btnFloat 3s ease-in-out infinite;
+
         }
 
-        @keyframes btnFloat {
+        /* =========================================
+           NEURAL INTERFACE HUD STYLES
+           ========================================= */
+        #neural-wrapper {
+            position: fixed;
+            inset: 0;
+            overflow: hidden;
+            background: #000;
+            perspective: 1200px;
+            /* Essential for 3D tilt */
+            z-index: 9999;
+            pointer-events: none;
+            /* Let clicks pass closely, but wrapper handles perspective */
+        }
+
+        #game-tilt-layer {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+            transform-style: preserve-3d;
+            /* Smooth transition handled by JS Lerp */
+            pointer-events: auto;
+            /* Enable interaction with game */
+            background: radial-gradient(circle at center, #110000 0%, #000 90%);
+        }
+
+        #neural-hud-overlay {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 10000;
+        }
+
+        /* 1. Vignette Heavy - Focusing the view */
+        .vignette-heavy {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle, transparent 50%, rgba(0, 0, 0, 0.9) 95%);
+            mix-blend-mode: multiply;
+        }
+
+        /* 2. Border Glitch / Neon Frame */
+        .border-glitch {
+            position: absolute;
+            inset: 20px;
+            border: 1px solid rgba(255, 50, 50, 0.3);
+            border-radius: 20px;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.1), inset 0 0 20px rgba(255, 0, 0, 0.05);
+            background: linear-gradient(to bottom, transparent 95%, rgba(255, 0, 0, 0.05));
+            pointer-events: none;
+        }
+
+        .border-glitch::before,
+        .border-glitch::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--primary);
+            transition: all 0.2s ease;
+        }
+
+        .border-glitch::before {
+            top: -1px;
+            left: -1px;
+            border-right: none;
+            border-bottom: none;
+            border-top-left-radius: 20px;
+        }
+
+        .border-glitch::after {
+            bottom: -1px;
+            right: -1px;
+            border-left: none;
+            border-top: none;
+            border-bottom-right-radius: 20px;
+        }
+
+        /* 3. Retinal Scanline - Subconscious scanning effect */
+        .retinal-scanline {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: rgba(255, 50, 50, 0.2);
+            box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+            animation: retinalScan 8s linear infinite;
+            opacity: 0.5;
+        }
+
+        @keyframes retinalScan {
+            0% {
+                transform: translateY(-10%);
+                opacity: 0;
+            }
+
+            10% {
+                opacity: 0.5;
+            }
+
+            90% {
+                opacity: 0.5;
+            }
+
+            100% {
+                transform: translateY(110%);
+                opacity: 0;
+            }
+        }
+
+        /* 4. Bio-Metrics Overlay */
+        .bio-metrics {
+            position: absolute;
+            bottom: 40px;
+            left: 50px;
+            font-family: var(--f-mono);
+            font-size: 0.7rem;
+            color: rgba(255, 50, 50, 0.6);
+            line-height: 1.4;
+            text-shadow: 0 0 5px rgba(255, 0, 0, 0.4);
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .bio-metrics span {
+            display: flex;
+            justify-content: space-between;
+            width: 180px;
+        }
+
+        .bio-marker {
+            width: 8px;
+            height: 8px;
+            background: var(--primary);
+            border-radius: 50%;
+            display: inline-block;
+            box-shadow: 0 0 8px var(--primary);
+            animation: pulseBio 2s infinite;
+            margin-right: 8px;
+        }
+
+        @keyframes pulseBio {
 
             0%,
             100% {
-                transform: scale(1.3) translateY(0);
+                opacity: 1;
+                transform: scale(1);
             }
 
             50% {
-                transform: scale(1.3) translateY(-5px);
-                box-shadow: 0 10px 20px rgba(0, 243, 255, 0.4);
+                opacity: 0.6;
+                transform: scale(0.8);
             }
+        }
+
+        .sys-status {
+            position: absolute;
+            top: 40px;
+            right: 50px;
+            text-align: right;
+            font-family: var(--f-code);
+            font-size: 0.7rem;
+            color: rgba(255, 50, 50, 0.5);
+        }
+
+        /* Custom Cursor for Neural Interface */
+        body {
+            cursor: crosshair !important;
+            /* Force a technical feel */
         }
     </style>
 </head>
@@ -3563,93 +3952,149 @@
     <!-- DARKNESS OVERLAY for cinematic transitions -->
     <div class="darkness-overlay" id="darkness-overlay"></div>
 
-    <!-- CLICK TO START SCREEN -->
-    <div class="click-to-start" id="click-to-start">
-        <div class="start-text">⚡ NEURO-FRIED ⚡</div>
-        <div class="headphones-warning">🎧 USE HEADPHONES FOR BETTER OPTIMIZATION 🎧</div>
-        <div class="start-subtext">[ CLICK ANYWHERE TO BEGIN ]</div>
-    </div>
+    <!-- NEURAL INTERFACE WRAPPER -->
+    <div id="neural-wrapper">
+        <div id="game-tilt-layer">
 
-    <div id="render-layer"><canvas id="c"></canvas></div>
-    <div class="vignette"></div>
-    <div class="scanlines"></div>
-
-    <!-- BLOOD HORROR OVERLAYS -->
-    <div class="blood-veins"></div>
-    <div class="blood-drip" id="blood-drip"></div>
-
-    <div class="fx-overlay fx-rewind"></div>
-    <div class="fx-overlay fx-freeze"></div>
-
-    <div class="heartbeat-vignette" id="heartbeat-vignette"></div>
-
-    <div class="clutch-save-overlay" id="clutch-save-overlay">
-        <div class="clutch-save-text">⚡ CLUTCH SAVE ⚡</div>
-    </div>
-
-    <div class="screen-crack-overlay" id="screen-crack-overlay"></div>
-
-    <!-- MOBILE BLOCKER -->
-    <div class="mobile-blocker" id="mobile-blocker">
-        <h1>🖥️ DESKTOP ONLY</h1>
-        <p>NEURO-FRIED requires a desktop browser for the full neural experience. The timeline cannot be accessed from
-            mobile devices.</p>
-        <div class="desktop-icon">💻</div>
-        <p style="margin-top: 20px; font-size: 0.9rem; opacity: 0.6;">Switch to a computer to play.</p>
-    </div>
-
-    <!-- LUCK RANDOMIZER SCREEN -->
-    <div id="s-luck" class="screen hidden">
-        <h2 style="font-family:var(--f-title); color:var(--text-main); margin-bottom:10px; font-size:2rem;">
-            FATE SELECTION
-        </h2>
-        <div class="story-container" id="fate-story-container">
-            <!-- Typewriter text generated here -->
-        </div>
-        <div class="luck-box" id="luck-box-container" style="opacity:0; pointer-events:none;">
-            <div class="luck-container">
-                <div class="luck-slots">
-                    <div class="luck-slot" id="luck-slot-1">?</div>
-                    <div class="luck-slot" id="luck-slot-2">?</div>
-                    <div class="luck-slot" id="luck-slot-3">?</div>
-                </div>
-                <div class="luck-result" id="luck-result"></div>
+            <!-- CLICK TO START SCREEN -->
+            <div class="click-to-start" id="click-to-start">
+                <div class="start-text">⚡ NEURO-FRIED ⚡</div>
+                <div class="headphones-warning">🎧 USE HEADPHONES FOR BETTER OPTIMIZATION 🎧</div>
+                <div class="start-subtext">[ CLICK ANYWHERE TO BEGIN ]</div>
             </div>
-            <button class="tech-btn" id="spin-luck-btn" style="margin-top:30px;">SPIN FATE</button>
-        </div>
-    </div>
 
-    <!-- DREAM OVERLAY (Mode B) -->
-    <div class="dream-overlay" id="dream-overlay">
-        <div class="dream-text" id="dream-text">IT WAS A DREAM...</div>
-        <div class="dream-subtext" id="dream-subtext">Timeline resetting...</div>
-    </div>
+            <div id="render-layer"><canvas id="c"></canvas></div>
+            <div class="vignette"></div>
+            <div class="scanlines"></div>
 
-    <!-- DUEL GAME SCREEN (Mode C) REMOVED -->
+            <!-- BLOOD HORROR OVERLAYS -->
+            <div class="blood-veins"></div>
+            <div class="blood-drip" id="blood-drip"></div>
 
-    <!-- CREEPY OVERLAYS REMOVED -->
+            <div class="fx-overlay fx-rewind"></div>
+            <div class="fx-overlay fx-freeze"></div>
 
-    <div id="fail-modal" class="fail-modal">
-        <div class="fail-title">TIMELINE FRACTURED</div>
-        <div class="fail-sub">ANOMALY DETECTED. CHOOSE ACTION.</div>
-        <div style="font-family:var(--f-mono); opacity:0.6;">
-            EVERY REWIND ACCELERATES COLLAPSE.
-        </div>
+            <div class="heartbeat-vignette" id="heartbeat-vignette"></div>
 
-        <div class="fail-btn-row">
-            <button class="fail-btn btn-rewind" onclick="Game.triggerRewind()">REWIND<br><span
-                    style="font-size:0.8rem">COST: 1 CHARGE</span></button>
-            <button class="fail-btn btn-exit" onclick="Game.gameOver()">EXIT<br><span style="font-size:0.8rem">ACCEPT
-                    FATE</span></button>
-        </div>
-    </div>
+            <div class="clutch-save-overlay" id="clutch-save-overlay">
+                <div class="clutch-save-text">⚡ CLUTCH SAVE ⚡</div>
+            </div>
 
-    <div id="victory-screen" class="win-modal" style="display:none;">
-        <h1 class="glitch-title"
-            style="color: var(--green); text-shadow: 0 0 30px var(--green), 0 0 80px rgba(57, 255, 20, 0.5); transform: scale(0.8); position: relative; z-index: 10;">
-            NEURAL SYNC COMPLETE
-        </h1>
-        <div class="victory-stats" style="
+            <div class="screen-crack-overlay" id="screen-crack-overlay"></div>
+
+            <!-- MOBILE BLOCKER -->
+            <div class="mobile-blocker" id="mobile-blocker">
+                <h1>🖥️ DESKTOP ONLY</h1>
+                <p>NEURO-FRIED requires a desktop browser for the full neural experience. The timeline cannot be
+                    accessed from
+                    mobile devices.</p>
+                <div class="desktop-icon">💻</div>
+                <p style="margin-top: 20px; font-size: 0.9rem; opacity: 0.6;">Switch to a computer to play.</p>
+            </div>
+
+            <!-- LUCK RANDOMIZER SCREEN -->
+            <div id="s-luck" class="screen hidden">
+                <h2 style="font-family:var(--f-title); color:var(--text-main); margin-bottom:10px; font-size:2rem;">
+                    FATE SELECTION
+                </h2>
+                <div class="story-container" id="fate-story-container">
+                    <!-- Typewriter text generated here -->
+                </div>
+                <div class="luck-box" id="luck-box-container" style="opacity:0; pointer-events:none;">
+                    <div class="luck-container">
+                        <div class="luck-slots">
+                            <div class="luck-slot" id="luck-slot-1">?</div>
+                            <div class="luck-slot" id="luck-slot-2">?</div>
+                            <div class="luck-slot" id="luck-slot-3">?</div>
+                        </div>
+                        <div class="luck-result" id="luck-result"></div>
+                    </div>
+                    <button class="tech-btn" id="spin-luck-btn" style="margin-top:30px;">SPIN FATE</button>
+                </div>
+            </div>
+
+            <!-- DREAM OVERLAY (Mode B) -->
+            <div class="dream-overlay" id="dream-overlay">
+                <div class="dream-text" id="dream-text">IT WAS A DREAM...</div>
+                <div class="dream-subtext" id="dream-subtext">Timeline resetting...</div>
+            </div>
+
+            <!-- DUEL GAME SCREEN (Mode C) -->
+            <div id="s-game-duel" class="screen hidden">
+                <div class="duel-container">
+                    <!-- PLAYER SIDE -->
+                    <div class="duel-side player">
+                        <div class="duel-label">⚡ YOU</div>
+                        <span class="era-tag" id="era-display-player" style="margin-bottom:15px;">YEAR: 1990</span>
+                        <div class="q-text" id="q-text-player" style="font-size:1.1rem; margin-bottom:20px;">LOADING...
+                        </div>
+                        <div class="opt-grid" id="opt-area-player"></div>
+                        <div style="margin-top:auto; padding-top:20px; text-align:center;">
+                            <span style="font-family:var(--f-mono); color:var(--primary);">SCORE: <span
+                                    id="player-duel-score">0</span></span>
+                        </div>
+                    </div>
+
+                    <!-- AI SIDE -->
+                    <div class="duel-side ai">
+                        <div class="duel-label">🤖 OTHER YOU</div>
+                        <span class="era-tag" id="era-display-ai" style="margin-bottom:15px;">YEAR: 1990</span>
+                        <div class="q-text" id="q-text-ai" style="font-size:1.1rem; margin-bottom:20px;">LOADING...
+                        </div>
+                        <div class="opt-grid" id="opt-area-ai"></div>
+                        <div style="margin-top:auto; padding-top:20px; text-align:center;">
+                            <span style="font-family:var(--f-mono); color:var(--secondary);">SCORE: <span
+                                    id="ai-duel-score">0</span></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PUZZLE MODAL (Mode C End) -->
+            <div class="puzzle-modal" id="puzzle-modal">
+                <div class="puzzle-box">
+                    <div class="puzzle-title">⏳ FINAL CHALLENGE ⏳</div>
+                    <div style="font-family:var(--f-mono); color:var(--text-dim); margin-bottom:20px;">
+                        Solve to escape the timeline...
+                    </div>
+                    <div class="puzzle-question" id="puzzle-question">2 + 2 = ?</div>
+                    <input type="text" class="puzzle-input" id="puzzle-input" placeholder="?" autocomplete="off">
+                    <button class="tech-btn puzzle-submit" id="puzzle-submit">SUBMIT</button>
+                    <div id="puzzle-feedback" style="margin-top:15px; font-family:var(--f-mono); min-height:30px;">
+                    </div>
+                </div>
+            </div>
+
+            <!-- CREEPY RESTART OVERLAY -->
+            <div class="creepy-overlay" id="creepy-overlay">
+                <div class="creepy-text" id="creepy-text">YOU CANNOT ESCAPE</div>
+                <div class="creepy-subtext" id="creepy-subtext">You must play again...</div>
+                <button class="tech-btn" id="creepy-continue"
+                    style="margin-top:40px; border-color:var(--danger); color:var(--danger);">CONTINUE</button>
+            </div>
+
+            <div id="fail-modal" class="fail-modal">
+                <div class="fail-title">TIMELINE FRACTURED</div>
+                <div class="fail-sub">ANOMALY DETECTED. CHOOSE ACTION.</div>
+                <div style="font-family:var(--f-mono); opacity:0.6;">
+                    EVERY REWIND ACCELERATES COLLAPSE.
+                </div>
+
+                <div class="fail-btn-row">
+                    <button class="fail-btn btn-rewind" onclick="Game.triggerRewind()">REWIND<br><span
+                            style="font-size:0.8rem">COST: 1 CHARGE</span></button>
+                    <button class="fail-btn btn-exit" onclick="Game.gameOver()">EXIT<br><span
+                            style="font-size:0.8rem">ACCEPT
+                            FATE</span></button>
+                </div>
+            </div>
+
+            <div id="victory-screen" class="win-modal" style="display:none;">
+                <h1 class="glitch-title"
+                    style="color: var(--green); text-shadow: 0 0 30px var(--green), 0 0 80px rgba(57, 255, 20, 0.5); transform: scale(0.8); position: relative; z-index: 10;">
+                    NEURAL SYNC COMPLETE
+                </h1>
+                <div class="victory-stats" style="
             background: rgba(0, 20, 10, 0.85);
             backdrop-filter: blur(15px);
             border: 2px solid rgba(57, 255, 20, 0.4);
@@ -3662,40 +4107,42 @@
             position: relative;
             z-index: 10;
         ">
-            <div class="stat-row"
-                style="display: flex; justify-content: space-between; margin: 15px 0; border-bottom: 1px solid rgba(57, 255, 20, 0.2); padding-bottom: 10px;">
-                <span class="stat-label" style="font-family: var(--f-ui); color: rgba(255,255,255,0.7);">FINAL
-                    SCORE</span>
-                <span class="stat-val" id="final-score"
-                    style="font-family: var(--f-mono); font-size: 1.5rem; color: var(--green); text-shadow: 0 0 10px var(--green);">0</span>
+                    <div class="stat-row"
+                        style="display: flex; justify-content: space-between; margin: 15px 0; border-bottom: 1px solid rgba(57, 255, 20, 0.2); padding-bottom: 10px;">
+                        <span class="stat-label" style="font-family: var(--f-ui); color: rgba(255,255,255,0.7);">FINAL
+                            SCORE</span>
+                        <span class="stat-val" id="final-score"
+                            style="font-family: var(--f-mono); font-size: 1.5rem; color: var(--green); text-shadow: 0 0 10px var(--green);">0</span>
+                    </div>
+                    <div class="stat-row"
+                        style="display: flex; justify-content: space-between; margin: 15px 0; border-bottom: 1px solid rgba(57, 255, 20, 0.2); padding-bottom: 10px;">
+                        <span class="stat-label" style="font-family: var(--f-ui); color: rgba(255,255,255,0.7);">TIME
+                            SURVIVED</span>
+                        <span class="stat-val" id="time-survived"
+                            style="font-family: var(--f-mono); font-size: 1.5rem; color: var(--secondary); text-shadow: 0 0 10px var(--secondary);">0s</span>
+                    </div>
+                    <div class="stat-row"
+                        style="display: flex; justify-content: space-between; margin: 15px 0; border-bottom: 1px solid rgba(57, 255, 20, 0.2); padding-bottom: 10px;">
+                        <span class="stat-label"
+                            style="font-family: var(--f-ui); color: rgba(255,255,255,0.7);">QUESTIONS
+                            CLEARED</span>
+                        <span class="stat-val" id="questions-cleared"
+                            style="font-family: var(--f-mono); font-size: 1.5rem; color: var(--text-main);">0</span>
+                    </div>
+                    <div class="stat-row" style="display: flex; justify-content: space-between; margin: 15px 0;">
+                        <span class="stat-label" style="font-family: var(--f-ui); color: rgba(255,255,255,0.7);">MAX
+                            SPEED</span>
+                        <span class="stat-val" id="max-speed"
+                            style="font-family: var(--f-mono); font-size: 1.5rem; color: var(--danger); text-shadow: 0 0 10px var(--danger);">1x</span>
+                    </div>
+                </div>
+                <button class="tech-btn" style="position: relative; z-index: 10;"
+                    onclick="location.reload()">REBOOT</button>
             </div>
-            <div class="stat-row"
-                style="display: flex; justify-content: space-between; margin: 15px 0; border-bottom: 1px solid rgba(57, 255, 20, 0.2); padding-bottom: 10px;">
-                <span class="stat-label" style="font-family: var(--f-ui); color: rgba(255,255,255,0.7);">TIME
-                    SURVIVED</span>
-                <span class="stat-val" id="time-survived"
-                    style="font-family: var(--f-mono); font-size: 1.5rem; color: var(--secondary); text-shadow: 0 0 10px var(--secondary);">0s</span>
-            </div>
-            <div class="stat-row"
-                style="display: flex; justify-content: space-between; margin: 15px 0; border-bottom: 1px solid rgba(57, 255, 20, 0.2); padding-bottom: 10px;">
-                <span class="stat-label" style="font-family: var(--f-ui); color: rgba(255,255,255,0.7);">QUESTIONS
-                    CLEARED</span>
-                <span class="stat-val" id="questions-cleared"
-                    style="font-family: var(--f-mono); font-size: 1.5rem; color: var(--text-main);">0</span>
-            </div>
-            <div class="stat-row" style="display: flex; justify-content: space-between; margin: 15px 0;">
-                <span class="stat-label" style="font-family: var(--f-ui); color: rgba(255,255,255,0.7);">MAX
-                    SPEED</span>
-                <span class="stat-val" id="max-speed"
-                    style="font-family: var(--f-mono); font-size: 1.5rem; color: var(--danger); text-shadow: 0 0 10px var(--danger);">1x</span>
-            </div>
-        </div>
-        <button class="tech-btn" style="position: relative; z-index: 10;" onclick="location.reload()">REBOOT</button>
-    </div>
 
-    <div id="hud" class="hidden">
-        <!-- New Left HUD Timer -->
-        <div class="hud-panel hud-top-left" id="timer-panel" style="
+            <div id="hud" class="hidden">
+                <!-- New Left HUD Timer -->
+                <div class="hud-panel hud-top-left" id="timer-panel" style="
             top: 90px;
             left: 40px;
             right: auto;
@@ -3703,9 +4150,9 @@
             border-right: none;
             text-align: left;
         ">
-            <div class="stat-label">TIME REMAINING</div>
-            <div class="stat-val" id="time-display" style="font-size: 2.5rem; color: var(--primary);">60.0</div>
-            <div class="time-bar-container" style="
+                    <div class="stat-label">TIME REMAINING</div>
+                    <div class="stat-val" id="time-display" style="font-size: 2.5rem; color: var(--primary);">60.0</div>
+                    <div class="time-bar-container" style="
                 width: 150px;
                 height: 8px;
                 background: rgba(255,255,255,0.1);
@@ -3713,252 +4160,258 @@
                 margin-top: 10px;
                 overflow: hidden;
             ">
-                <div class="time-bar" id="time-bar" style="
+                        <div class="time-bar" id="time-bar" style="
                     height: 100%;
                     width: 100%;
                     background: linear-gradient(90deg, var(--danger), var(--primary));
                     transition: width 0.1s linear;
                     box-shadow: 0 0 10px var(--primary);
                 "></div>
-            </div>
-        </div>
-        <div class="hud-panel hud-top-right">
-            <div class="stat-label">TIMELINES SAVED</div>
-            <div style="display:flex; align-items:center; justify-content:flex-end;">
-                <div class="coin-cont">
-                    <div class="retro-coin"></div>
-                </div>
-                <div class="stat-val" id="hud-score">0</div>
-            </div>
-            <div class="stat-label" style="margin-top:10px;">REALITY ANCHORS</div>
-            <div id="hud-streak"
-                style="font-family:var(--f-mono); color:var(--green); font-size:1.2rem; min-height:1.5rem;"></div>
-            <div class="lives-container" id="lives-container">
-                <div class="life-pip"></div>
-                <div class="life-pip"></div>
-                <div class="life-pip"></div>
-            </div>
-        </div>
-
-        <div class="freeze-container">
-            <button class="big-freeze-btn" id="btn-freeze" onclick="TimePowers.useFreeze()">
-                FREEZE
-                <span>[SPACE]</span>
-            </button>
-            <button class="big-freeze-btn btn-hud-rewind" id="btn-rewind-hud" onclick="TimePowers.useRewind()">
-                REWIND
-                <span>[R]</span>
-            </button>
-        </div>
-    </div>
-
-    <div id="s-title" class="screen active">
-        <h1 class="glitch-title" data-text="NEURO FRIED">NEURO<br>FRIED</h1>
-
-        <div class="protocol-container">
-            <div class="protocol-trigger">[ TRANSMISSION INTERCEPTED ]</div>
-            <div class="story-container" id="title-story-container">
-                <!-- Typewriter text will be generated here -->
-            </div>
-        </div>
-
-        <button class="tech-btn" id="init-btn" style="opacity:0; pointer-events:none;">INITIALIZE SYSTEM</button>
-    </div>
-
-    <div id="s-roulette" class="screen hidden">
-        <h2 style="font-family:var(--f-title); color:var(--text-main); margin-bottom:20px; opacity:0.8;">SEARCHING
-            ARCHIVES...</h2>
-        <div class="story-container" id="roulette-story-container">
-            <!-- Typewriter text generated here -->
-        </div>
-        <div class="roulette-box">
-            <div class="roulette-window">
-                <div class="roulette-track" id="roulette-track"></div>
-                <div
-                    style="position:absolute; inset:0; background:linear-gradient(to bottom, var(--glass-bg), transparent 40%, transparent 60%, var(--glass-bg)); pointer-events:none; z-index:20;">
-                </div>
-            </div>
-            <div id="roulette-actions" class="hidden" style="margin-top:10px;">
-                <button class="tech-btn" onclick="Game.confirmTopic()"
-                    style="border-color:var(--primary); color:var(--primary);">ACCEPT</button>
-                <button class="tech-btn" onclick="Game.reroll()"
-                    style="border-color:var(--danger); color:var(--danger);">REROLL</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="s-timeline" class="screen hidden">
-        <div class="timeline-box">
-            <h2 style="font-family:var(--f-title); color:var(--text-main);">CHOOSE YOUR PATH</h2>
-            <div class="story-container" id="timeline-story-container">
-                <!-- Typewriter text generated here -->
-            </div>
-            <div id="timeline-controls" style="opacity:0; pointer-events:none;">
-                <div style="margin:20px 0; font-family:var(--f-mono); font-size:2rem; color:var(--secondary);">
-                    1935 <span style="opacity:0.5">&lt;---&gt;</span> 2035
-                </div>
-                <div class="btn-row">
-                    <button class="tech-btn" style="border-color:var(--primary); color:var(--primary);"
-                        onclick="Game.startGame('asc')">CHRONOLOGICAL</button>
-                    <button class="tech-btn" style="border-color:var(--danger); color:var(--danger);"
-                        onclick="Game.startGame('desc')">REWIND FLOW</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="s-register" class="screen hidden" style="background: black; z-index: 5500;">
-        <div class="register-box">
-            <h2 style="font-family:var(--f-title); color:var(--primary); margin-bottom:10px;">IDENTITY REGISTRATION</h2>
-            <p style="font-family:var(--f-mono); color:#888; margin-bottom:30px;">REQUIRED FOR NEURAL SYNC</p>
-
-            <label for="reg-photo" class="avatar-upload">
-                <span id="reg-upload-text" style="color:var(--secondary); font-family:var(--f-mono);">+ PHOTO</span>
-                <img id="reg-preview" class="avatar-preview">
-                <input type="file" id="reg-photo" hidden accept="image/*" onchange="previewAvatar(this)">
-            </label>
-
-            <input type="text" id="reg-name" class="cyber-input" placeholder="ENTER CODENAME" maxlength="12"
-                autocomplete="off">
-
-            <button class="mega-btn" onclick="registerAndStart()">INITIATE SYNC</button>
-        </div>
-    </div>
-
-    <div id="s-hype" class="screen hidden" style="background: rgba(0,0,0,0.9); z-index: 5000;">
-        <div id="hype-count" class="hype-num">3</div>
-        <div id="hype-msg-cont" class="hype-msg-cont hidden"></div>
-    </div>
-
-    <div id="s-outro" class="screen hidden"
-        style="background: black; z-index: 6000; flex-direction: column; justify-content: center; align-items: center;">
-        <div id="outro-t1" class="outro-text">THANKS</div>
-        <div id="outro-t2" class="outro-text">FOR PLAYING</div>
-        <div id="outro-t3" class="outro-text" style="color:var(--primary)">MY GAME</div>
-        <div id="outro-final" class="outro-text hidden" style="margin-top: 50px;">
-            <span id="word-restart"
-                style="text-decoration: line-through; text-decoration-color: var(--danger); text-decoration-thickness: 5px; opacity: 0.5;">RESTART</span>
-            <br>
-            <span id="word-rewind" class="glitch-text"
-                style="color:var(--secondary); font-size: 1.5em; display:none;">REWIND</span>
-        </div>
-    </div>
-
-    <div id="s-game" class="screen hidden">
-        <div class="time-ring" id="timeRing">
-            <svg viewBox="0 0 100 100">
-                <circle class="time-ring-bg" cx="50" cy="50" r="40"></circle>
-                <circle class="time-ring-progress" id="timeProgress" cx="50" cy="50" r="40"></circle>
-            </svg>
-            <div class="time-ring-text" id="timeText">15</div>
-        </div>
-        <div class="game-grid">
-            <div class="timer-rail">
-                <div class="timer-fill" id="timer-bar"></div>
-            </div>
-            <div class="q-card">
-                <span class="era-tag" id="era-display">YEAR: 1990</span>
-                <div class="q-text" id="q-text">LOADING...</div>
-            </div>
-            <div class="opt-grid" id="opt-area"></div>
-        </div>
-    </div>
-
-    <!-- PARADOX MODE SCREEN (Replaces Duel) -->
-    <div id="s-game-paradox" class="screen hidden">
-        <div class="game-grid" style="animation: paradoxPulse 4s infinite alternate;">
-            <!-- Reuse Timer Rail but maybe different ID if needed, or share logic? 
-                  Paradox Mode JS logic doesn't explicitly start timer yet but we probably want it. 
-                  Let's use a separate visual for now. -->
-            <div class="timer-rail">
-                <div class="timer-fill" id="p-timer-bar" style="background: var(--primary);"></div>
-            </div>
-
-            <div class="q-card paradox-card">
-                <span class="era-tag" style="color:var(--primary); border-color:var(--primary);">PARADOX DETECTED</span>
-                <div class="answer-display" id="p-answer-text">ANSWER</div>
-                <div class="instruction"
-                    style="font-family:var(--f-mono); color:var(--text-dim); letter-spacing:2px; margin-top:10px;">
-                    IDENTIFY THE ORIGIN QUESTION</div>
-            </div>
-
-            <div class="opt-grid" id="p-opt-area" style="grid-template-columns: 1fr; gap:15px;">
-                <!-- Paradox buttons injected here -->
-            </div>
-        </div>
-    </div>
-
-    <div id="s-over" class="screen hidden">
-        <h1 id="game-over-headline"
-            style="font-family:var(--f-title); font-size:4rem; color:var(--danger); margin-bottom:10px;">SIGNAL LOST
-        </h1>
-
-        <div class="game-over-container">
-            <!-- LEFT: Share Card -->
-            <div class="share-card-wrapper">
-                <div class="share-card">
-                    <img id="card-img"
-                        style="width:100%; height:100%; object-fit:cover; filter:grayscale(100%); opacity:0.6;"
-                        src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%25' height='100%25'%3E%3Crect fill='%23111' width='100%25' height='100%25'/%3E%3Ctext x='50%25' y='50%25' fill='%23333' font-family='monospace' text-anchor='middle' dominant-baseline='middle'%3ENO IMAGE%3C/text%3E%3C/svg%3E">
-                    <div
-                        style="position:absolute; inset:0; background:linear-gradient(to top, black 20%, transparent 80%);">
                     </div>
-                    <div style="position:absolute; inset:10px; border:1px solid rgba(255,255,255,0.2);"></div>
-                    <div
-                        style="position:absolute; top:20px; width:100%; text-align:center; font-family:var(--f-title); color:var(--danger); font-size:0.9rem; letter-spacing:2px;">
-                        NEURO-FRIED // AGENT</div>
-
-                    <div style="position:absolute; bottom:30px; width:100%; text-align:center;">
-                        <div style="color:#aaa; font-family:var(--f-mono); margin-bottom:5px;">FINAL AURA</div>
-                        <div style="color:var(--green); font-family:var(--f-title); font-size:4rem; text-shadow:0 0 20px var(--green);"
-                            id="final-aura-score">0</div>
-                        <div style="color:white; font-family:var(--f-title); font-size:1.5rem; letter-spacing:3px;"
-                            id="final-name">UNKNOWN</div>
+                </div>
+                <div class="hud-panel hud-top-right">
+                    <div class="stat-label">TIMELINES SAVED</div>
+                    <div style="display:flex; align-items:center; justify-content:flex-end;">
+                        <div class="coin-cont">
+                            <div class="retro-coin"></div>
+                        </div>
+                        <div class="stat-val" id="hud-score">0</div>
                     </div>
-                    <div class="kia-stamp" id="kia-stamp">K.I.A.</div>
+                    <div class="stat-label" style="margin-top:10px;">REALITY ANCHORS</div>
+                    <div id="hud-streak"
+                        style="font-family:var(--f-mono); color:var(--green); font-size:1.2rem; min-height:1.5rem;">
+                    </div>
+                    <div class="lives-container" id="lives-container">
+                        <div class="life-pip"></div>
+                        <div class="life-pip"></div>
+                        <div class="life-pip"></div>
+                    </div>
+                </div>
+
+                <div class="freeze-container">
+                    <button class="big-freeze-btn" id="btn-freeze" onclick="TimePowers.useFreeze()">
+                        FREEZE
+                        <span>[SPACE]</span>
+                    </button>
+                    <button class="big-freeze-btn btn-hud-rewind" id="btn-rewind-hud" onclick="TimePowers.useRewind()">
+                        REWIND
+                        <span>[R]</span>
+                    </button>
                 </div>
             </div>
 
-            <!-- RIGHT: Controls Panel -->
-            <div class="controls-panel">
-                <!-- User Info Readout -->
-                <div class="control-row name-row" style="justify-content: center; margin-bottom: 20px;">
-                    <span style="color:var(--primary); font-family:var(--f-mono); font-size:1.2rem;">IDENTITY
-                        VERIFIED</span>
+            <div id="s-title" class="screen active">
+                <h1 class="glitch-title" data-text="NEURO FRIED">NEURO<br>FRIED</h1>
+
+                <div class="protocol-container">
+                    <div class="protocol-trigger">[ TRANSMISSION INTERCEPTED ]</div>
+                    <div class="story-container" id="title-story-container">
+                        <!-- Typewriter text will be generated here -->
+                    </div>
                 </div>
 
-                <!-- Feedback Button - Opens Google Form -->
-                <button class="send-feedback-btn" onclick="sendFeedback()">📝 SHARE FEEDBACK</button>
-
-                <!-- Reboot Button -->
-                <button class="control-btn reboot-btn" onclick="location.reload()">🔄 REBOOT SYSTEM</button>
-
-                <!-- Leaderboard Button -->
-                <button class="control-btn" onclick="showLeaderboard()" style="margin-top:10px;">🏆 LEADERBOARD</button>
+                <button class="tech-btn" id="init-btn" style="opacity:0; pointer-events:none;">INITIALIZE
+                    SYSTEM</button>
             </div>
 
-            <!-- Share Message -->
-            <div class="share-message-box">
-                <div style="color:var(--green); font-family:var(--f-title); font-size:1rem; line-height:1.4;">
-                    TAKE A SCREENSHOT<br>AND REVIVE YOUR<br>HAPPINESS
+            <div id="s-roulette" class="screen hidden">
+                <h2 style="font-family:var(--f-title); color:var(--text-main); margin-bottom:20px; opacity:0.8;">
+                    SEARCHING
+                    ARCHIVES...</h2>
+                <div class="story-container" id="roulette-story-container">
+                    <!-- Typewriter text generated here -->
                 </div>
-                <div
-                    style="color:#888; font-family:var(--f-mono); font-size:0.8rem; margin-top:8px; letter-spacing:1px;">
-                    SHARE AMONG ALL
+                <div class="roulette-box">
+                    <div class="roulette-window">
+                        <div class="roulette-track" id="roulette-track"></div>
+                        <div
+                            style="position:absolute; inset:0; background:linear-gradient(to bottom, var(--glass-bg), transparent 40%, transparent 60%, var(--glass-bg)); pointer-events:none; z-index:20;">
+                        </div>
+                    </div>
+                    <div id="roulette-actions" class="hidden" style="margin-top:10px;">
+                        <button class="tech-btn" onclick="Game.confirmTopic()"
+                            style="border-color:var(--primary); color:var(--primary);">ACCEPT</button>
+                        <button class="tech-btn" onclick="Game.reroll()"
+                            style="border-color:var(--danger); color:var(--danger);">REROLL</button>
+                    </div>
                 </div>
             </div>
 
-            <!-- Feedback Button - Opens Google Form -->
-            <button class="send-feedback-btn" onclick="sendFeedback()">📝 SHARE FEEDBACK</button>
+            <div id="s-timeline" class="screen hidden">
+                <div class="timeline-box">
+                    <h2 style="font-family:var(--f-title); color:var(--text-main);">CHOOSE YOUR PATH</h2>
+                    <div class="story-container" id="timeline-story-container">
+                        <!-- Typewriter text generated here -->
+                    </div>
+                    <div id="timeline-controls" style="opacity:0; pointer-events:none;">
+                        <div style="margin:20px 0; font-family:var(--f-mono); font-size:2rem; color:var(--secondary);">
+                            1935 <span style="opacity:0.5">&lt;---&gt;</span> 2035
+                        </div>
+                        <div class="btn-row">
+                            <button class="tech-btn" style="border-color:var(--primary); color:var(--primary);"
+                                onclick="Game.startGame('asc')">CHRONOLOGICAL</button>
+                            <button class="tech-btn" style="border-color:var(--danger); color:var(--danger);"
+                                onclick="Game.startGame('desc')">REWIND FLOW</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-            <!-- Reboot Button -->
-            <button class="control-btn reboot-btn" onclick="location.reload()">🔄 REBOOT SYSTEM</button>
+            <div id="s-register" class="screen hidden" style="background: black; z-index: 5500;">
+                <div class="register-box">
+                    <h2 style="font-family:var(--f-title); color:var(--primary); margin-bottom:10px;">IDENTITY
+                        REGISTRATION</h2>
+                    <p style="font-family:var(--f-mono); color:#888; margin-bottom:30px;">REQUIRED FOR NEURAL SYNC</p>
 
-            <!-- Leaderboard Button -->
-            <button class="control-btn" onclick="showLeaderboard()" style="margin-top:10px;">🏆 LEADERBOARD</button>
+                    <label for="reg-photo" class="avatar-upload">
+                        <span id="reg-upload-text" style="color:var(--secondary); font-family:var(--f-mono);">+
+                            PHOTO</span>
+                        <img id="reg-preview" class="avatar-preview">
+                        <input type="file" id="reg-photo" hidden accept="image/*" onchange="previewAvatar(this)">
+                    </label>
+
+                    <input type="text" id="reg-name" class="cyber-input" placeholder="ENTER CODENAME" maxlength="12"
+                        autocomplete="off">
+
+                    <button class="mega-btn" onclick="registerAndStart()">INITIATE SYNC</button>
+                </div>
+            </div>
+
+            <div id="s-hype" class="screen hidden" style="background: rgba(0,0,0,0.9); z-index: 5000;">
+                <div id="hype-count" class="hype-num">3</div>
+                <div id="hype-msg-cont" class="hype-msg-cont hidden"></div>
+            </div>
+
+            <div id="s-outro" class="screen hidden"
+                style="background: black; z-index: 6000; flex-direction: column; justify-content: center; align-items: center;">
+                <div id="outro-t1" class="outro-text">THANKS</div>
+                <div id="outro-t2" class="outro-text">FOR PLAYING</div>
+                <div id="outro-t3" class="outro-text" style="color:var(--primary)">MY GAME</div>
+                <div id="outro-final" class="outro-text hidden" style="margin-top: 50px;">
+                    <span id="word-restart"
+                        style="text-decoration: line-through; text-decoration-color: var(--danger); text-decoration-thickness: 5px; opacity: 0.5;">RESTART</span>
+                    <br>
+                    <span id="word-rewind" class="glitch-text"
+                        style="color:var(--secondary); font-size: 1.5em; display:none;">REWIND</span>
+                </div>
+            </div>
+
+            <div id="s-game" class="screen hidden">
+                <div class="time-ring" id="timeRing">
+                    <svg viewBox="0 0 100 100">
+                        <circle class="time-ring-bg" cx="50" cy="50" r="40"></circle>
+                        <circle class="time-ring-progress" id="timeProgress" cx="50" cy="50" r="40"></circle>
+                    </svg>
+                    <div class="time-ring-text" id="timeText">15</div>
+                </div>
+                <div class="game-grid">
+                    <div class="timer-rail">
+                        <div class="timer-fill" id="timer-bar"></div>
+                    </div>
+                    <div class="q-card">
+                        <span class="era-tag" id="era-display">YEAR: 1990</span>
+                        <div class="q-text" id="q-text">LOADING...</div>
+                    </div>
+                    <div class="opt-grid" id="opt-area"></div>
+                </div>
+            </div>
+
+            <div id="s-over" class="screen hidden">
+                <h1 id="game-over-headline"
+                    style="font-family:var(--f-title); font-size:4rem; color:var(--danger); margin-bottom:10px;">SIGNAL
+                    LOST
+                </h1>
+
+                <div class="game-over-container">
+                    <!-- LEFT: Share Card -->
+                    <div class="share-card-wrapper">
+                        <div class="share-card">
+                            <img id="card-img"
+                                style="width:100%; height:100%; object-fit:cover; filter:grayscale(100%); opacity:0.6;"
+                                src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%25' height='100%25'%3E%3Crect fill='%23111' width='100%25' height='100%25'/%3E%3Ctext x='50%25' y='50%25' fill='%23333' font-family='monospace' text-anchor='middle' dominant-baseline='middle'%3ENO IMAGE%3C/text%3E%3C/svg%3E">
+                            <div
+                                style="position:absolute; inset:0; background:linear-gradient(to top, black 20%, transparent 80%);">
+                            </div>
+                            <div style="position:absolute; inset:10px; border:1px solid rgba(255,255,255,0.2);"></div>
+                            <div
+                                style="position:absolute; top:20px; width:100%; text-align:center; font-family:var(--f-title); color:var(--danger); font-size:0.9rem; letter-spacing:2px;">
+                                NEURO-FRIED // AGENT</div>
+
+                            <div style="position:absolute; bottom:30px; width:100%; text-align:center;">
+                                <div style="color:#aaa; font-family:var(--f-mono); margin-bottom:5px;">FINAL AURA</div>
+                                <div style="color:var(--green); font-family:var(--f-title); font-size:4rem; text-shadow:0 0 20px var(--green);"
+                                    id="final-aura-score">0</div>
+                                <div style="color:white; font-family:var(--f-title); font-size:1.5rem; letter-spacing:3px;"
+                                    id="final-name">UNKNOWN</div>
+                            </div>
+                            <div class="kia-stamp" id="kia-stamp">K.I.A.</div>
+                        </div>
+                    </div>
+
+                    <!-- RIGHT: Controls Panel -->
+                    <div class="controls-panel">
+                        <!-- User Info Readout -->
+                        <div class="control-row name-row" style="justify-content: center; margin-bottom: 20px;">
+                            <span style="color:var(--primary); font-family:var(--f-mono); font-size:1.2rem;">IDENTITY
+                                VERIFIED</span>
+                        </div>
+
+                        <!-- Feedback Button - Opens Google Form -->
+                        <button class="send-feedback-btn" onclick="sendFeedback()">📝 SHARE FEEDBACK</button>
+
+                        <!-- Reboot Button -->
+                        <button class="control-btn reboot-btn" onclick="location.reload()">🔄 REBOOT SYSTEM</button>
+
+                        <!-- Leaderboard Button -->
+                        <button class="control-btn" onclick="showLeaderboard()" style="margin-top:10px;">🏆
+                            LEADERBOARD</button>
+                    </div>
+
+                    <!-- Share Message -->
+                    <div class="share-message-box">
+                        <div style="color:var(--green); font-family:var(--f-title); font-size:1rem; line-height:1.4;">
+                            TAKE A SCREENSHOT<br>AND REVIVE YOUR<br>HAPPINESS
+                        </div>
+                        <div
+                            style="color:#888; font-family:var(--f-mono); font-size:0.8rem; margin-top:8px; letter-spacing:1px;">
+                            SHARE AMONG ALL
+                        </div>
+                    </div>
+
+                    <!-- Feedback Button - Opens Google Form -->
+                    <button class="send-feedback-btn" onclick="sendFeedback()">📝 SHARE FEEDBACK</button>
+
+                    <!-- Reboot Button -->
+                    <button class="control-btn reboot-btn" onclick="location.reload()">🔄 REBOOT SYSTEM</button>
+
+                    <!-- Leaderboard Button -->
+                    <button class="control-btn" onclick="showLeaderboard()" style="margin-top:10px;">🏆
+                        LEADERBOARD</button>
+                </div>
+            </div>
+        </div>
+
+    </div> <!-- END game-tilt-layer -->
+
+    <!-- NEURAL HUD OVERLAYS -->
+    <div id="neural-hud-overlay">
+        <div class="vignette-heavy"></div>
+        <div class="border-glitch"></div>
+        <div class="retinal-scanline"></div>
+
+        <div class="sys-status">
+            <div>NEURAL_LINK: ACTIVE</div>
+            <div>LATENCY: 12ms</div>
+            <div>SECURE_CONN: TRUE</div>
+        </div>
+
+        <div class="bio-metrics">
+            <span>BPM: <div class="bio-marker"></div> 110</span>
+            <span>CORTEX_SYNC: <div class="bio-marker" style="animation-delay:0.5s"></div> 98.4%</span>
+            <span>ADRENALINE: <div class="bio-marker" style="animation-delay:1s"></div> CRITICAL</span>
         </div>
     </div>
-    </div>
+    </div> <!-- END neural-wrapper -->
 
     <script>
         // --- 1. DATA: 20 CATEGORIES (400 Qs Skeleton - Full sample set) ---
@@ -4849,10 +5302,10 @@
                 theme: 'dream'
             },
             C: {
-                name: 'PARADOX MODE',
-                icon: '⚠️',
-                desc: 'Answer is known • Question is lost • Inverted Logic',
-                theme: 'paradox'
+                name: 'TIMELINE DUEL',
+                icon: '⚔️',
+                desc: 'You vs AI • Day to Night • Puzzle finale',
+                theme: 'duel'
             }
         };
 
@@ -5097,133 +5550,355 @@
             }
         };
 
-        // --- PARADOX MODE (Mode C) ---
-        // "The Answer is known. The Question is lost."
-        const ParadoxMode = {
+        // --- DUEL MODE (Mode C) ---
+        const DuelMode = {
+            playerScore: 0,
+            aiScore: 0,
+            dayStartTime: null,
+            nightTriggered: false,
+            nightTimeout: null,
             active: false,
             currentQuestion: null,
 
             init() {
+                this.playerScore = 0;
+                this.aiScore = 0;
+                this.dayStartTime = Date.now();
+                this.nightTriggered = false;
                 this.active = true;
-                this.currentQuestion = null;
-                document.body.classList.add('mode-paradox');
+                document.body.classList.add('time-day');
 
-                // Hide standard timer rail if we want a custom one, or reuse it.
-                // For now, we'll reuse the standard game structure but inject into our new screen or reuse s-game?
-                // Plan said use s-game-paradox.
+                // HIDE TIMER & HUD ELEMENTS FOR DUEL
+                const timerPanel = document.getElementById('timer-panel');
+                if (timerPanel) timerPanel.classList.add('hidden');
+
+                this.startDayNightCycle();
+
+                document.getElementById('player-duel-score').textContent = '0';
+                document.getElementById('ai-duel-score').textContent = '0';
             },
 
-            loadQuestion(d) {
-                this.currentQuestion = d;
+            reset() {
+                if (typeof resetAchievementStats !== 'undefined') resetAchievementStats(); // ACHIEVEMENT HOOK
+                this.playerScore = 0;
+                this.aiScore = 0;
+                this.dayStartTime = Date.now();
+                this.nightTriggered = false;
+                this.active = true;
+                document.body.classList.add('time-day');
 
-                // IMPORTANT: Set Global Game Active state for Powers to work
-                if (typeof Game !== 'undefined') Game.active = true;
+                // HIDE TIMER & HUD ELEMENTS FOR DUEL
+                const timerPanel = document.getElementById('timer-panel');
+                if (timerPanel) timerPanel.classList.add('hidden');
 
-                // Start Timer if first round (since Game.nextRound's timer logic is skipped)
-                if (typeof Game !== 'undefined' && Game.round === 0) {
-                    TimerSystem.start(60);
-                }
+                this.startDayNightCycle();
 
-                // 1. Display the ANSWER prominently
-                const ansText = document.getElementById('p-answer-text');
-                if (ansText) {
-                    ansText.textContent = d.a.toUpperCase();
-                    // Add glitch effect to answer
-                    ansText.setAttribute('data-text', d.a.toUpperCase());
-                }
-
-                // 2. Generate Options (Questions)
-                const optArea = document.getElementById('p-opt-area');
-                if (optArea) {
-                    optArea.innerHTML = '';
-
-                    // We need 3 distractors (Wrong Questions)
-                    // We can pick random questions from Game.qData
-                    // Filter out the current question
-                    const allDistractors = Game.qData.filter(q => q !== d);
-                    const distractors = [];
-                    for (let i = 0; i < 3; i++) {
-                        const r = allDistractors[Math.floor(Math.random() * allDistractors.length)];
-                        distractors.push(r.q);
-                    }
-
-                    // Answer set: Correct Question + 3 Distractors
-                    const options = [d.q, ...distractors].sort(() => Math.random() - 0.5);
-
-                    options.forEach(qTxt => {
-                        const b = document.createElement('div');
-                        b.className = 'opt-btn paradox-btn';
-                        b.innerText = qTxt; // The "Question" is now the option
-                        b.onclick = () => this.check(qTxt, d.q);
-                        optArea.appendChild(b);
-                    });
-                }
+                document.getElementById('player-duel-score').textContent = '0';
+                document.getElementById('ai-duel-score').textContent = '0';
             },
 
-            check(selectedQ, correctQ) {
+            startDayNightCycle() {
+                // Random time between 45-90 seconds for night to trigger
+                const nightDelay = (Math.random() * 45 + 45) * 1000;
+                this.nightDuration = nightDelay; // Save for rewind logic
+                this.startTime = Date.now();
+
+                this.nightTimeout = setTimeout(() => {
+                    this.triggerNight();
+                }, nightDelay);
+            },
+
+            rewindTime(ms) {
+                // Extend the day phase
+                if (this.nightTriggered) return; // Can't rewind once night starts (it's too late)
+
+                clearTimeout(this.nightTimeout);
+
+                // Calculate how much time was left
+                const elapsed = Date.now() - this.startTime;
+                let remaining = this.nightDuration - elapsed;
+
+                // Add bonus time (rewind)
+                remaining += ms;
+                if (remaining < 1000) remaining = 1000; // Safety min
+
+                // Restart timeout with new remaining time
+                this.startTime = Date.now(); // Reset start base
+                this.nightDuration = remaining;
+
+                this.nightTimeout = setTimeout(() => {
+                    this.triggerNight();
+                }, remaining);
+
+                // Visual feedback of extended day
+                const dayEl = document.createElement('div');
+                dayEl.innerHTML = "☀️ DAYLIGHT EXTENDED";
+                dayEl.className = 'anomaly-alert';
+                dayEl.style.color = '#000';
+                dayEl.style.background = '#fff';
+                document.body.appendChild(dayEl);
+                setTimeout(() => dayEl.remove(), 2000);
+            },
+
+            triggerNight() {
                 if (!this.active) return;
-                this.active = false;
-                if (typeof Game !== 'undefined') Game.active = false; // Lock Global Game state
 
-                const btns = document.querySelectorAll('.paradox-btn');
-                btns.forEach(b => b.style.pointerEvents = 'none');
+                if (typeof TimerSystem !== 'undefined' && TimerSystem.frozen) {
+                    setTimeout(() => this.triggerNight(), 500);
+                    return;
+                }
 
-                if (selectedQ === correctQ) {
-                    // Correct
-                    if (typeof AudioSystem !== 'undefined') AudioSystem.playCorrect();
+                this.nightTriggered = true;
+                document.body.classList.remove('time-day');
+                document.body.classList.add('time-night');
 
-                    // Visuals
-                    btns.forEach(b => {
-                        if (b.innerText === selectedQ) {
-                            b.classList.add('correct');
-                            b.style.background = 'var(--green)';
-                            b.style.color = 'black';
-                        }
-                    });
+                if (typeof AudioSystem !== 'undefined') AudioSystem.playFreeze();
 
-                    // Update Game State
-                    if (typeof Game !== 'undefined') {
-                        Game.score += (100 * Game.multiplier);
-                        document.getElementById('hud-score').innerText = Game.score;
-                        Game.streak++;
+                // End game after short night period
+                setTimeout(() => {
+                    if (this.active) {
+                        this.endDuelWithPuzzle();
+                    }
+                }, 8000);
+            },
+
+            loadDuelQuestion(questionData) {
+                this.currentQuestion = questionData;
+
+                // Player side
+                document.getElementById('era-display-player').innerText = `YEAR: ${questionData.y}`;
+                document.getElementById('q-text-player').innerText = questionData.q;
+
+                // AI side (same question)
+                document.getElementById('era-display-ai').innerText = `YEAR: ${questionData.y}`;
+                document.getElementById('q-text-ai').innerText = questionData.q;
+
+                // Generate options for player
+                const playerArea = document.getElementById('opt-area-player');
+                playerArea.innerHTML = '';
+                const options = [questionData.a, ...questionData.w].sort(() => Math.random() - 0.5);
+
+                options.forEach(txt => {
+                    const b = document.createElement('div');
+                    b.className = 'opt-btn';
+                    b.innerText = txt;
+                    b.onclick = () => this.playerAnswer(txt, questionData.a);
+                    playerArea.appendChild(b);
+                });
+
+                // Generate options for AI (same order)
+                const aiArea = document.getElementById('opt-area-ai');
+                aiArea.innerHTML = '';
+                options.forEach(txt => {
+                    const b = document.createElement('div');
+                    b.className = 'opt-btn';
+                    b.innerText = txt;
+                    b.dataset.answer = txt;
+                    aiArea.appendChild(b);
+                });
+
+                // Simulate AI answering
+                this.simulateAIAnswer(questionData, options);
+            },
+
+            simulateAIAnswer(questionData, options) {
+                // AI has 65% accuracy, answers in 1-4 seconds
+                const delay = Math.random() * 3000 + 1000;
+
+                setTimeout(() => {
+                    if (!this.active) return;
+
+                    if (typeof TimerSystem !== 'undefined' && TimerSystem.frozen) {
+                        setTimeout(() => this.simulateAIAnswer(questionData, options), 500);
+                        return;
                     }
 
-                } else {
-                    // Wrong
-                    if (typeof AudioSystem !== 'undefined') AudioSystem.playWrong();
+                    const correct = Math.random() < 0.65;
+                    const aiOpts = document.querySelectorAll('#opt-area-ai .opt-btn');
 
-                    btns.forEach(b => {
-                        if (b.innerText === selectedQ) {
-                            b.classList.add('wrong');
-                            b.style.background = 'var(--danger)';
-                        }
-                        if (b.innerText === correctQ) {
-                            b.style.borderColor = 'var(--green)'; // Show correct
+                    aiOpts.forEach(opt => {
+                        // Creepy/Hidden AI Selection Logic
+                        if (correct && opt.dataset.answer === questionData.a) {
+                            // "Faded portion" & "Hide type"
+                            opt.style.transition = 'all 2s ease';
+                            opt.style.background = 'rgba(0, 0, 0, 0.8)'; // Dark void
+                            opt.style.borderColor = 'rgba(57, 255, 20, 0.1)'; // Very faint green hint
+                            opt.style.color = 'transparent'; // HIDE TEXT
+                            opt.style.textShadow = 'none';
+                            opt.style.filter = 'blur(3px) grayscale(100%)';
+                            opt.style.transform = 'scale(0.95)';
+                            opt.innerHTML = ''; // Ensure text is gone
+
+                            this.aiScore += 100;
+                        } else if (!correct && opt.dataset.answer !== questionData.a && Math.random() > 0.5) {
+                            // Decoy / Wrong
+                            opt.style.transition = 'all 2s ease';
+                            opt.style.background = 'rgba(0, 0, 0, 0.5)';
+                            opt.style.color = 'transparent';
+                            opt.style.borderColor = 'transparent';
+                            opt.style.filter = 'blur(5px)';
                         }
                     });
 
-                    if (typeof Game !== 'undefined') Game.streak = 0;
+                    document.getElementById('ai-duel-score').textContent = this.aiScore;
+                }, delay);
+            },
+
+            playerAnswer(ans, correct) {
+                if (!this.active) return;
+
+                const playerOpts = document.querySelectorAll('#opt-area-player .opt-btn');
+                playerOpts.forEach(opt => opt.style.pointerEvents = 'none');
+
+                if (ans === correct) {
+                    try { if (typeof onCorrectAnswer !== 'undefined') onCorrectAnswer(); } catch (e) { console.error(e); } // ACHIEVEMENT HOOK SAFE
+                    this.playerScore += 100;
+                    if (typeof AudioSystem !== 'undefined') AudioSystem.playCorrect();
+                    playerOpts.forEach(opt => {
+                        if (opt.innerText === ans) {
+                            opt.style.background = 'rgba(57, 255, 20, 0.3)';
+                            opt.style.borderColor = 'var(--green)';
+                        }
+                    });
+
+                    // Sync with main Game score and HUD
+                    if (typeof Game !== 'undefined') {
+                        Game.score = this.playerScore;
+                        document.getElementById('hud-score').innerText = this.playerScore;
+                    }
+                } else {
+                    try { if (typeof onWrongAnswer !== 'undefined') onWrongAnswer(); } catch (e) { console.error(e); } // ACHIEVEMENT HOOK SAFE
+                    if (typeof AudioSystem !== 'undefined') AudioSystem.playWrong();
+                    playerOpts.forEach(opt => {
+                        if (opt.innerText === ans) {
+                            opt.style.background = 'rgba(255, 0, 60, 0.3)';
+                            opt.style.borderColor = 'var(--danger)';
+                        }
+                    });
                 }
 
-                // Update Streak HUD
-                if (typeof Game !== 'undefined') {
-                    const el = document.getElementById('hud-streak');
-                    el.innerText = Game.streak > 1 ? "ANCHOR: " + Game.streak + "x" : "";
-                }
+                document.getElementById('player-duel-score').textContent = this.playerScore;
 
-                // Next round
+                // Next question after delay
                 setTimeout(() => {
-                    if (this.active && typeof Game !== 'undefined') {
+                    if (typeof Game !== 'undefined' && this.active) {
                         Game.round++;
                         Game.nextRound();
                     }
                 }, 1500);
             },
 
+            endDuelWithPuzzle() {
+                this.active = false;
+                if (this.nightTimeout) clearTimeout(this.nightTimeout);
+
+                // Transfer scores to main game
+                if (typeof Game !== 'undefined') {
+                    Game.score = this.playerScore;
+                }
+
+                PuzzleSystem.show();
+            },
+
             cleanup() {
                 this.active = false;
-                if (typeof Game !== 'undefined') Game.active = false;
-                document.body.classList.remove('mode-paradox');
+                if (this.nightTimeout) clearTimeout(this.nightTimeout);
+                document.body.classList.remove('time-day', 'time-night');
+
+                // RESTORE TIMER
+                const timerPanel = document.getElementById('timer-panel');
+                if (timerPanel) timerPanel.classList.remove('hidden');
+            }
+        };
+
+        // --- PUZZLE SYSTEM (Mode C Finale) ---
+        const PuzzleSystem = {
+            puzzles: [
+                { q: 'Complete: 2, 4, 8, 16, ?', a: '32' },
+                { q: 'Unscramble: MEIT', a: 'TIME' },
+                { q: 'What is 7 × 8?', a: '56' },
+                { q: 'Complete: 1, 1, 2, 3, 5, ?', a: '8' },
+                { q: 'Unscramble: NIREW', a: 'REWIND' },
+                { q: 'What is 144 ÷ 12?', a: '12' },
+                { q: '⏰ + 🔄 = ?', a: 'REWIND' },
+                { q: '60 seconds = ? minutes', a: '1' }
+            ],
+            currentPuzzle: null,
+            attempts: 0,
+
+            show() {
+                this.currentPuzzle = this.puzzles[Math.floor(Math.random() * this.puzzles.length)];
+                this.attempts = 0;
+
+                document.getElementById('puzzle-question').textContent = this.currentPuzzle.q;
+                document.getElementById('puzzle-input').value = '';
+                document.getElementById('puzzle-feedback').textContent = '';
+                document.getElementById('puzzle-modal').classList.add('active');
+
+                // Focus the input
+                setTimeout(() => {
+                    document.getElementById('puzzle-input').focus();
+                }, 100);
+            },
+
+            submit() {
+                const input = document.getElementById('puzzle-input').value.trim().toUpperCase();
+                const feedback = document.getElementById('puzzle-feedback');
+
+                if (input === this.currentPuzzle.a.toUpperCase()) {
+                    feedback.textContent = '✅ CORRECT!';
+                    feedback.style.color = 'var(--green)';
+                    if (typeof AudioSystem !== 'undefined') AudioSystem.playCorrect();
+
+                    setTimeout(() => {
+                        document.getElementById('puzzle-modal').classList.remove('active');
+                        DuelMode.cleanup();
+                        // Explicitly trigger Win State
+                        if (typeof Game !== 'undefined') Game.gameWin();
+                    }, 1500);
+                } else {
+                    this.attempts++;
+                    feedback.textContent = `❌ WRONG (${3 - this.attempts} tries left)`;
+                    feedback.style.color = 'var(--danger)';
+                    if (typeof AudioSystem !== 'undefined') AudioSystem.playWrong();
+
+                    document.getElementById('puzzle-input').value = '';
+
+                    if (this.attempts >= 3) {
+                        setTimeout(() => {
+                            document.getElementById('puzzle-modal').classList.remove('active');
+                            DuelMode.cleanup();
+                            // Trigger creepy restart instead of normal game over
+                            this.triggerCreepyRestart();
+                        }, 1500);
+                    }
+                }
+            },
+
+            triggerCreepyRestart() {
+                const overlay = document.getElementById('creepy-overlay');
+                const creepyText = document.getElementById('creepy-text');
+                const creepySubtext = document.getElementById('creepy-subtext');
+
+                // Horror messages
+                const messages = [
+                    { text: 'YOU CANNOT ESCAPE', sub: 'You must play again...' },
+                    { text: 'THERE IS NO EXIT', sub: 'The timeline demands sacrifice...' },
+                    { text: 'YOU HAVE TO PLAY', sub: 'Otherwise you cannot leave...' },
+                    { text: 'FOREVER LOOPING', sub: 'Play. Or stay trapped.' }
+                ];
+
+                const msg = messages[Math.floor(Math.random() * messages.length)];
+                creepyText.textContent = msg.text;
+                creepySubtext.textContent = msg.sub;
+
+                overlay.classList.add('active');
+
+                // Stop BGM if playing
+                if (typeof stopBGM !== 'undefined') stopBGM();
+
+                document.getElementById('hud').classList.add('hidden');
+                document.getElementById('s-game-duel').classList.add('hidden');
             }
         };
 
@@ -5527,10 +6202,12 @@
 
                 if (this.interval) clearInterval(this.interval);
 
-                if (this.interval) clearInterval(this.interval);
-
-                // Paradox Mode (Mode C) can uses standard timer
-
+                // DUEL MODE EXCEPTION: No timer countdown
+                if (typeof currentGameMode !== 'undefined' && currentGameMode === 'C') {
+                    // Update once to clear/hide info but don't tick
+                    this.update();
+                    return;
+                }
 
                 this.interval = setInterval(() => {
                     if (this.frozen) return;
@@ -5574,10 +6251,13 @@
 
                 if (!display || !bar) return;
 
-                if (!display || !bar) return;
-
-                // SPECIAL DISPLAY FOR DUEL MODE (REMOVED)
-
+                // SPECIAL DISPLAY FOR DUEL MODE
+                if (typeof currentGameMode !== 'undefined' && currentGameMode === 'C') {
+                    display.textContent = "NO TIME";
+                    bar.style.width = "100%";
+                    bar.style.backgroundColor = (document.body.classList.contains('time-day')) ? '#000' : '#444';
+                    return;
+                }
 
                 display.textContent = this.timeLeft.toFixed(1);
                 // Bar is relative to 60s (Initial Max) visually, or dynamic?
@@ -5644,7 +6324,7 @@
 
             // Freeze: Pause timer for 5 seconds (timer only, game continues)
             useFreeze() {
-                if (this.freezeCharges <= 0 || TimerSystem.frozen || !Game.active) return false;
+                if (this.freezeCharges <= 0 || TimerSystem.frozen || (!Game.active && (typeof DuelMode === 'undefined' || !DuelMode.active))) return false;
                 this.freezeCharges--;
 
                 // Freeze only the timer (not full screen)
@@ -5669,10 +6349,16 @@
 
             // Rewind: Adds Time but ACCELERATES COLLAPSE
             useRewind() {
-                if (this.rewindCharges <= 0 || !Game.active) return false;
+                if (this.rewindCharges <= 0 || (!Game.active && (typeof DuelMode === 'undefined' || !DuelMode.active))) return false;
 
-                // Handles standard rewind
-
+                // Special Duel Mode Handling
+                if (typeof DuelMode !== 'undefined' && DuelMode.active) {
+                    this.rewindCharges--;
+                    DuelMode.rewindTime(15000); // Add 15s to day cycle
+                    AudioSystem.playRewind();
+                    this.updatePowerUI();
+                    return true;
+                }
 
                 this.rewindCharges--;
                 Game.triggerRewindEffect();
@@ -5860,8 +6546,8 @@
                         this.startRoulette();
                         break;
                     case 'C':
-                        // Paradox mode
-                        ParadoxMode.init();
+                        // Duel mode
+                        DuelMode.init();
                         this.switchScreen('s-luck', 's-roulette');
                         this.startRoulette();
                         break;
@@ -6074,7 +6760,7 @@
                             setTimeout(() => {
                                 // Choose correct game screen based on mode
                                 if (currentGameMode === 'C') {
-                                    this.switchScreen('s-hype', 's-game-paradox');
+                                    this.switchScreen('s-hype', 's-game-duel');
                                 } else {
                                     this.switchScreen('s-hype', 's-game');
                                 }
@@ -6093,9 +6779,9 @@
                 const d = this.qData[this.round];
                 this.rewindUsedInRound = false;
 
-                // Handle Paradox Mode (Mode C) separately
-                if (currentGameMode === 'C' && ParadoxMode.active) {
-                    ParadoxMode.loadQuestion(d);
+                // Handle Duel Mode (Mode C) separately
+                if (currentGameMode === 'C' && DuelMode.active) {
+                    DuelMode.loadDuelQuestion(d);
                     return;
                 }
 
@@ -6294,10 +6980,7 @@
                         }
                     }
 
-                    // Wait a bit before next round to prevent spam clicking
-                    setTimeout(() => {
-                        this.round++; this.nextRound();
-                    }, 500);
+                    this.round++; this.nextRound();
                 } else {
                     // WRONG ANSWER LOGIC
                     if (typeof onWrongAnswer !== 'undefined') onWrongAnswer(); // ACHIEVEMENT HOOK
@@ -6417,7 +7100,7 @@
 
                 // Cleanup any active modes
                 if (currentGameMode === 'B') DreamMode.cleanup();
-                if (currentGameMode === 'C') ParadoxMode.cleanup();
+                if (currentGameMode === 'C') DuelMode.cleanup();
 
                 // Set victory headline before showing game over screen
                 this.isWin = true;
@@ -6434,7 +7117,7 @@
                 // Hide HUD and game screens
                 document.getElementById('hud').classList.add('hidden');
                 document.getElementById('s-game').classList.add('hidden');
-                document.getElementById('s-game-paradox').classList.add('hidden');
+                document.getElementById('s-game-duel').classList.add('hidden');
 
                 // Use the same outro sequence as game over
                 this.runOutroSequence();
@@ -6449,7 +7132,7 @@
 
                 // Cleanup any active modes
                 if (currentGameMode === 'B') DreamMode.cleanup();
-                if (currentGameMode === 'C') ParadoxMode.cleanup();
+                if (currentGameMode === 'C') DuelMode.cleanup();
 
                 // Reset headline to SIGNAL LOST for game over
                 this.isWin = false;
@@ -6467,7 +7150,7 @@
                     document.body.classList.remove('power-off-anim');
                     document.getElementById('hud').classList.add('hidden');
                     document.getElementById('s-game').classList.add('hidden');
-                    document.getElementById('s-game-paradox').classList.add('hidden');
+                    document.getElementById('s-game-duel').classList.add('hidden');
                     this.runOutroSequence();
                 }, 700);
             },
@@ -8034,8 +8717,8 @@
             if (!achievementStats.freezeUsed) unlockAchievement('ice_breaker');
             if (!achievementStats.rewindUsed) unlockAchievement('no_looking_back');
 
-            // Check Nocturnal (Duel Mode Removed)
-            const nightTriggered = (typeof Game !== 'undefined' && Game.nightTriggered);
+            // Check Nocturnal (Check DuelMode or Game state)
+            const nightTriggered = (typeof DuelMode !== 'undefined' && DuelMode.nightTriggered) || (typeof Game !== 'undefined' && Game.nightTriggered);
             if (nightTriggered) unlockAchievement('nocturnal');
         }
 
@@ -8074,7 +8757,8 @@
                 <h1 class="black-glow" onclick="if(typeof handleTitleClick === 'function') handleTitleClick()"
                     style="font-family: var(--f-title); font-size: 2rem; color: var(--primary); margin: 0; line-height: 1; cursor: pointer;">
                     NEURO FRIED</h1>
-                <span style="font-family: var(--f-mono); font-size: 0.8rem; color: #888;">DEV: Kaustav Chowdhury</span>
+                <span style="font-family: var(--f-mono); font-size: 0.8rem; color: #888;">DEV: Kaustav
+                    Chowdhury</span>
             </div>
         </div>
         <div style="display: flex; align-items: center; gap: 10px;">
@@ -8524,6 +9208,60 @@
             }
         }, { once: true });
     </script>
+    <script>
+        // --- NEURAL INTERFACE SMOOTH TILT SYSTEM (LERP PHYSICS) ---
+        const TiltSystem = {
+            target: { x: 0, y: 0 },
+            current: { x: 0, y: 0 },
+            smoothing: 0.08, // Lower = Smoother/Heavier, Higher = Snappier (0.05 - 0.1 is sweet spot)
+
+            init() {
+                this.tiltLayer = document.getElementById('game-tilt-layer');
+                this.hud = document.getElementById('neural-hud-overlay');
+
+                if (!this.tiltLayer) return;
+
+                document.addEventListener('mousemove', (e) => this.handleMove(e));
+                this.loop();
+            },
+
+            handleMove(e) {
+                // Normalize coordinates (-1 to 1)
+                this.target.x = (e.clientX / window.innerWidth) * 2 - 1;
+                this.target.y = (e.clientY / window.innerHeight) * 2 - 1;
+            },
+
+            lerp(start, end, factor) {
+                return start + (end - start) * factor;
+            },
+
+            loop() {
+                // Interpolate current values towards target
+                this.current.x = this.lerp(this.current.x, this.target.x, this.smoothing);
+                this.current.y = this.lerp(this.current.y, this.target.y, this.smoothing);
+
+                // 1. Game Layer Tilt
+                // Max tilt = ~8deg (from previous setting)
+                const rotX = -this.current.y * 8;
+                const rotY = this.current.x * 8;
+
+                this.tiltLayer.style.transform = `rotateX(${rotX.toFixed(2)}deg) rotateY(${rotY.toFixed(2)}deg) scale(1.05)`;
+
+                // 2. HUD Parallax
+                if (this.hud) {
+                    const hudX = -this.current.x * 25;
+                    const hudY = -this.current.y * 25;
+                    this.hud.style.transform = `translate(${hudX.toFixed(2)}px, ${hudY.toFixed(2)}px)`;
+                }
+
+                requestAnimationFrame(() => this.loop());
+            }
+        };
+
+        // Initialize when DOM is ready (script is at end of body so immediate is fine)
+        TiltSystem.init();
+    </script>
 </body>
 
 </html>
+```
