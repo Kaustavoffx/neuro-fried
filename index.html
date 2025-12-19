@@ -4543,9 +4543,8 @@
                                 <div style="color:var(--green); font-family:var(--f-title); font-size:4rem; text-shadow:0 0 20px var(--green);"
                                     id="final-aura-score">0</div>
                                 <div style="color:white; font-family:var(--f-title); font-size:1.5rem; letter-spacing:3px;"
-                                    id="final-name">UNKNOWN</div>
+                                    id="final-name">AGENT</div>
                             </div>
-                            <div class="kia-stamp" id="kia-stamp">K.I.A.</div>
                         </div>
                     </div>
 
@@ -7947,6 +7946,8 @@
             },
 
             triggerStamp() {
+                // Stamp system disabled by user request
+                return;
                 if (!this.stampEl) this.init();
                 if (!this.stampEl) return;
 
