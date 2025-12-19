@@ -15,6 +15,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>NEURO-FRIED: FINAL SURVIVAL</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         /* =========================================
            1. CORE CONFIGURATION
@@ -157,10 +158,16 @@
            ============================================= */
 
         /* BLOOD RED AMBIENT - Intense glow from all edges */
+        /* BODY BACKGROUND - now static black, visual moved to #tilt-ambient */
         body::before {
-            content: '';
-            position: fixed;
-            inset: 0;
+            content: none;
+        }
+
+        /* TILT AMBIENT - Moves with the layer */
+        #tilt-ambient {
+            position: absolute;
+            inset: -100px;
+            /* Overscan to avoid edges */
             background:
                 radial-gradient(ellipse at 50% 0%, rgba(139, 0, 0, 0.6) 0%, transparent 40%),
                 radial-gradient(ellipse at 0% 50%, rgba(255, 0, 0, 0.3) 0%, transparent 30%),
@@ -169,7 +176,8 @@
                 radial-gradient(circle at 30% 20%, rgba(200, 0, 0, 0.2) 0%, transparent 20%),
                 radial-gradient(circle at 70% 80%, rgba(200, 0, 0, 0.2) 0%, transparent 20%);
             pointer-events: none;
-            z-index: 9998;
+            z-index: -1;
+            /* Behind render layer */
             animation: bloodPulse 4s ease-in-out infinite alternate;
         }
 
@@ -3761,6 +3769,25 @@
         }
 
         /* BIGGER BUTTON */
+        #init-btn {
+            margin-top: 0;
+            /* Removed positive margin */
+            position: relative;
+            z-index: 5000;
+            /* Auto-sized and centered naturally */
+            padding: 15px 40px;
+            font-size: 1.5rem;
+            min-width: 250px;
+            text-align: center;
+            box-shadow: 0 0 20px var(--primary);
+            /* Auto-discoverable glow */
+            border: 2px solid var(--primary);
+            background: rgba(0, 0, 0, 0.8);
+            color: var(--primary);
+            transform: translateY(-60px);
+            /* Move upwards significantly */
+        }
+
         #open-ach-btn {
             transform: scale(1.3);
             border-bottom: 2px solid var(--primary);
@@ -3768,6 +3795,170 @@
             bottom: 20px;
             right: 20px;
 
+        }
+
+        /* PARADOX MODE STYLES */
+        #s-game-paradox {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #000;
+            z-index: 200;
+        }
+
+        .paradox-terminal {
+            width: 800px;
+            max-width: 95vw;
+            background: rgba(10, 0, 0, 0.95);
+            border: 2px solid var(--danger);
+            box-shadow: 0 0 50px var(--danger), inset 0 0 50px rgba(50, 0, 0, 0.5);
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+            font-family: var(--f-mono);
+            text-align: center;
+        }
+
+        .paradox-feedback {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 3rem;
+            font-weight: bold;
+            pointer-events: none;
+            z-index: 10;
+            animation: feedbackPop 1s forwards;
+            text-shadow: 0 0 20px currentColor;
+            white-space: nowrap;
+        }
+
+        .paradox-feedback.success {
+            color: #00ff00;
+        }
+
+        .paradox-feedback.failure {
+            color: var(--danger);
+        }
+
+        @keyframes feedbackPop {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -40%) scale(0.5);
+            }
+
+            20% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1.2);
+            }
+
+            100% {
+                opacity: 0;
+                transform: translate(-50%, -60%) scale(1);
+            }
+        }
+
+
+        .paradox-header {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 2px solid var(--danger);
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+            font-size: 1.5rem;
+            color: var(--danger);
+            text-shadow: 0 0 10px var(--danger);
+        }
+
+        .paradox-content {
+            min-height: 400px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+        }
+
+        .question-display {
+            font-size: 2rem;
+            color: #fff;
+            text-align: center;
+            margin-bottom: 50px;
+            min-height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+        }
+
+        .chaos-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .paradox-btn {
+            background: rgba(50, 0, 0, 0.3);
+            border: 2px solid var(--danger);
+            color: var(--danger);
+            padding: 25px;
+            font-size: 1.3rem;
+            font-family: var(--f-mono);
+            cursor: pointer;
+            transition: all 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .paradox-btn:hover {
+            background: var(--danger);
+            color: #000;
+            box-shadow: 0 0 30px var(--danger);
+            transform: scale(1.05);
+        }
+
+        .sanity-meter {
+            margin-top: 30px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            color: var(--danger);
+            font-size: 1.2rem;
+        }
+
+        .sanity-bar {
+            flex-grow: 1;
+            height: 15px;
+            background: #330000;
+            border: 1px solid var(--danger);
+            box-shadow: 0 0 10px var(--danger);
+            position: relative;
+        }
+
+        #sanity-fill {
+            height: 100%;
+            background: var(--danger);
+            transition: width 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 0 15px var(--danger);
+        }
+
+        .instruction-text {
+            margin-top: 15px;
+            text-align: center;
+            font-size: 1.1rem;
+            border: 1px dashed var(--danger);
+            padding: 10px;
+            color: rgba(255, 0, 0, 0.8);
+        }
+
+        .paradox-glitch-layer {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            z-index: -1;
+            opacity: 0.1;
+            background: repeating-linear-gradient(0deg, transparent, transparent 2px, var(--danger) 2px, var(--danger) 4px);
         }
 
         /* =========================================
@@ -3963,6 +4154,9 @@
                 <div class="start-subtext">[ CLICK ANYWHERE TO BEGIN ]</div>
             </div>
 
+            <!-- TILT BACKGROUND (Moves with the layer) -->
+            <div id="tilt-ambient"></div>
+
             <div id="render-layer"><canvas id="c"></canvas></div>
             <div class="vignette"></div>
             <div class="scanlines"></div>
@@ -4019,32 +4213,34 @@
                 <div class="dream-subtext" id="dream-subtext">Timeline resetting...</div>
             </div>
 
-            <!-- DUEL GAME SCREEN (Mode C) -->
-            <div id="s-game-duel" class="screen hidden">
-                <div class="duel-container">
-                    <!-- PLAYER SIDE -->
-                    <div class="duel-side player">
-                        <div class="duel-label">⚡ YOU</div>
-                        <span class="era-tag" id="era-display-player" style="margin-bottom:15px;">YEAR: 1990</span>
-                        <div class="q-text" id="q-text-player" style="font-size:1.1rem; margin-bottom:20px;">LOADING...
+            <!-- PARADOX GAME SCREEN (Mode C) -->
+            <div id="s-game-paradox" class="screen hidden" style="background: black;">
+                <div class="paradox-terminal">
+                    <div class="paradox-header">
+                        <span class="blink">WARNING: REALITY UNSTABLE</span>
+                        <span id="paradox-timer" style="color:var(--danger)">60.00</span>
+                    </div>
+
+                    <div class="paradox-content">
+                        <div class="paradox-glitch-layer"></div>
+                        <div class="question-display" id="paradox-question">
+                            [ SYSTEM FAILURE ]
                         </div>
-                        <div class="opt-grid" id="opt-area-player"></div>
-                        <div style="margin-top:auto; padding-top:20px; text-align:center;">
-                            <span style="font-family:var(--f-mono); color:var(--primary);">SCORE: <span
-                                    id="player-duel-score">0</span></span>
+
+                        <div class="chaos-grid" id="paradox-options">
+                            <!-- Buttons generated by JS -->
                         </div>
                     </div>
 
-                    <!-- AI SIDE -->
-                    <div class="duel-side ai">
-                        <div class="duel-label">🤖 OTHER YOU</div>
-                        <span class="era-tag" id="era-display-ai" style="margin-bottom:15px;">YEAR: 1990</span>
-                        <div class="q-text" id="q-text-ai" style="font-size:1.1rem; margin-bottom:20px;">LOADING...
+                    <div class="paradox-footer">
+                        <div class="sanity-meter">
+                            <span>SANITY:</span>
+                            <div class="sanity-bar">
+                                <div id="sanity-fill" style="width:100%"></div>
+                            </div>
                         </div>
-                        <div class="opt-grid" id="opt-area-ai"></div>
-                        <div style="margin-top:auto; padding-top:20px; text-align:center;">
-                            <span style="font-family:var(--f-mono); color:var(--secondary);">SCORE: <span
-                                    id="ai-duel-score">0</span></span>
+                        <div id="paradox-instruction" class="instruction-text">
+                            // INSTRUCTION: SYSTEM NORMAL //
                         </div>
                     </div>
                 </div>
@@ -4143,12 +4339,15 @@
             <div id="hud" class="hidden">
                 <!-- New Left HUD Timer -->
                 <div class="hud-panel hud-top-left" id="timer-panel" style="
-            top: 90px;
-            left: 40px;
+            top: 130px;
+            left: 150px;
             right: auto;
             border-left: 4px solid var(--primary);
             border-right: none;
             text-align: left;
+            pointer-events: auto;
+            z-index: 10000;
+            transform: translateZ(200px);
         ">
                     <div class="stat-label">TIME REMAINING</div>
                     <div class="stat-val" id="time-display" style="font-size: 2.5rem; color: var(--primary);">60.0</div>
@@ -4169,7 +4368,8 @@
                 "></div>
                     </div>
                 </div>
-                <div class="hud-panel hud-top-right">
+                <div class="hud-panel hud-top-right"
+                    style="right: 150px; top: 70px; pointer-events: auto; z-index: 10000; transform: translateZ(200px);">
                     <div class="stat-label">TIMELINES SAVED</div>
                     <div style="display:flex; align-items:center; justify-content:flex-end;">
                         <div class="coin-cont">
@@ -4188,7 +4388,8 @@
                     </div>
                 </div>
 
-                <div class="freeze-container">
+                <div class="freeze-container"
+                    style="left: 150px; bottom: 70px; position: absolute; display: flex; gap: 20px; pointer-events: auto; z-index: 10000; transform: translateZ(200px);">
                     <button class="big-freeze-btn" id="btn-freeze" onclick="TimePowers.useFreeze()">
                         FREEZE
                         <span>[SPACE]</span>
@@ -4361,6 +4562,12 @@
 
                         <!-- Reboot Button -->
                         <button class="control-btn reboot-btn" onclick="location.reload()">🔄 REBOOT SYSTEM</button>
+
+                        <!-- Capture Button -->
+                        <button class="control-btn" onclick="initiateCapture()"
+                            style="margin-top:10px; border-color:var(--green); color:var(--green);">📸 CAPTURE
+                            RECALL</button>
+
 
                         <!-- Leaderboard Button -->
                         <button class="control-btn" onclick="showLeaderboard()" style="margin-top:10px;">🏆
@@ -6154,6 +6361,11 @@
                 osc.stop(this.ctx.currentTime + 0.1);
             },
 
+            // Alias for hover sound (requested by Achievement system)
+            playBtnHover() {
+                this.playClick();
+            },
+
             // Horror Boom Effect
             playCreepyBoom() {
                 if (!this.ctx) this.init(); this.resume();
@@ -6324,7 +6536,7 @@
 
             // Freeze: Pause timer for 5 seconds (timer only, game continues)
             useFreeze() {
-                if (this.freezeCharges <= 0 || TimerSystem.frozen || (!Game.active && (typeof DuelMode === 'undefined' || !DuelMode.active))) return false;
+                if (this.freezeCharges <= 0 || TimerSystem.frozen || (!Game.active && (typeof ParadoxMode === 'undefined' || !ParadoxMode.active))) return false;
                 this.freezeCharges--;
 
                 // Freeze only the timer (not full screen)
@@ -6349,7 +6561,7 @@
 
             // Rewind: Adds Time but ACCELERATES COLLAPSE
             useRewind() {
-                if (this.rewindCharges <= 0 || (!Game.active && (typeof DuelMode === 'undefined' || !DuelMode.active))) return false;
+                if (this.rewindCharges <= 0 || (!Game.active && (typeof ParadoxMode === 'undefined' || !ParadoxMode.active))) return false;
 
                 // Special Duel Mode Handling
                 if (typeof DuelMode !== 'undefined' && DuelMode.active) {
@@ -6507,6 +6719,182 @@
         // MOVED AFTER GAME DEFINITION to fix reference error loop but keeping logic here for structure
 
         // --- 4. GAME LOGIC ---
+        // --- 4. PARADOX MODE (Mode C - Replacement) ---
+        const ParadoxMode = {
+            active: false,
+            sanity: 100,
+            chaosLevel: 0,
+            timerInterval: null,
+            round: 0,
+            isInverted: false, // If true, must pick WRONG answer
+            currentQ: null,
+
+            init() {
+                console.log("ParadoxMode: Initializing Chaos...");
+                this.active = true;
+                this.sanity = 100;
+                this.chaosLevel = 0;
+                this.round = 0;
+            },
+
+            start() {
+                console.log("ParadoxMode: START");
+                document.getElementById('s-game-paradox').classList.remove('hidden');
+                document.getElementById('s-game-paradox').classList.add('active');
+
+                TimerSystem.start(60); // 60s survival
+                this.nextRound();
+                this.updateSanityUI();
+            },
+
+            nextRound() {
+                this.round++;
+                this.chaosLevel = Math.min(10, Math.floor(this.round / 3)); // Chaos increases over time
+
+                // 1. Get Question
+                const topic = Game.currentTopic || TOPICS[0];
+                const q = topic.qs[Math.floor(Math.random() * topic.qs.length)];
+                this.currentQ = q;
+
+                // 2. Determine Logic (Inverted?)
+                // Chaos Level increases chance of inversion
+                this.isInverted = Math.random() < (0.1 + (this.chaosLevel * 0.05));
+
+                // 3. Render
+                this.renderUI(q);
+            },
+
+            renderUI(q) {
+                const qDisplay = document.getElementById('paradox-question');
+                const optGrid = document.getElementById('paradox-options');
+                const instruction = document.getElementById('paradox-instruction');
+
+                // Clear previous
+                optGrid.innerHTML = '';
+
+                // Text
+                qDisplay.innerText = this.isInverted ? `[CORRUPT DATA] ${q.q}` : q.q;
+                if (this.isInverted) {
+                    qDisplay.classList.add('glitch-text');
+                    instruction.innerHTML = `<span class="blink">⚠ WARNING: LOGIC INVERTED - SELECT FALSE ANSWER ⚠</span>`;
+                    instruction.style.color = '#ff0000';
+                    instruction.style.borderColor = '#ff0000';
+                } else {
+                    qDisplay.classList.remove('glitch-text');
+                    instruction.innerHTML = `// INSTRUCTION: SYSTEM NORMAL //`;
+                    instruction.style.color = 'rgba(255,0,0,0.8)';
+                    instruction.style.borderColor = 'var(--danger)';
+                }
+
+                // Options (Correct + Wrong)
+                // DATA FIX: q.w is an array, not q.w1, q.w2
+                let answers = [q.a, ...q.w];
+
+                // Shuffle
+                answers = answers.sort(() => Math.random() - 0.5);
+
+                answers.forEach(ans => {
+                    const btn = document.createElement('button');
+                    btn.className = 'paradox-btn';
+                    btn.innerText = ans;
+
+                    // Chaos Move
+                    if (this.chaosLevel > 2) {
+                        const rot = (Math.random() - 0.5) * this.chaosLevel;
+                        btn.style.transform = `rotate(${rot}deg)`;
+                    }
+
+                    btn.onclick = () => this.handleAnswer(ans, q.a);
+                    optGrid.appendChild(btn);
+                });
+            },
+
+            handleAnswer(selected, correct) {
+                this.checkAnswer(selected);
+            },
+
+            checkAnswer(ans) {
+                const isCorrectContent = (ans === this.currentQ.a);
+                let success = false;
+
+                if (this.isInverted) {
+                    // Success if they picked a WRONG answer
+                    success = !isCorrectContent;
+                } else {
+                    // Success if they picked the RIGHT answer
+                    success = isCorrectContent;
+                }
+
+                if (success) {
+                    this.onSuccess();
+                } else {
+                    this.onFailure();
+                }
+            },
+
+            onSuccess() {
+                AudioSystem.playCorrect();
+                Game.score += 100 * Game.multiplier;
+                document.getElementById('hud-score').innerText = Game.score;
+
+                // Sanity restore
+                this.sanity = Math.min(100, this.sanity + 5);
+                this.updateSanityUI();
+
+                // Visual Feedback
+                const f = document.createElement('div');
+                f.className = 'paradox-feedback success';
+                f.innerText = this.isInverted ? "ERROR ACCEPTED" : "DATA VERIFIED";
+                document.getElementById('s-game-paradox').appendChild(f);
+                setTimeout(() => f.remove(), 1000);
+
+                this.nextRound();
+            },
+
+            onFailure() {
+                AudioSystem.playWrong();
+
+                // Sanity damage
+                this.sanity -= 15;
+                this.updateSanityUI();
+                TimerSystem.addTime(-5); // Penalty
+
+                // Visual Feedback
+                const f = document.createElement('div');
+                f.className = 'paradox-feedback fail';
+                f.innerText = "FATAL EXCEPTION";
+                document.getElementById('s-game-paradox').appendChild(f);
+                setTimeout(() => f.remove(), 1000);
+
+                if (this.sanity <= 0) {
+                    this.triggerGameOver();
+                } else {
+                    this.nextRound();
+                }
+            },
+
+            updateSanityUI() {
+                const bar = document.getElementById('sanity-fill');
+                if (bar) {
+                    bar.style.width = this.sanity + '%';
+                    if (this.sanity < 30) bar.style.backgroundColor = 'var(--danger)';
+                    else bar.style.backgroundColor = 'var(--primary)';
+                }
+            },
+
+            triggerGameOver() {
+                this.active = false;
+                TimerSystem.stop();
+                Game.gameOver();
+            },
+
+            cleanup() {
+                this.active = false;
+                document.getElementById('s-game-paradox').classList.add('hidden');
+                document.getElementById('s-game-paradox').classList.remove('active');
+            }
+        };
+
         const Game = {
             active: false, score: 0, round: 0, curr: 0,
             currentTopic: null, qData: [], rewinding: false,
@@ -6546,8 +6934,8 @@
                         this.startRoulette();
                         break;
                     case 'C':
-                        // Duel mode
-                        DuelMode.init();
+                        // Paradox Mode (replaces Duel)
+                        ParadoxMode.init();
                         this.switchScreen('s-luck', 's-roulette');
                         this.startRoulette();
                         break;
@@ -6760,12 +7148,13 @@
                             setTimeout(() => {
                                 // Choose correct game screen based on mode
                                 if (currentGameMode === 'C') {
-                                    this.switchScreen('s-hype', 's-game-duel');
+                                    this.switchScreen('s-hype', 's-game-paradox');
+                                    ParadoxMode.start();
                                 } else {
                                     this.switchScreen('s-hype', 's-game');
+                                    this.nextRound();
                                 }
                                 c.classList.remove('hidden');
-                                this.nextRound();
                             }, 800);
                         }, 2000);
                     }
@@ -6779,11 +7168,9 @@
                 const d = this.qData[this.round];
                 this.rewindUsedInRound = false;
 
-                // Handle Duel Mode (Mode C) separately
-                if (currentGameMode === 'C' && DuelMode.active) {
-                    DuelMode.loadDuelQuestion(d);
-                    return;
-                }
+                // Paradox Mode runs independently, so no special handling here needed if flow is correct.
+                // But just in case:
+                if (currentGameMode === 'C') return;
 
                 // Normal and Dream mode use standard game screen
                 document.getElementById('era-display').innerText = `YEAR: ${d.y}`;
@@ -7117,7 +7504,8 @@
                 // Hide HUD and game screens
                 document.getElementById('hud').classList.add('hidden');
                 document.getElementById('s-game').classList.add('hidden');
-                document.getElementById('s-game-duel').classList.add('hidden');
+                document.getElementById('s-game').classList.add('hidden');
+                document.getElementById('s-game-paradox').classList.add('hidden'); // Fix: Hide Paradox Mode
 
                 // Use the same outro sequence as game over
                 this.runOutroSequence();
@@ -7150,7 +7538,7 @@
                     document.body.classList.remove('power-off-anim');
                     document.getElementById('hud').classList.add('hidden');
                     document.getElementById('s-game').classList.add('hidden');
-                    document.getElementById('s-game-duel').classList.add('hidden');
+                    document.getElementById('s-game-paradox').classList.add('hidden'); // Fix: Hide Paradox Mode
                     this.runOutroSequence();
                 }, 700);
             },
@@ -7863,7 +8251,23 @@
 
                 await TypeWriter.typeLines(containerId, story, 30);
 
-                // Reveal controls after typing
+                // --- MODIFICATION: Vanish text and wait for Title Screen ---
+                if (screenId === 'title') {
+                    const container = document.getElementById(containerId);
+                    if (container) {
+                        // Wait a moment so they realize it's done
+                        await new Promise(r => setTimeout(r, 1000));
+
+                        // Vanish
+                        container.style.transition = 'opacity 1s ease';
+                        container.style.opacity = '0';
+
+                        // Wait 2-3 seconds (reduced to 1.5s for snappiness)
+                        await new Promise(r => setTimeout(r, 1500));
+                    }
+                }
+
+                // Reveal controls after typing (and delay)
                 if (controlsId) {
                     const controls = document.getElementById(controlsId);
                     if (controls) {
@@ -9195,9 +9599,32 @@
             <p class="ach-progress-text" id="ach-progress">0 of 17 achievements unlocked</p>
             <div class="ach-grid" id="ach-grid">
                 <!-- Achievements populated by JS -->
+                <!-- Achievements populated by JS -->
             </div>
         </div>
     </div>
+
+    <!-- CAPTURE MODAL -->
+    <div id="capture-modal" class="modal-overlay hidden"
+        style="z-index: 20000; background: rgba(0,0,0,0.95); display: flex; align-items: center; justify-content: center;">
+        <div class="modal-box"
+            style="width: 500px; max-width: 90vw; background: #111; border: 2px solid var(--primary); padding: 20px; text-align: center; position: relative; box-shadow: 0 0 50px var(--primary);">
+            <h2 style="font-family: var(--f-title); color: var(--primary); margin-top: 0;">MEMORY CAPTURED</h2>
+            <div id="capture-preview-cont"
+                style="margin: 20px 0; border: 1px solid #333; min-height: 200px; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+                <!-- Image goes here -->
+            </div>
+            <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+                <button class="tech-btn" onclick="shareCaptureImage()"
+                    style="border-color: var(--green); color: var(--green);">📤 SHARE</button>
+                <button class="tech-btn" onclick="downloadCaptureImage()"
+                    style="border-color: var(--secondary); color: var(--secondary);">💾 DOWNLOAD</button>
+                <button class="tech-btn" onclick="closeCaptureModal()" style="border-color: #666; color: #aaa;">✖
+                    CLOSE</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         /* AUTO FULLSCREEN ON FIRST INTERACTION */
         document.addEventListener('click', function () {
@@ -9213,7 +9640,8 @@
         const TiltSystem = {
             target: { x: 0, y: 0 },
             current: { x: 0, y: 0 },
-            smoothing: 0.08, // Lower = Smoother/Heavier, Higher = Snappier (0.05 - 0.1 is sweet spot)
+            smoothing: 0.4, // Increased from 0.08 for snappier, mouse-matched feel
+            baseScale: 1,
 
             init() {
                 this.tiltLayer = document.getElementById('game-tilt-layer');
@@ -9222,7 +9650,28 @@
                 if (!this.tiltLayer) return;
 
                 document.addEventListener('mousemove', (e) => this.handleMove(e));
+                window.addEventListener('resize', () => this.handleResize());
+
+                // Initial size check
+                this.handleResize();
                 this.loop();
+            },
+
+            handleResize() {
+                // Target "Safe Resolution" is roughly 1200x800 for desktops.
+                // We scale down if the window is smaller to ensure everything fits.
+                const safeW = 1200;
+                const safeH = 800;
+                const winW = window.innerWidth;
+                const winH = window.innerHeight;
+
+                const scaleW = winW / safeW;
+                const scaleH = winH / safeH;
+
+                // Use the smaller scale factor to ensure it fits both dimensions
+                // Cap at 1.0 to avoid upscaling blur, but allow shrinking.
+                // Actually, let's allow slight upscaling (1.2) for large 4k screens
+                this.baseScale = Math.min(Math.min(scaleW, scaleH), 1.2);
             },
 
             handleMove(e) {
@@ -9236,18 +9685,17 @@
             },
 
             loop() {
-                // Interpolate current values towards target
                 this.current.x = this.lerp(this.current.x, this.target.x, this.smoothing);
                 this.current.y = this.lerp(this.current.y, this.target.y, this.smoothing);
 
-                // 1. Game Layer Tilt
-                // Max tilt = ~8deg (from previous setting)
                 const rotX = -this.current.y * 8;
                 const rotY = this.current.x * 8;
 
-                this.tiltLayer.style.transform = `rotateX(${rotX.toFixed(2)}deg) rotateY(${rotY.toFixed(2)}deg) scale(1.05)`;
+                // Combine Base Fit Scale with Tilt Scale (1.05)
+                const finalScale = this.baseScale * 1.05;
 
-                // 2. HUD Parallax
+                this.tiltLayer.style.transform = `rotateX(${rotX.toFixed(2)}deg) rotateY(${rotY.toFixed(2)}deg) scale(${finalScale.toFixed(3)})`;
+
                 if (this.hud) {
                     const hudX = -this.current.x * 25;
                     const hudY = -this.current.y * 25;
@@ -9260,6 +9708,92 @@
 
         // Initialize when DOM is ready (script is at end of body so immediate is fine)
         TiltSystem.init();
+    </script>
+    <script>
+        let capturedBlob = null;
+
+        async function initiateCapture() {
+            const card = document.querySelector('.share-card');
+            if (!card) return;
+
+            const btn = event.target;
+            const oldText = btn.innerHTML;
+            btn.innerHTML = "PROCESSING...";
+            btn.disabled = true;
+
+            try {
+                const canvas = await html2canvas(card, {
+                    backgroundColor: '#000000',
+                    scale: 3,
+                    logging: false,
+                    useCORS: true,
+                    allowTaint: true
+                });
+
+                // Show Modal
+                const modal = document.getElementById('capture-modal');
+                const prev = document.getElementById('capture-preview-cont');
+
+                prev.innerHTML = '';
+                const img = new Image();
+                img.src = canvas.toDataURL('image/png');
+                img.style.maxWidth = '100%';
+                img.style.boxShadow = '0 0 20px rgba(0,0,0,0.5)';
+                prev.appendChild(img);
+
+                // Store blob for sharing
+                canvas.toBlob(blob => {
+                    capturedBlob = blob;
+                    modal.classList.remove('hidden'); // Assuming style attribute handles flex display
+                    modal.style.display = 'flex';
+
+                    btn.innerHTML = oldText;
+                    btn.disabled = false;
+                });
+
+            } catch (e) {
+                console.error(e);
+                btn.innerHTML = "❌ ERROR";
+                setTimeout(() => { btn.innerHTML = oldText; btn.disabled = false; }, 2000);
+            }
+        }
+
+        function closeCaptureModal() {
+            document.getElementById('capture-modal').style.display = 'none';
+        }
+
+        function downloadCaptureImage() {
+            if (!capturedBlob) return;
+            const link = document.createElement('a');
+            link.download = `NEURO_FRIED_MEMORY_${Date.now()}.png`;
+            link.href = URL.createObjectURL(capturedBlob);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        async function shareCaptureImage() {
+            if (!capturedBlob) return;
+
+            try {
+                if (navigator.share && navigator.canShare) {
+                    const file = new File([capturedBlob], 'neuro-fried-score.png', { type: 'image/png' });
+                    if (navigator.canShare({ files: [file] })) {
+                        await navigator.share({
+                            files: [file],
+                            title: 'NEURO-FRIED SCORE',
+                            text: 'I survived the paradox. Beat my score!'
+                        });
+                        return;
+                    }
+                }
+                // Fallback / Desktop behavior
+                alert("Sharing not supported on this device/browser. Image downloaded instead!");
+                downloadCaptureImage();
+            } catch (err) {
+                console.log("Share skipped/failed", err);
+            }
+        }
     </script>
 </body>
 
