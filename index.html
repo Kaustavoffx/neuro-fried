@@ -1348,6 +1348,17 @@
             animation: btnScan 2s linear infinite;
         }
 
+        /* 3D EFFECT FOR TECH BTN */
+        .tech-btn {
+            box-shadow: 0 4px 0 var(--primary-light), 0 5px 20px rgba(0, 0, 0, 0.5);
+            transform: translateY(0);
+        }
+
+        .tech-btn:active {
+            box-shadow: 0 0 0 var(--primary-light), 0 0 10px rgba(139, 0, 0, 0.4);
+            transform: translateY(4px);
+        }
+
         .tech-btn::after {
             content: '';
             position: absolute;
@@ -1931,6 +1942,11 @@
             border: var(--glass-border);
             position: relative;
             box-shadow: var(--glass-shadow);
+            /* BORDER AND MORE VISIBILITY */
+            border: 2px solid var(--primary);
+            background: rgba(0, 0, 0, 0.85);
+            /* Darker, more solid background */
+            box-shadow: 0 0 40px rgba(139, 0, 0, 0.3);
         }
 
         .era-tag {
@@ -1957,23 +1973,45 @@
         }
 
         .opt-btn {
-            background: rgba(255, 255, 255, 0.03);
-            border: var(--glass-border);
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid var(--primary);
+            /* Visible border */
             padding: 30px;
             font-family: var(--f-ui);
-            font-size: 1.3rem;
+            font-size: 1.4rem;
+            /* Slightly larger */
             color: var(--text-main);
             cursor: pointer;
-            transition: 0.2s;
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            /* Bouncy transition */
             text-align: center;
             border-radius: 8px;
+
+            /* 3D POP OUT LOOK */
+            box-shadow:
+                0 0 0 var(--primary-dark),
+                0 10px 20px rgba(0, 0, 0, 0.5),
+                inset 0 0 20px rgba(255, 0, 0, 0.1);
+            transform: perspective(500px) translate3d(0, 0, 0);
         }
 
         .opt-btn:hover {
-            background: rgba(0, 243, 255, 0.1);
-            border-color: var(--primary);
-            color: var(--primary);
-            transform: translateY(-3px);
+            background: rgba(20, 0, 0, 0.9);
+            border-color: var(--primary-light);
+            color: white;
+            /* POP OUT EFFECT: Scale up + Lift up + Shadow grows */
+            transform: perspective(500px) translate3d(0, -10px, 30px);
+            box-shadow:
+                0 15px 30px rgba(255, 0, 0, 0.3),
+                0 0 15px var(--primary);
+            z-index: 10;
+        }
+
+        .opt-btn:active {
+            /* PRESS EFFECT */
+            transform: perspective(500px) translate3d(0, 2px, 0);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+            transition: 0.1s;
         }
 
         /* ROULETTE & TIMELINE */
@@ -3794,10 +3832,16 @@
             padding: 40px;
             max-width: 600px;
             width: 90%;
+            min-height: 400px;
+            /* Ensure boxy shape */
             border-radius: 16px;
             text-align: center;
             transform: scale(0.9);
             transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
 
         .rules-overlay.active .rules-card {
@@ -3844,6 +3888,85 @@
             font-size: 0.9rem;
             animation: pulse 2s infinite;
             letter-spacing: 2px;
+        }
+
+        /* MISSING GAME END STYLES */
+        .outro-text {
+            font-family: var(--f-title);
+            font-size: 4rem;
+            color: white;
+            text-align: center;
+            opacity: 0;
+            transform: scale(0.8);
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+        }
+
+        .anim-in {
+            opacity: 1 !important;
+            transform: scale(1) !important;
+        }
+
+        .anim-out {
+            opacity: 0 !important;
+            transform: scale(1.2) !important;
+            filter: blur(10px);
+        }
+
+        #s-over {
+            z-index: 7000;
+            /* Ensure on top of outro */
+            background: black;
+            /* Prevent see-through */
+        }
+
+        /* Power Off Animation for Game Over - Fixes Glitchy End */
+        .power-off-anim {
+            animation: powerOff 0.6s forwards cubic-bezier(0.23, 1, 0.32, 1);
+            pointer-events: none;
+        }
+
+        @keyframes powerOff {
+            0% {
+                filter: brightness(1) sepia(0);
+                transform: scale(1);
+            }
+
+            50% {
+                filter: brightness(0.5) sepia(1) hue-rotate(-50deg);
+            }
+
+            100% {
+                filter: brightness(0) grayscale(1);
+                transform: scale(0.95);
+                opacity: 0;
+            }
+        }
+
+        @keyframes glitchText {
+            0% {
+                transform: translate(0);
+            }
+
+            20% {
+                transform: translate(-2px, 2px);
+            }
+
+            40% {
+                transform: translate(-2px, -2px);
+            }
+
+            60% {
+                transform: translate(2px, 2px);
+            }
+
+            80% {
+                transform: translate(2px, -2px);
+            }
+
+            100% {
+                transform: translate(0);
+            }
         }
     </style>
 </head>
@@ -3898,7 +4021,8 @@
 
             <!-- LUCK RANDOMIZER SCREEN -->
             <div id="s-luck" class="screen hidden">
-                <h2 style="font-family:var(--f-title); color:var(--text-main); margin-bottom:10px; font-size:2rem;">
+                <h2
+                    style="font-family:var(--f-title); color:var(--text-main); margin-bottom:10px; font-size:2rem; margin-top: 15vh;">
                     FATE SELECTION
                 </h2>
                 <div class="story-container" id="fate-story-container">
@@ -4207,9 +4331,8 @@
                 <div id="outro-final" class="outro-text hidden" style="margin-top: 50px;">
                     <span id="word-restart"
                         style="text-decoration: line-through; text-decoration-color: var(--danger); text-decoration-thickness: 5px; opacity: 0.5;">RESTART</span>
-                    <br>
                     <span id="word-rewind" class="glitch-text"
-                        style="color:var(--secondary); font-size: 1.5em; display:none;">REWIND</span>
+                        style="color:var(--secondary); font-size: 1.5em; display:none; margin-left: 15px;">REWIND</span>
                 </div>
             </div>
 
@@ -5000,6 +5123,12 @@
 
         function toggleTheme() {
             try {
+                // Achievement Hook
+                if (typeof achievementStats !== 'undefined' && typeof unlockAchievement !== 'undefined') {
+                    achievementStats.themeToggleCount = (achievementStats.themeToggleCount || 0) + 1;
+                    if (achievementStats.themeToggleCount >= 5) unlockAchievement('void_gazer');
+                }
+
                 const btn = document.getElementById('theme-toggle-btn');
                 if (!btn) return;
 
@@ -6562,25 +6691,58 @@
         const Game = {
             active: false, score: 0, round: 0, curr: 0,
             currentTopic: null, qData: [], rewinding: false,
-            active: false, score: 0, round: 0, curr: 0,
-            currentTopic: null, qData: [], rewinding: false,
             streak: 0, multiplier: 1, anomaly: null,
             rewindUsedInRound: false,
 
             startSequence() {
-                // Here we go...
-                console.log("Game: Starting sequence. Hold onto your butts.");
+                // Check if already registered in this session? 
+                // User asked to add options "when the start off the game".
+                // So we always show register screen first.
+
+                // NEW ACHIEVEMENT TRACKING
+                if (typeof achievementStats !== 'undefined') {
+                    achievementStats.gamesPlayed++;
+                    if (currentGameMode) achievementStats.modesPlayed.add(currentGameMode);
+
+                    if (achievementStats.gamesPlayed >= 5) unlockAchievement('veteran');
+                    if (achievementStats.modesPlayed.size >= 3) unlockAchievement('mode_traveler');
+                }
+
+                // Initialize Audio
                 try {
                     if (typeof AudioSystem !== 'undefined') { AudioSystem.init(); AudioSystem.resume(); }
-                    // Cue the dramatic intro music
                     if (typeof MusicSystem !== 'undefined') MusicSystem.play('start');
-                } catch (e) {
-                    console.log("Game: Audio glitch. Classic.", e);
-                }
+                } catch (e) { }
+
                 gameInProgress = true;
                 LuckSystem.reset();
                 if (typeof StorySystem !== 'undefined') StorySystem.reset();
-                this.switchScreen('s-title', 's-luck');
+
+                // SHOW REGISTER SCREEN INSTEAD OF LUCK
+                // Hide Title
+                document.getElementById('s-title').classList.add('hidden');
+                document.getElementById('s-title').classList.remove('active');
+
+                // Show Register
+                const regScreen = document.getElementById('s-register');
+                regScreen.classList.remove('hidden');
+                regScreen.classList.add('active');
+
+                // Pre-fill if exists
+                try {
+                    const saved = JSON.parse(localStorage.getItem('neuro_fried_last_user'));
+                    if (saved) {
+                        if (saved.name) document.getElementById('reg-name').value = saved.name;
+                        if (saved.photo) {
+                            UserProfile.photo = saved.photo;
+                            const preview = document.getElementById('reg-preview');
+                            const text = document.getElementById('reg-upload-text');
+                            preview.src = saved.photo;
+                            preview.style.display = 'block';
+                            text.style.display = 'none';
+                        }
+                    }
+                } catch (e) { }
             },
 
             proceedWithMode() {
@@ -7274,7 +7436,7 @@
                     document.getElementById('s-game').classList.add('hidden');
                     document.getElementById('s-game-paradox').classList.add('hidden'); // Fix: Hide Paradox Mode
                     this.runOutroSequence();
-                }, 50);
+                }, 600);
             },
 
             runOutroSequence() {
@@ -7382,8 +7544,7 @@
             }
         };
 
-        function toggleTheme() { document.body.classList.toggle('light-mode'); }
-        function updateName(v) { document.getElementById('final-name').innerText = v.toUpperCase() || "UNKNOWN"; }
+
 
         // STARTUP
         Canvas.init();
@@ -7672,152 +7833,11 @@
             };
         }
 
-        // Stamp system for game over card
-        const KIAStampSystem = {
-            stampEl: null,
 
-            init() {
-                this.stampEl = document.getElementById('kia-stamp');
-            },
 
-            triggerStamp() {
-                // Stamp system disabled by user request
-                return;
-                if (!this.stampEl) this.init();
-                if (!this.stampEl) return;
 
-                // Check if this is a win or loss
-                const isWin = typeof Game !== 'undefined' && Game.isWin;
 
-                // Update stamp text and color based on win/loss
-                if (isWin) {
-                    this.stampEl.textContent = 'SYNCED';
-                    this.stampEl.style.color = 'rgba(57, 255, 20, 0.9)';
-                    this.stampEl.style.borderColor = 'rgba(57, 255, 20, 0.9)';
-                    this.stampEl.style.textShadow = '0 0 10px rgba(57, 255, 20, 0.5)';
-                } else {
-                    this.stampEl.textContent = 'K.I.A.';
-                    this.stampEl.style.color = 'rgba(255, 0, 60, 0.9)';
-                    this.stampEl.style.borderColor = 'rgba(255, 0, 60, 0.9)';
-                    this.stampEl.style.textShadow = '0 0 10px rgba(255, 0, 60, 0.5)';
-                }
 
-                // Add dramatic delay then slam stamp
-                setTimeout(() => {
-                    if (this.stampEl) {
-                        this.stampEl.classList.add('stamped');
-                        // Play appropriate sound
-                        if (typeof AudioSystem !== 'undefined') {
-                            if (isWin) {
-                                AudioSystem.playCorrect();
-                            } else {
-                                AudioSystem.playWrong();
-                            }
-                        }
-                    }
-                }, 500);
-            },
-
-            reset() {
-                if (this.stampEl) {
-                    this.stampEl.classList.remove('stamped');
-                }
-            }
-        };
-
-        // Override Game.runOutroSequence to trigger KIA stamp
-        if (typeof Game !== 'undefined') {
-            const originalRunOutroSequence = Game.runOutroSequence;
-            Game.runOutroSequence = function () {
-                // Save score on game over (loss/KIA)
-                if (typeof saveScore === 'function') saveScore(this.score || 0);
-
-                // Reset stamp before showing
-                KIAStampSystem.reset();
-
-                // Call original
-                originalRunOutroSequence.call(this);
-
-                // Trigger stamp when game over screen appears
-                setTimeout(() => {
-                    KIAStampSystem.triggerStamp();
-                }, 5500); // After outro sequence completes
-            };
-        }
-
-        // Canvas glitch effects when time gets low
-        if (typeof Canvas !== 'undefined') {
-            const originalCanvasLoop = Canvas.loop;
-            Canvas.loop = function () {
-                let bg = getComputedStyle(document.body).getPropertyValue('--bg-color');
-                this.ctx.fillStyle = bg;
-                this.ctx.fillRect(0, 0, this.w, this.h);
-
-                let col = getComputedStyle(document.body).getPropertyValue('--particle-col');
-                this.ctx.fillStyle = col;
-
-                let spd = (typeof Game !== 'undefined' && Game.active) ? 20 : 5;
-                if (typeof Game !== 'undefined' && Game.rewinding) spd = -40;
-
-                // FEATURE 3: Calculate stability for world decay effects
-                let stability = 100;
-                if (typeof TimerSystem !== 'undefined' && typeof Game !== 'undefined' && Game.active) {
-                    stability = Math.max(0, (TimerSystem.timeLeft / 60) * 100);
-                }
-
-                this.particles.forEach((p, i) => {
-                    p.z -= spd;
-                    if (p.z <= 0) { p.z = 2000; p.x = (Math.random() - 0.5) * this.w * 2; p.y = (Math.random() - 0.5) * this.h * 2; }
-                    if (p.z > 2000) { p.z = 10; }
-
-                    let scale = 500 / p.z;
-                    let x2d = this.cx + p.x * scale;
-                    let y2d = this.cy + p.y * scale;
-
-                    // FEATURE 3: Add jitter at low stability
-                    if (stability < 50) {
-                        const jitterAmount = (50 - stability) / 10;
-                        x2d += (Math.random() - 0.5) * jitterAmount;
-                        y2d += (Math.random() - 0.5) * jitterAmount;
-                    }
-
-                    let size = Math.max(0.5, 3 * scale);
-                    if (x2d > 0 && x2d < this.w && y2d > 0 && y2d < this.h) {
-                        this.ctx.globalAlpha = Math.min(1, scale);
-
-                        // FEATURE 3: Color shift at very low stability
-                        if (stability < 20 && Math.random() < 0.1) {
-                            this.ctx.fillStyle = Math.random() > 0.5 ? '#ff003c' : '#00f3ff';
-                        }
-
-                        this.ctx.fillRect(x2d, y2d, size, size);
-                        this.ctx.fillStyle = col; // Reset color
-                    }
-                });
-
-                // FEATURE 3: Add glitch blocks at critical stability
-                if (stability < 20 && typeof Game !== 'undefined' && Game.active) {
-                    for (let i = 0; i < 3; i++) {
-                        if (Math.random() < 0.3) {
-                            this.ctx.fillStyle = Math.random() > 0.5 ? 'rgba(255,0,60,0.3)' : 'rgba(0,243,255,0.3)';
-                            const gx = Math.random() * this.w;
-                            const gy = Math.random() * this.h;
-                            const gw = Math.random() * 100 + 20;
-                            const gh = Math.random() * 20 + 5;
-                            this.ctx.fillRect(gx, gy, gw, gh);
-                        }
-                    }
-                }
-
-                this.ctx.globalAlpha = 1;
-                requestAnimationFrame(() => this.loop());
-            };
-        }
-
-        // Initialize new systems
-        HeartbeatVignetteSystem.init();
-        ScreenCrackSystem.init();
-        KIAStampSystem.init();
 
         // =============================================
         // ATTACH TOGGLE BUTTON EVENT LISTENERS
@@ -8011,6 +8031,21 @@
                         controls.style.transition = 'opacity 0.5s ease';
                         controls.style.opacity = '1';
                         controls.style.pointerEvents = 'auto';
+                    }
+                }
+
+                // --- SPECIAL: VANISH FATE RULES (User Request) ---
+                if (screenId === 'fate') {
+                    const container = document.getElementById(containerId);
+                    if (container) {
+                        await new Promise(r => setTimeout(r, 1500)); // Let them read
+                        container.style.transition = 'all 1s ease';
+                        container.style.opacity = '0';
+                        container.style.transform = 'translateY(-20px)';
+
+                        await new Promise(r => setTimeout(r, 1000));
+                        // Collapse to pull roulette up
+                        container.style.display = 'none';
                     }
                 }
             },
@@ -8484,63 +8519,10 @@
         // Actually, Game.startSequence is called. Let's override it or the transition to it.
         // It seems Game.startSequence switches to 's-luck'. We will intercept that.
 
-        if (typeof Game !== 'undefined') {
-            const originalStartSequence = Game.startSequence;
-            Game.startSequence = function () {
-                // Check if already registered in this session? 
-                // User asked to add options "when the start off the game".
-                // So we always show register screen first.
 
-                // NEW ACHIEVEMENT TRACKING
-                if (typeof achievementStats !== 'undefined') {
-                    achievementStats.gamesPlayed++;
-                    if (currentGameMode) achievementStats.modesPlayed.add(currentGameMode);
 
-                    if (achievementStats.gamesPlayed >= 5) unlockAchievement('veteran');
-                    if (achievementStats.modesPlayed.size >= 3) unlockAchievement('mode_traveler');
-                }
-
-                // Initialize Audio
-                try {
-                    if (typeof AudioSystem !== 'undefined') { AudioSystem.init(); AudioSystem.resume(); }
-                    if (typeof MusicSystem !== 'undefined') MusicSystem.play('start');
-                } catch (e) { }
-
-                gameInProgress = true;
-                LuckSystem.reset();
-                if (typeof StorySystem !== 'undefined') StorySystem.reset();
-
-                // SHOW REGISTER SCREEN INSTEAD OF LUCK
-                // Hide Title
-                document.getElementById('s-title').classList.add('hidden');
-                document.getElementById('s-title').classList.remove('active');
-
-                // Show Register
-                const regScreen = document.getElementById('s-register');
-                regScreen.classList.remove('hidden');
-                regScreen.classList.add('active');
-
-                // Pre-fill if exists
-                try {
-                    const saved = JSON.parse(localStorage.getItem('neuro_fried_last_user'));
-                    if (saved) {
-                        if (saved.name) document.getElementById('reg-name').value = saved.name;
-                        if (saved.photo) {
-                            UserProfile.photo = saved.photo;
-                            const preview = document.getElementById('reg-preview');
-                            const text = document.getElementById('reg-upload-text');
-                            preview.src = saved.photo;
-                            preview.style.display = 'block';
-                            text.style.display = 'none';
-                        }
-                    }
-                } catch (e) { }
-            };
-        }
-
-        // OVERRIDE SHOW LEADERBOARD TO INCLUDE PHOTO
-        const originalShowLeaderboard = showLeaderboard;
-        showLeaderboard = function () { // Override global function
+        // Show Leaderboard with Photo
+        function showLeaderboard() {
             const scores = JSON.parse(localStorage.getItem('neuro_fried_scores_v2') || '[]');
             const list = document.getElementById('leaderboard-list');
             if (list) {
@@ -8568,8 +8550,8 @@
             document.getElementById('leaderboard-modal').classList.remove('hidden');
         };
 
-        // OVERRIDE SAVE SCORE TO INCLUDE PROFILE
-        saveScore = function (score) {
+        // Save Score with Profile
+        function saveScore(score) {
             const scores = JSON.parse(localStorage.getItem('neuro_fried_scores_v2') || '[]');
             scores.push({
                 score: parseInt(score),
@@ -8929,6 +8911,53 @@
             transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
             box-shadow: 0 0 30px var(--primary), inset 0 0 20px rgba(255, 0, 0, 0.1);
         }
+
+        .achievement-popup.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        /* VIOLET OVERLAYS (User Request) */
+        :root {
+            --violet: #bc13fe;
+            --violet-glow: #bd00ff;
+            --violet-dim: #e0b0ff;
+        }
+
+        /* Rules Overlay */
+        .rules-card {
+            border-color: var(--violet) !important;
+            box-shadow: 0 0 50px rgba(188, 19, 254, 0.4) !important;
+        }
+
+        .rules-title {
+            color: var(--violet) !important;
+            text-shadow: 0 0 20px var(--violet) !important;
+            border-bottom-color: var(--violet) !important;
+        }
+
+        /* History / Inception Protocol / Story */
+        .story-line {
+            color: var(--violet-dim) !important;
+            text-shadow: 0 0 10px var(--violet) !important;
+        }
+
+        .protocol-container .protocol-trigger {
+            color: var(--violet) !important;
+            text-shadow: 0 0 10px var(--violet) !important;
+            border-color: var(--violet) !important;
+        }
+
+        /* Start Screen / Tutorial */
+        .click-to-start .start-text {
+            color: var(--violet) !important;
+            text-shadow: 0 0 30px var(--violet) !important;
+        }
+
+        .click-to-start .start-subtext {
+            color: var(--violet-dim) !important;
+        }
+
 
         .achievement-popup.show {
             transform: translateX(-50%) translateY(0);
@@ -9696,6 +9725,18 @@
             };
         })();
     </script>
+
+    <!-- Achievement Popup (Restored for Fix) -->
+    <div id="achievement-popup" class="achievement-popup">
+        <div id="ach-popup-icon" style="font-size: 2rem;">🏆</div>
+        <div>
+            <div id="ach-popup-name" style="font-family: var(--f-title); color: var(--primary); font-size: 1.2rem;">
+                ACHIEVEMENT</div>
+            <div id="ach-popup-desc" style="font-family: var(--f-mono); font-size: 0.8rem; color: #ccc;">Keep playing to
+                unlock</div>
+        </div>
+    </div>
+
 </body>
 
 </html>
