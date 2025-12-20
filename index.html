@@ -425,8 +425,12 @@
 
         /* CLICK TO START SCREEN */
         .click-to-start {
-            position: fixed;
-            inset: 0;
+            position: absolute;
+            /* Fixed inside transform = absolute, but safer to be explicit */
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
             background: rgba(0, 0, 0, 0.95);
             z-index: 100000;
             display: flex;
@@ -434,6 +438,8 @@
             justify-content: center;
             align-items: center;
             cursor: pointer;
+            pointer-events: auto;
+            /* Force clickable */
         }
 
         .click-to-start .start-text {
@@ -1135,6 +1141,8 @@
         .screen {
             position: absolute;
             inset: 0;
+            width: 100%;
+            height: 100%;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -1144,6 +1152,9 @@
             pointer-events: none;
             transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1);
             padding-top: 60px;
+            border-radius: 10px;
+            /* Match console */
+            overflow: hidden;
         }
 
         .screen.active {
@@ -3636,33 +3647,86 @@
         #neural-wrapper {
             position: fixed;
             inset: 0;
-            overflow: hidden;
+            overflow: visible;
+            /* Fix clipping of joycons */
             background: #000;
             perspective: 1200px;
-            /* Essential for 3D tilt */
             z-index: 9999;
             pointer-events: none;
-            /* Let clicks pass closely, but wrapper handles perspective */
+            display: flex;
+            /* NEW: Flex centering parent */
+            justify-content: center;
+            align-items: center;
         }
 
         #game-tilt-layer {
-            position: absolute;
-            inset: 0;
-            width: 100%;
-            height: 100%;
+            position: relative;
+            /* Changed from Absolute to Relative for Flex child */
+            top: auto;
+            left: auto;
+            transform: none;
+            /* JS will handle transform, but position is now via Flex */
+
+            width: 65vw;
+            /* Reduced width to fit joycons */
+            height: 80vh;
+            max-width: 1000px;
+            /* Reduced max-width */
+            max-height: 800px;
+            flex-shrink: 0;
+            /* Prevent crushing */
+
             transform-style: preserve-3d;
-            transform-style: preserve-3d;
-            /* Smooth transition handled by JS Lerp */
             pointer-events: auto;
-            /* Enable interaction with game */
-            background: radial-gradient(circle at center, #110000 0%, #000 90%);
+            background: #050505;
+            border: 25px solid #1a1a1a;
+            /* Thick bezel */
+            border-radius: 12px;
+            box-shadow:
+                0 0 0 2px #000,
+                /* Inner black line */
+                0 0 50px rgba(0, 0, 0, 0.8),
+                /* Drop shadow */
+                inset 0 0 20px rgba(0, 0, 0, 1);
+            /* Inner shadow for depth */
         }
 
+        /* Matte Screen Efx */
+        #game-tilt-layer::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            z-index: 50;
+            /* Above game, below overlays */
+            background:
+                repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.02) 0px, transparent 1px, transparent 2px),
+                repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.02) 0px, transparent 1px, transparent 2px);
+            background-size: 4px 4px;
+            box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.8);
+            /* Inner vignette */
+            mix-blend-mode: overlay;
+        }
+
+        /* Override JS Tilt override if needed, but JS sets transform, so centering via CSS might be tricky if JS overwrites 'translate'. */
+        /* JS sets: transform = `rotateX(...) rotateY(...) scale(...)` */
+        /* To Center it, JS must include translate(-50%, -50%) OR we use a wrapper. */
+        /* BETTER: Use #neural-wrapper as flex center? */
+        /* No, #neural-wrapper has perspective. */
+        /* Let's wrap #game-tilt-layer content in a NEW "console-box" ? No, too much HTML change. */
+        /* Let's try centering via margin IF JS overwrites transform. */
+        /* JS loop: this.tiltLayer.style.transform = `rotateX(...) ...` -> It overwrites translate(-50%, -50%). */
+        /* FIX: Change JS Loop or use a wrapper. I will update JS loop later. First CSS. */
+
         #neural-hud-overlay {
-            position: fixed;
+            position: absolute;
+            /* Inside tilt-layer or wrapper */
             inset: 0;
             pointer-events: none;
             z-index: 10000;
+            border-radius: 5px;
+            overflow: hidden;
+            /* Clip to screen */
         }
 
         /* 1. Vignette Heavy - Focusing the view */
@@ -3677,10 +3741,12 @@
         .border-glitch {
             position: absolute;
             inset: 20px;
-            border: 1px solid rgba(255, 50, 50, 0.3);
+            border: 1px solid rgba(188, 19, 254, 0.5);
+            /* Violet */
             border-radius: 20px;
-            box-shadow: 0 0 20px rgba(255, 0, 0, 0.1), inset 0 0 20px rgba(255, 0, 0, 0.05);
-            background: linear-gradient(to bottom, transparent 95%, rgba(255, 0, 0, 0.05));
+            box-shadow: 0 0 30px rgba(188, 19, 254, 0.2), inset 0 0 50px rgba(5, 0, 10, 0.8);
+            /* Violet + Dark Mix */
+            background: linear-gradient(to bottom, transparent 90%, rgba(100, 0, 200, 0.1));
             pointer-events: none;
         }
 
@@ -3690,7 +3756,8 @@
             position: absolute;
             width: 20px;
             height: 20px;
-            border: 2px solid var(--primary);
+            border: 2px solid #bc13fe;
+            /* Violet Corners */
             transition: all 0.2s ease;
         }
 
@@ -3968,6 +4035,189 @@
                 transform: translate(0);
             }
         }
+
+        /* =========================================
+           SWITCH CONTROLLER STYLES
+           ========================================= */
+        .switch-btn {
+            width: 100px !important;
+            height: 250px !important;
+            /* Base Switch Btn (Colors handled by modifiers) */
+            /* background: covered by .switch-left/right */
+            border: none !important;
+            border-radius: 0 !important;
+            /* Reset base radius */
+            position: relative;
+            pointer-events: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow:
+                inset 5px 5px 15px rgba(255, 255, 255, 0.2),
+                inset -5px -5px 15px rgba(0, 0, 0, 0.4),
+                10px 10px 30px rgba(0, 0, 0, 0.5) !important;
+            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            z-index: 10001;
+            padding: 0 !important;
+            background: none;
+            animation: none !important;
+            /* Remove pulse */
+        }
+
+        .switch-left {
+            background: linear-gradient(135deg, #0ab9e6 0%, #009acb 100%) !important;
+            border-top-right-radius: 0 !important;
+            border-bottom-right-radius: 0 !important;
+            border-top-left-radius: 40px !important;
+            border-bottom-left-radius: 40px !important;
+
+            position: absolute;
+            left: -100px;
+            /* Attach to outside left */
+            bottom: 0;
+            top: 0;
+            height: 100% !important;
+            /* Full height joycon? Or centered? User said "attached". */
+            /* The image showed tall joycons. Let's make them match console height closer or just center them vertically */
+            margin: auto;
+            height: 90% !important;
+            /* Slightly smaller than screen? */
+
+            border-left: 5px solid #0076a3 !important;
+            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.5), inset 2px 2px 5px rgba(255, 255, 255, 0.3) !important;
+        }
+
+        .switch-right {
+            background: linear-gradient(135deg, #ff3c28 0%, #d40000 100%) !important;
+            /* Neon Red */
+            border-top-left-radius: 0 !important;
+            border-bottom-left-radius: 0 !important;
+            border-top-right-radius: 40px !important;
+            border-bottom-right-radius: 40px !important;
+
+            position: absolute;
+            right: -100px;
+            /* Attach to outside right */
+            bottom: 0;
+            top: 0;
+            margin: auto;
+            height: 90% !important;
+
+            border-right: 5px solid #bd0000 !important;
+            box-shadow: 5px 0 15px rgba(0, 0, 0, 0.5), inset 2px 2px 5px rgba(255, 255, 255, 0.3) !important;
+        }
+
+        /* Analog Stick */
+        .stick {
+            width: 50px;
+            height: 50px;
+            background: #222;
+            border-radius: 50%;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.6), inset 0 2px 5px rgba(255, 255, 255, 0.1);
+            position: relative;
+            border: 2px solid #000;
+        }
+
+        .stick::after {
+            content: '';
+            position: absolute;
+            top: 10%;
+            left: 10%;
+            width: 80%;
+            height: 80%;
+            background: radial-gradient(circle at 30% 30%, #444, #111);
+            border-radius: 50%;
+            box-shadow: inset 0 -2px 5px rgba(0, 0, 0, 0.8);
+        }
+
+        /* Face Buttons Group */
+        .btn-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 20px;
+            transform: scale(0.8);
+        }
+
+        .btn-face {
+            width: 25px;
+            height: 25px;
+            background: #222;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Label Text */
+        .btn-label {
+            font-family: var(--f-ui);
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: rgba(0, 0, 0, 0.6);
+            letter-spacing: 1px;
+            text-align: center;
+            text-shadow: 0 1px 0 rgba(255, 255, 255, 0.2);
+            margin-top: 10px;
+        }
+
+        .btn-label span {
+            font-size: 0.8rem;
+            opacity: 0.8;
+            font-family: var(--f-mono);
+        }
+
+        /* Used/Disabled State */
+        .switch-btn.used {
+            filter: grayscale(1) brightness(0.5);
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        /* =========================================
+           HUGE OUTRO TEXT
+           ========================================= */
+        .outro-text-huge {
+            font-family: var(--f-title);
+            font-size: 15vw;
+            font-weight: 900;
+            color: #fff;
+            text-shadow: 0 0 50px var(--primary);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0;
+            white-space: nowrap;
+            z-index: 6005;
+            pointer-events: none;
+        }
+
+        @keyframes outroSequenceAnim {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.1);
+                filter: blur(20px);
+            }
+
+            20% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+                filter: blur(0);
+            }
+
+            60% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1.1);
+            }
+
+            100% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(2);
+                filter: blur(10px);
+            }
+        }
     </style>
 </head>
 
@@ -4228,199 +4478,189 @@
                     </div>
                 </div>
 
-                <div class="freeze-container"
-                    style="left: 150px; bottom: 70px; position: absolute; display: flex; gap: 20px; pointer-events: auto; z-index: 10000; transform: translateZ(200px);">
-                    <button class="big-freeze-btn" id="btn-freeze" onclick="TimePowers.useFreeze()">
-                        FREEZE
-                        <span>[SPACE]</span>
-                    </button>
-                    <button class="big-freeze-btn btn-hud-rewind" id="btn-rewind-hud" onclick="TimePowers.useRewind()">
-                        REWIND
-                        <span>[R]</span>
-                    </button>
+            </div>
+
+            <!-- JOY-CONS (Moved outside HUD to be persistent console parts) -->
+            <div class="freeze-container"
+                style="position: absolute; width: 100%; height: 100%; top: 0; left: 0; pointer-events: none; z-index: 99999;">
+                <!-- Left: Rewind -->
+                <button class="switch-btn switch-left btn-hud-rewind" id="btn-rewind-hud"
+                    onclick="TimePowers.useRewind()">
+                    <div class="stick"></div>
+                    <div class="btn-group">
+                        <div class="btn-face"></div>
+                        <div class="btn-face"></div>
+                        <div class="btn-face"></div>
+                        <div class="btn-face"></div>
+                    </div>
+                    <div class="btn-label">REWIND<br><span>[R]</span></div>
+                </button>
+                <!-- Right: Freeze -->
+                <button class="switch-btn switch-right big-freeze-btn" id="btn-freeze" onclick="TimePowers.useFreeze()">
+                    <div class="stick"></div>
+                    <div class="btn-group">
+                        <div class="btn-face"></div>
+                        <div class="btn-face"></div>
+                        <div class="btn-face"></div>
+                        <div class="btn-face"></div>
+                    </div>
+                    <div class="btn-label">FREEZE<br><span>[SPACE]</span></div>
+                </button>
+            </div>
+        </div>
+
+        <div id="s-title" class="screen active">
+            <h1 class="glitch-title" data-text="NEURO FRIED">NEURO<br>FRIED</h1>
+
+            <div class="protocol-container">
+                <div class="protocol-trigger">[ TRANSMISSION INTERCEPTED ]</div>
+                <div class="story-container" id="title-story-container">
+                    <!-- Typewriter text will be generated here -->
                 </div>
             </div>
 
-            <div id="s-title" class="screen active">
-                <h1 class="glitch-title" data-text="NEURO FRIED">NEURO<br>FRIED</h1>
+            <button class="tech-btn" id="init-btn" style="opacity:0; pointer-events:none;">INITIALIZE
+                SYSTEM</button>
+        </div>
 
-                <div class="protocol-container">
-                    <div class="protocol-trigger">[ TRANSMISSION INTERCEPTED ]</div>
-                    <div class="story-container" id="title-story-container">
-                        <!-- Typewriter text will be generated here -->
+        <div id="s-roulette" class="screen hidden">
+            <h2 style="font-family:var(--f-title); color:var(--text-main); margin-bottom:20px; opacity:0.8;">
+                SEARCHING
+                ARCHIVES...</h2>
+            <div class="story-container" id="roulette-story-container">
+                <!-- Typewriter text generated here -->
+            </div>
+            <div class="roulette-box">
+                <div class="roulette-window">
+                    <div class="roulette-track" id="roulette-track"></div>
+                    <div
+                        style="position:absolute; inset:0; background:linear-gradient(to bottom, var(--glass-bg), transparent 40%, transparent 60%, var(--glass-bg)); pointer-events:none; z-index:20;">
                     </div>
                 </div>
-
-                <button class="tech-btn" id="init-btn" style="opacity:0; pointer-events:none;">INITIALIZE
-                    SYSTEM</button>
+                <div id="roulette-actions" class="hidden" style="margin-top:10px;">
+                    <button class="tech-btn" onclick="Game.confirmTopic()"
+                        style="border-color:var(--primary); color:var(--primary);">ACCEPT</button>
+                    <button class="tech-btn" onclick="Game.reroll()"
+                        style="border-color:var(--danger); color:var(--danger);">REROLL</button>
+                </div>
             </div>
+        </div>
 
-            <div id="s-roulette" class="screen hidden">
-                <h2 style="font-family:var(--f-title); color:var(--text-main); margin-bottom:20px; opacity:0.8;">
-                    SEARCHING
-                    ARCHIVES...</h2>
-                <div class="story-container" id="roulette-story-container">
+        <div id="s-timeline" class="screen hidden">
+            <div class="timeline-box">
+                <h2 style="font-family:var(--f-title); color:var(--text-main);">CHOOSE YOUR PATH</h2>
+                <div class="story-container" id="timeline-story-container">
                     <!-- Typewriter text generated here -->
                 </div>
-                <div class="roulette-box">
-                    <div class="roulette-window">
-                        <div class="roulette-track" id="roulette-track"></div>
+                <div id="timeline-controls" style="opacity:0; pointer-events:none;">
+                    <div style="margin:20px 0; font-family:var(--f-mono); font-size:2rem; color:var(--secondary);">
+                        1935 <span style="opacity:0.5">&lt;---&gt;</span> 2035
+                    </div>
+                    <div class="btn-row">
+                        <button class="tech-btn" style="border-color:var(--primary); color:var(--primary);"
+                            onclick="Game.startGame('asc')">CHRONOLOGICAL</button>
+                        <button class="tech-btn" style="border-color:var(--danger); color:var(--danger);"
+                            onclick="Game.startGame('desc')">REWIND FLOW</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="s-register" class="screen hidden" style="background: black; z-index: 5500;">
+            <div class="register-box">
+                <h2 style="font-family:var(--f-title); color:var(--primary); margin-bottom:10px;">IDENTITY
+                    REGISTRATION</h2>
+                <p style="font-family:var(--f-mono); color:#888; margin-bottom:30px;">REQUIRED FOR NEURAL SYNC</p>
+
+                <label for="reg-photo" class="avatar-upload">
+                    <span id="reg-upload-text" style="color:var(--secondary); font-family:var(--f-mono);">+
+                        PHOTO</span>
+                    <img id="reg-preview" class="avatar-preview">
+                    <input type="file" id="reg-photo" hidden accept="image/*" onchange="previewAvatar(this)">
+                </label>
+
+                <input type="text" id="reg-name" class="cyber-input" placeholder="ENTER CODENAME" maxlength="12"
+                    autocomplete="off">
+
+                <button class="mega-btn" onclick="registerAndStart()">INITIATE SYNC</button>
+            </div>
+        </div>
+
+        <div id="s-hype" class="screen hidden" style="background: rgba(0,0,0,0.9); z-index: 5000;">
+            <div id="hype-count" class="hype-num">3</div>
+            <div id="hype-msg-cont" class="hype-msg-cont hidden"></div>
+        </div>
+
+        <div id="s-outro" class="screen hidden"
+            style="background: black; z-index: 6000; flex-direction: column; justify-content: center; align-items: center;">
+            <div id="outro-t1" class="outro-text">THANKS</div>
+            <div id="outro-t2" class="outro-text">FOR PLAYING</div>
+            <div id="outro-t3" class="outro-text" style="color:var(--primary)">MY GAME</div>
+            <div id="outro-final" class="outro-text hidden" style="margin-top: 50px;">
+                <span id="word-restart"
+                    style="text-decoration: line-through; text-decoration-color: var(--danger); text-decoration-thickness: 5px; opacity: 0.5;">RESTART</span>
+                <span id="word-rewind" class="glitch-text"
+                    style="color:var(--secondary); font-size: 1.5em; display:none; margin-left: 15px;">REWIND</span>
+            </div>
+        </div>
+
+        <div id="s-game" class="screen hidden">
+            <div class="time-ring" id="timeRing">
+                <svg viewBox="0 0 100 100">
+                    <circle class="time-ring-bg" cx="50" cy="50" r="40"></circle>
+                    <circle class="time-ring-progress" id="timeProgress" cx="50" cy="50" r="40"></circle>
+                </svg>
+                <div class="time-ring-text" id="timeText">15</div>
+            </div>
+            <div class="game-grid">
+                <div class="timer-rail">
+                    <div class="timer-fill" id="timer-bar"></div>
+                </div>
+                <div class="q-card">
+                    <span class="era-tag" id="era-display">YEAR: 1990</span>
+                    <div class="q-text" id="q-text">LOADING...</div>
+                </div>
+                <div class="opt-grid" id="opt-area"></div>
+            </div>
+        </div>
+
+        <div id="s-over" class="screen hidden">
+            <h1 id="game-over-headline"
+                style="font-family:var(--f-title); font-size:4rem; color:var(--danger); margin-bottom:10px;">SIGNAL
+                LOST
+            </h1>
+
+            <div class="game-over-container">
+                <!-- LEFT: Share Card -->
+                <div class="share-card-wrapper">
+                    <div class="share-card">
+                        <img id="card-img"
+                            style="width:100%; height:100%; object-fit:cover; filter:grayscale(100%); opacity:0.6;"
+                            src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%25' height='100%25'%3E%3Crect fill='%23111' width='100%25' height='100%25'/%3E%3Ctext x='50%25' y='50%25' fill='%23333' font-family='monospace' text-anchor='middle' dominant-baseline='middle'%3ENO IMAGE%3C/text%3E%3C/svg%3E">
                         <div
-                            style="position:absolute; inset:0; background:linear-gradient(to bottom, var(--glass-bg), transparent 40%, transparent 60%, var(--glass-bg)); pointer-events:none; z-index:20;">
+                            style="position:absolute; inset:0; background:linear-gradient(to top, black 20%, transparent 80%);">
                         </div>
-                    </div>
-                    <div id="roulette-actions" class="hidden" style="margin-top:10px;">
-                        <button class="tech-btn" onclick="Game.confirmTopic()"
-                            style="border-color:var(--primary); color:var(--primary);">ACCEPT</button>
-                        <button class="tech-btn" onclick="Game.reroll()"
-                            style="border-color:var(--danger); color:var(--danger);">REROLL</button>
-                    </div>
-                </div>
-            </div>
-
-            <div id="s-timeline" class="screen hidden">
-                <div class="timeline-box">
-                    <h2 style="font-family:var(--f-title); color:var(--text-main);">CHOOSE YOUR PATH</h2>
-                    <div class="story-container" id="timeline-story-container">
-                        <!-- Typewriter text generated here -->
-                    </div>
-                    <div id="timeline-controls" style="opacity:0; pointer-events:none;">
-                        <div style="margin:20px 0; font-family:var(--f-mono); font-size:2rem; color:var(--secondary);">
-                            1935 <span style="opacity:0.5">&lt;---&gt;</span> 2035
-                        </div>
-                        <div class="btn-row">
-                            <button class="tech-btn" style="border-color:var(--primary); color:var(--primary);"
-                                onclick="Game.startGame('asc')">CHRONOLOGICAL</button>
-                            <button class="tech-btn" style="border-color:var(--danger); color:var(--danger);"
-                                onclick="Game.startGame('desc')">REWIND FLOW</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div id="s-register" class="screen hidden" style="background: black; z-index: 5500;">
-                <div class="register-box">
-                    <h2 style="font-family:var(--f-title); color:var(--primary); margin-bottom:10px;">IDENTITY
-                        REGISTRATION</h2>
-                    <p style="font-family:var(--f-mono); color:#888; margin-bottom:30px;">REQUIRED FOR NEURAL SYNC</p>
-
-                    <label for="reg-photo" class="avatar-upload">
-                        <span id="reg-upload-text" style="color:var(--secondary); font-family:var(--f-mono);">+
-                            PHOTO</span>
-                        <img id="reg-preview" class="avatar-preview">
-                        <input type="file" id="reg-photo" hidden accept="image/*" onchange="previewAvatar(this)">
-                    </label>
-
-                    <input type="text" id="reg-name" class="cyber-input" placeholder="ENTER CODENAME" maxlength="12"
-                        autocomplete="off">
-
-                    <button class="mega-btn" onclick="registerAndStart()">INITIATE SYNC</button>
-                </div>
-            </div>
-
-            <div id="s-hype" class="screen hidden" style="background: rgba(0,0,0,0.9); z-index: 5000;">
-                <div id="hype-count" class="hype-num">3</div>
-                <div id="hype-msg-cont" class="hype-msg-cont hidden"></div>
-            </div>
-
-            <div id="s-outro" class="screen hidden"
-                style="background: black; z-index: 6000; flex-direction: column; justify-content: center; align-items: center;">
-                <div id="outro-t1" class="outro-text">THANKS</div>
-                <div id="outro-t2" class="outro-text">FOR PLAYING</div>
-                <div id="outro-t3" class="outro-text" style="color:var(--primary)">MY GAME</div>
-                <div id="outro-final" class="outro-text hidden" style="margin-top: 50px;">
-                    <span id="word-restart"
-                        style="text-decoration: line-through; text-decoration-color: var(--danger); text-decoration-thickness: 5px; opacity: 0.5;">RESTART</span>
-                    <span id="word-rewind" class="glitch-text"
-                        style="color:var(--secondary); font-size: 1.5em; display:none; margin-left: 15px;">REWIND</span>
-                </div>
-            </div>
-
-            <div id="s-game" class="screen hidden">
-                <div class="time-ring" id="timeRing">
-                    <svg viewBox="0 0 100 100">
-                        <circle class="time-ring-bg" cx="50" cy="50" r="40"></circle>
-                        <circle class="time-ring-progress" id="timeProgress" cx="50" cy="50" r="40"></circle>
-                    </svg>
-                    <div class="time-ring-text" id="timeText">15</div>
-                </div>
-                <div class="game-grid">
-                    <div class="timer-rail">
-                        <div class="timer-fill" id="timer-bar"></div>
-                    </div>
-                    <div class="q-card">
-                        <span class="era-tag" id="era-display">YEAR: 1990</span>
-                        <div class="q-text" id="q-text">LOADING...</div>
-                    </div>
-                    <div class="opt-grid" id="opt-area"></div>
-                </div>
-            </div>
-
-            <div id="s-over" class="screen hidden">
-                <h1 id="game-over-headline"
-                    style="font-family:var(--f-title); font-size:4rem; color:var(--danger); margin-bottom:10px;">SIGNAL
-                    LOST
-                </h1>
-
-                <div class="game-over-container">
-                    <!-- LEFT: Share Card -->
-                    <div class="share-card-wrapper">
-                        <div class="share-card">
-                            <img id="card-img"
-                                style="width:100%; height:100%; object-fit:cover; filter:grayscale(100%); opacity:0.6;"
-                                src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%25' height='100%25'%3E%3Crect fill='%23111' width='100%25' height='100%25'/%3E%3Ctext x='50%25' y='50%25' fill='%23333' font-family='monospace' text-anchor='middle' dominant-baseline='middle'%3ENO IMAGE%3C/text%3E%3C/svg%3E">
-                            <div
-                                style="position:absolute; inset:0; background:linear-gradient(to top, black 20%, transparent 80%);">
-                            </div>
-                            <div style="position:absolute; inset:10px; border:1px solid rgba(255,255,255,0.2);"></div>
-                            <div
-                                style="position:absolute; top:20px; width:100%; text-align:center; font-family:var(--f-title); color:var(--danger); font-size:0.9rem; letter-spacing:2px;">
-                                NEURO-FRIED // AGENT</div>
-
-                            <div style="position:absolute; bottom:30px; width:100%; text-align:center;">
-                                <div style="color:#aaa; font-family:var(--f-mono); margin-bottom:5px;">FINAL AURA</div>
-                                <div style="color:var(--green); font-family:var(--f-title); font-size:4rem; text-shadow:0 0 20px var(--green);"
-                                    id="final-aura-score">0</div>
-                                <div style="color:white; font-family:var(--f-title); font-size:1.5rem; letter-spacing:3px;"
-                                    id="final-name">AGENT</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- RIGHT: Controls Panel -->
-                    <div class="controls-panel">
-                        <!-- User Info Readout -->
-                        <div class="control-row name-row" style="justify-content: center; margin-bottom: 20px;">
-                            <span style="color:var(--primary); font-family:var(--f-mono); font-size:1.2rem;">IDENTITY
-                                VERIFIED</span>
-                        </div>
-
-                        <!-- Feedback Button - Opens Google Form -->
-                        <button class="send-feedback-btn" onclick="sendFeedback()">📝 SHARE FEEDBACK</button>
-
-                        <!-- Reboot Button -->
-                        <button class="control-btn reboot-btn" onclick="location.reload()">🔄 REBOOT SYSTEM</button>
-
-                        <!-- Capture Button -->
-                        <button class="control-btn" onclick="initiateCapture()"
-                            style="margin-top:10px; border-color:var(--green); color:var(--green);">📸 CAPTURE
-                            RECALL</button>
-
-
-                        <!-- Leaderboard Button -->
-                        <button class="control-btn" onclick="showLeaderboard()" style="margin-top:10px;">🏆
-                            LEADERBOARD</button>
-                    </div>
-
-                    <!-- Share Message -->
-                    <div class="share-message-box">
-                        <div style="color:var(--green); font-family:var(--f-title); font-size:1rem; line-height:1.4;">
-                            TAKE A SCREENSHOT<br>AND REVIVE YOUR<br>HAPPINESS
-                        </div>
+                        <div style="position:absolute; inset:10px; border:1px solid rgba(255,255,255,0.2);"></div>
                         <div
-                            style="color:#888; font-family:var(--f-mono); font-size:0.8rem; margin-top:8px; letter-spacing:1px;">
-                            SHARE AMONG ALL
+                            style="position:absolute; top:20px; width:100%; text-align:center; font-family:var(--f-title); color:var(--danger); font-size:0.9rem; letter-spacing:2px;">
+                            NEURO-FRIED // AGENT</div>
+
+                        <div style="position:absolute; bottom:30px; width:100%; text-align:center;">
+                            <div style="color:#aaa; font-family:var(--f-mono); margin-bottom:5px;">FINAL AURA</div>
+                            <div style="color:var(--green); font-family:var(--f-title); font-size:4rem; text-shadow:0 0 20px var(--green);"
+                                id="final-aura-score">0</div>
+                            <div style="color:white; font-family:var(--f-title); font-size:1.5rem; letter-spacing:3px;"
+                                id="final-name">AGENT</div>
                         </div>
+                    </div>
+                </div>
+
+                <!-- RIGHT: Controls Panel -->
+                <div class="controls-panel">
+                    <!-- User Info Readout -->
+                    <div class="control-row name-row" style="justify-content: center; margin-bottom: 20px;">
+                        <span style="color:var(--primary); font-family:var(--f-mono); font-size:1.2rem;">IDENTITY
+                            VERIFIED</span>
                     </div>
 
                     <!-- Feedback Button - Opens Google Form -->
@@ -4429,12 +4669,40 @@
                     <!-- Reboot Button -->
                     <button class="control-btn reboot-btn" onclick="location.reload()">🔄 REBOOT SYSTEM</button>
 
+                    <!-- Capture Button -->
+                    <button class="control-btn" onclick="initiateCapture()"
+                        style="margin-top:10px; border-color:var(--green); color:var(--green);">📸 CAPTURE
+                        RECALL</button>
+
+
                     <!-- Leaderboard Button -->
                     <button class="control-btn" onclick="showLeaderboard()" style="margin-top:10px;">🏆
                         LEADERBOARD</button>
                 </div>
+
+                <!-- Share Message -->
+                <div class="share-message-box">
+                    <div style="color:var(--green); font-family:var(--f-title); font-size:1rem; line-height:1.4;">
+                        TAKE A SCREENSHOT<br>AND REVIVE YOUR<br>HAPPINESS
+                    </div>
+                    <div
+                        style="color:#888; font-family:var(--f-mono); font-size:0.8rem; margin-top:8px; letter-spacing:1px;">
+                        SHARE AMONG ALL
+                    </div>
+                </div>
+
+                <!-- Feedback Button - Opens Google Form -->
+                <button class="send-feedback-btn" onclick="sendFeedback()">📝 SHARE FEEDBACK</button>
+
+                <!-- Reboot Button -->
+                <button class="control-btn reboot-btn" onclick="location.reload()">🔄 REBOOT SYSTEM</button>
+
+                <!-- Leaderboard Button -->
+                <button class="control-btn" onclick="showLeaderboard()" style="margin-top:10px;">🏆
+                    LEADERBOARD</button>
             </div>
         </div>
+    </div>
 
     </div> <!-- END game-tilt-layer -->
 
@@ -7451,33 +7719,51 @@
                 s.classList.remove('hidden');
                 setTimeout(() => s.classList.add('active'), 10);
 
-                [t1, t2, t3].forEach(el => { el.className = 'outro-text'; el.style.opacity = '0'; });
+                // Use new huge text class
+                [t1, t2, t3].forEach(el => {
+                    el.className = 'outro-text-huge';
+                    el.style.opacity = '0';
+                    el.style.animation = 'none';
+                });
                 fin.classList.add('hidden');
                 wRes.style.opacity = '0.5'; wRes.style.textDecoration = "none";
                 wRew.style.display = 'none';
 
+                // New play helper for massive animations
                 const play = (el, delay, dur) => {
-                    setTimeout(() => { el.classList.add('anim-in'); AudioSystem.playRouletteClick(); }, delay);
-                    setTimeout(() => { el.classList.remove('anim-in'); el.classList.add('anim-out'); }, delay + dur);
+                    setTimeout(() => {
+                        el.style.opacity = '1';
+                        el.style.animation = `outroSequenceAnim ${dur / 1000}s ease-in-out forwards`;
+                        AudioSystem.playRouletteClick();
+                    }, delay);
                 };
 
-                play(t1, 0, 500);
-                play(t2, 600, 500);
-                play(t3, 1200, 700);
+                // Sequential huge text
+                play(t1, 100, 1500);
+                play(t2, 1400, 1500);
+                play(t3, 2700, 1500);
 
+                // Final Reveal
                 setTimeout(() => {
                     fin.classList.remove('hidden');
-                    fin.style.opacity = 1;
-                    wRes.style.opacity = 1;
+                    fin.style.opacity = '1';
+                    fin.style.transform = 'scale(2)'; // Huge restart text
+                    fin.style.transition = 'all 0.5s ease-out';
+
+                    setTimeout(() => { fin.style.transform = 'scale(1.5)'; }, 100);
+
+                    wRes.style.opacity = '1';
 
                     setTimeout(() => {
                         wRes.style.textDecoration = 'line-through';
                         wRes.style.textDecorationColor = 'var(--danger)';
+                        wRes.style.textDecorationThickness = '5px';
                         AudioSystem.playWrong();
 
                         setTimeout(() => {
                             wRew.style.display = 'inline-block';
                             wRew.style.animation = 'glitchText 0.3s infinite';
+                            wRew.style.fontSize = '2rem'; // Bigger rewind text
                             AudioSystem.playRewind();
 
                             setTimeout(() => {
@@ -7485,10 +7771,10 @@
                                 document.getElementById('final-aura-score').innerText = this.score;
                                 document.getElementById('s-over').classList.remove('hidden');
                                 setTimeout(() => document.getElementById('s-over').classList.add('active'), 50);
-                            }, 1000);
-                        }, 500);
-                    }, 500);
-                }, 2100);
+                            }, 2500);
+                        }, 800);
+                    }, 800);
+                }, 4000);
             },
 
             switchScreen(from, to) {
@@ -8077,6 +8363,16 @@
             await StorySystem.playStory('title', 'title', 'init-btn');
         });
 
+        // GLOBAL CLICK HANDLER (Fix for 'Tap Anywhere')
+        document.addEventListener('click', function (e) {
+            const startScreen = document.getElementById('click-to-start');
+            // If start screen is visible and not already handling the click
+            if (startScreen && startScreen.style.display !== 'none' && startScreen.style.opacity !== '0' && e.target !== startScreen) {
+                // Dispatch a click to the start screen itself to trigger the main handler
+                startScreen.click();
+            }
+        }, { capture: true });
+
         // Hook into screen transitions
         const originalShowScreen = window.showScreen || function () { };
         window.showScreen = function (screenId) {
@@ -8456,34 +8752,62 @@
         };
 
         function registerAndStart() {
-            const nameInput = document.getElementById('reg-name');
-            const name = nameInput.value.toUpperCase().trim() || "AGENT";
+            try {
+                const nameInput = document.getElementById('reg-name');
+                const name = nameInput.value.toUpperCase().trim() || "AGENT";
 
-            UserProfile.name = name;
-            UserProfile.registered = true;
+                UserProfile.name = name;
+                UserProfile.registered = true;
 
-            if (typeof unlockAchievement !== 'undefined') unlockAchievement('identity_verified'); // EXPANSION HOOK
+                if (typeof unlockAchievement !== 'undefined') unlockAchievement('identity_verified'); // EXPANSION HOOK
 
-            // Photo is already set by previewAvatar helper
+                // Photo is already set by previewAvatar helper
 
-            // Save to LocalStorage for persistence
-            localStorage.setItem('neuro_fried_last_user', JSON.stringify({ name: UserProfile.name, photo: UserProfile.photo }));
+                // Save to LocalStorage for persistence
+                try {
+                    localStorage.setItem('neuro_fried_last_user', JSON.stringify({ name: UserProfile.name, photo: UserProfile.photo }));
+                } catch (e) {
+                    console.warn("Storage Sync Failed:", e);
+                }
 
-            // Update UI elements immediately
-            updateIdentityDisplays();
+                // Update UI elements immediately
+                updateIdentityDisplays();
 
-            // Hide Register Screen -> Show Luck Screen (Game Start)
-            // Hide Register Screen -> Show Luck Screen (Game Start)
-            const regScreen = document.getElementById('s-register');
-            regScreen.classList.add('hidden');
-            regScreen.classList.remove('active');
+                // Hide Register Screen -> Show Luck Screen (Game Start)
+                // Hide Register Screen -> Show Luck Screen (Game Start)
+                const regScreen = document.getElementById('s-register');
+                regScreen.classList.add('hidden');
+                regScreen.classList.remove('active');
 
-            const luckScreen = document.getElementById('s-luck');
-            luckScreen.classList.remove('hidden');
-            luckScreen.classList.add('active');
+                const luckScreen = document.getElementById('s-luck');
+                luckScreen.classList.remove('hidden');
+                luckScreen.classList.add('active');
 
-            // Continue start sequence
-            if (typeof StorySystem !== 'undefined') StorySystem.playStory('fate', 'fate', 'luck-box-container');
+                // Continue start sequence
+                if (typeof StorySystem !== 'undefined') {
+                    StorySystem.playStory('fate', 'fate', 'luck-box-container');
+                } else {
+                    console.error("StorySystem undefined in registerAndStart");
+                    // Fallback: manually reveal controls if StorySystem is missing
+                    const box = document.getElementById('luck-box-container');
+                    if (box) {
+                        box.style.opacity = 1;
+                        box.style.pointerEvents = 'auto';
+                    }
+                }
+            } catch (err) {
+                console.error("CRITICAL ERROR in registerAndStart:", err);
+                // Emergency transition
+                document.getElementById('s-register').classList.add('hidden');
+                document.getElementById('s-register').classList.remove('active');
+                document.getElementById('s-luck').classList.remove('hidden');
+                document.getElementById('s-luck').classList.add('active');
+                const box = document.getElementById('luck-box-container');
+                if (box) {
+                    box.style.opacity = 1;
+                    box.style.pointerEvents = 'auto';
+                }
+            }
         }
 
         function previewAvatar(input) {
