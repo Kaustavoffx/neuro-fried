@@ -9363,8 +9363,23 @@
                     };
                 }
 
-                // Create ending overlay
+                // UPDATE GAME OVER SCREEN STATS (populate immediately)
+                const corruptionEl = document.getElementById('final-corruption');
+                const loopsEl = document.getElementById('final-loops');
+                const powersEl = document.getElementById('final-powers');
+                const endingBadge = document.getElementById('final-ending-badge');
+
+                if (corruptionEl) corruptionEl.textContent = `${Math.floor(this.corruption)}%`;
+                if (loopsEl) loopsEl.textContent = this.loopCount;
+                if (powersEl) powersEl.textContent = achievementStats.rewindCount + (achievementStats.freezeUsed ? 1 : 0);
+                if (endingBadge) {
+                    endingBadge.textContent = `ENDING: ${endingData.title}`;
+                    endingBadge.style.color = endingData.color;
+                }
+
+                // Create temporary ending overlay (will auto-remove)
                 const overlay = document.createElement('div');
+                overlay.id = 'timeline-ending-overlay';
                 overlay.style.cssText = `
                     position: fixed;
                     inset: 0;
@@ -9375,7 +9390,7 @@
                     justify-content: center;
                     align-items: center;
                     opacity: 0;
-                    transition: opacity 1s;
+                    transition: opacity 0.8s;
                 `;
 
                 overlay.innerHTML = `
@@ -9398,16 +9413,11 @@
                 document.body.appendChild(overlay);
                 setTimeout(() => overlay.style.opacity = '1', 100);
 
-                // Proceed to game over after showing ending
+                // Auto-remove overlay after 3 seconds (DON'T call gameWin - let normal flow continue)
                 setTimeout(() => {
                     overlay.style.opacity = '0';
-                    setTimeout(() => {
-                        overlay.remove();
-                        if (typeof Game !== 'undefined' && typeof Game.gameWin === 'function') {
-                            Game.gameWin();
-                        }
-                    }, 1000);
-                }, 5000);
+                    setTimeout(() => overlay.remove(), 800);
+                }, 3000);
             },
 
             reset() {
