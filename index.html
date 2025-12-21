@@ -4698,38 +4698,43 @@
                                 <div style="color:white; font-family:var(--f-title); font-size:1.5rem; letter-spacing:3px;"
                                     id="final-name">AGENT</div>
                             </div>
-                            <div class="control-row name-row" style="justify-content: center; margin-bottom: 20px;">
-                                <span
-                                    style="color:var(--primary); font-family:var(--f-mono); font-size:1.2rem;">IDENTITY
-                                    VERIFIED</span>
-                            </div>
+                        </div>
+                    </div>
 
-                            <!-- TIMELINE INTEGRITY STATS (Game Jam Feature) -->
-                            <div id="timeline-stats" style="
+                    <!-- RIGHT: Controls Panel -->
+                    <div class="controls-panel">
+                        <!-- User Info Readout -->
+                        <div class="control-row name-row" style="justify-content: center; margin-bottom: 20px;">
+                            <span style="color:var(--primary); font-family:var(--f-mono); font-size:1.2rem;">IDENTITY
+                                VERIFIED</span>
+                        </div>
+
+                        <!-- TIMELINE INTEGRITY STATS (Game Jam Feature) -->
+                        <div id="timeline-stats" style="
                             margin-bottom: 20px; 
                             padding: 15px; 
                             background: rgba(139, 0, 255, 0.1); 
                             border: 2px solid var(--primary); 
                             border-radius: 8px;
                             font-family: var(--f-mono);">
-                                <div
-                                    style="color: #00f3ff; font-size: 0.9rem; margin-bottom: 10px; text-align: center; letter-spacing: 2px;">
-                                    ⚠️ TIMELINE REPORT ⚠️
+                            <div
+                                style="color: #00f3ff; font-size: 0.9rem; margin-bottom: 10px; text-align: center; letter-spacing: 2px;">
+                                ⚠️ TIMELINE REPORT ⚠️
+                            </div>
+                            <div style="display: flex; flex-direction: column; gap: 8px; font-size: 0.85rem;">
+                                <div style="display: flex; justify-content: space-between;">
+                                    <span style="color: #aaa;">Timeline Corruption:</span>
+                                    <span id="final-corruption" style="color: #ff00ff; font-weight: bold;">0%</span>
                                 </div>
-                                <div style="display: flex; flex-direction: column; gap: 8px; font-size: 0.85rem;">
-                                    <div style="display: flex; justify-content: space-between;">
-                                        <span style="color: #aaa;">Timeline Corruption:</span>
-                                        <span id="final-corruption" style="color: #ff00ff; font-weight: bold;">0%</span>
-                                    </div>
-                                    <div style="display: flex; justify-content: space-between;">
-                                        <span style="color: #aaa;">Loops Detected:</span>
-                                        <span id="final-loops" style="color: #00f3ff; font-weight: bold;">0</span>
-                                    </div>
-                                    <div style="display: flex; justify-content: space-between;">
-                                        <span style="color: #aaa;">Powers Used:</span>
-                                        <span id="final-powers" style="color: #8b00ff; font-weight: bold;">0</span>
-                                    </div>
-                                    <div id="final-ending-badge" style="
+                                <div style="display: flex; justify-content: space-between;">
+                                    <span style="color: #aaa;">Loops Detected:</span>
+                                    <span id="final-loops" style="color: #00f3ff; font-weight: bold;">0</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between;">
+                                    <span style="color: #aaa;">Powers Used:</span>
+                                    <span id="final-powers" style="color: #8b00ff; font-weight: bold;">0</span>
+                                </div>
+                                <div id="final-ending-badge" style="
                                     margin-top: 10px; 
                                     padding: 8px; 
                                     text-align: center; 
@@ -4739,63 +4744,62 @@
                                     font-weight: bold;
                                     font-size: 0.9rem;
                                     letter-spacing: 1px;">
-                                        ENDING: UNKNOWN
-                                    </div>
+                                    ENDING: UNKNOWN
                                 </div>
                             </div>
-
-                            <!-- Feedback Button - Opens Google Form -->
-                            <button class="send-feedback-btn" onclick="sendFeedback()">📝 SHARE FEEDBACK</button>
-
-                            <!-- Reboot Button -->
-                            <button class="control-btn reboot-btn" onclick="location.reload()">🔄 REBOOT SYSTEM</button>
-
-                            <!-- Capture Button -->
-                            <button class="control-btn" onclick="initiateCapture()"
-                                style="margin-top:10px; border-color:var(--green); color:var(--green);">📸 CAPTURE
-                                RECALL</button>
-
-
-                            <!-- Leaderboard Button -->
-                            <button class="control-btn" onclick="showLeaderboard()" style="margin-top:10px;">🏆
-                                LEADERBOARD</button>
                         </div>
 
-                        <!-- Share Message -->
-                        <div class="share-message-box">
-                            <div
-                                style="color:var(--green); font-family:var(--f-title); font-size:1rem; line-height:1.4;">
-                                TAKE A SCREENSHOT<br>AND REVIVE YOUR<br>HAPPINESS
-                            </div>
-                            <div
-                                style="color:#888; font-family:var(--f-mono); font-size:0.8rem; margin-top:8px; letter-spacing:1px;">
-                                SHARE AMONG ALL
-                            </div>
+                        <!-- Feedback Button - Opens Google Form -->
+                        <button class="send-feedback-btn" onclick="sendFeedback()">📝 SHARE FEEDBACK</button>
+
+                        <!-- Reboot Button -->
+                        <button class="control-btn reboot-btn" onclick="location.reload()">🔄 REBOOT SYSTEM</button>
+
+                        <!-- Capture Button -->
+                        <button class="control-btn" onclick="initiateCapture()"
+                            style="margin-top:10px; border-color:var(--green); color:var(--green);">📸 CAPTURE
+                            RECALL</button>
+
+
+                        <!-- Leaderboard Button -->
+                        <button class="control-btn" onclick="showLeaderboard()" style="margin-top:10px;">🏆
+                            LEADERBOARD</button>
+                    </div>
+
+                    <!-- Share Message -->
+                    <div class="share-message-box">
+                        <div style="color:var(--green); font-family:var(--f-title); font-size:1rem; line-height:1.4;">
+                            TAKE A SCREENSHOT<br>AND REVIVE YOUR<br>HAPPINESS
+                        </div>
+                        <div
+                            style="color:#888; font-family:var(--f-mono); font-size:0.8rem; margin-top:8px; letter-spacing:1px;">
+                            SHARE AMONG ALL
                         </div>
                     </div>
                 </div>
             </div>
-
-        </div> <!-- END game-tilt-layer -->
-
-        <!-- NEURAL HUD OVERLAYS -->
-        <div id="neural-hud-overlay">
-            <div class="vignette-heavy"></div>
-            <div class="border-glitch"></div>
-            <div class="retinal-scanline"></div>
-
-            <div class="sys-status">
-                <div>NEURAL_LINK: ACTIVE</div>
-                <div>LATENCY: 12ms</div>
-                <div>SECURE_CONN: TRUE</div>
-            </div>
-
-            <div class="bio-metrics">
-                <span>BPM: <div class="bio-marker"></div> 110</span>
-                <span>CORTEX_SYNC: <div class="bio-marker" style="animation-delay:0.5s"></div> 98.4%</span>
-                <span>ADRENALINE: <div class="bio-marker" style="animation-delay:1s"></div> CRITICAL</span>
-            </div>
         </div>
+
+    </div> <!-- END game-tilt-layer -->
+
+    <!-- NEURAL HUD OVERLAYS -->
+    <div id="neural-hud-overlay">
+        <div class="vignette-heavy"></div>
+        <div class="border-glitch"></div>
+        <div class="retinal-scanline"></div>
+
+        <div class="sys-status">
+            <div>NEURAL_LINK: ACTIVE</div>
+            <div>LATENCY: 12ms</div>
+            <div>SECURE_CONN: TRUE</div>
+        </div>
+
+        <div class="bio-metrics">
+            <span>BPM: <div class="bio-marker"></div> 110</span>
+            <span>CORTEX_SYNC: <div class="bio-marker" style="animation-delay:0.5s"></div> 98.4%</span>
+            <span>ADRENALINE: <div class="bio-marker" style="animation-delay:1s"></div> CRITICAL</span>
+        </div>
+    </div>
     </div> <!-- END neural-wrapper -->
 
     <script>
@@ -9323,7 +9327,17 @@
                 Game.active = false;
                 TimerSystem.stop();
 
-                // Bad ending sequence
+                // Update final score before showing ending
+                if (typeof Game !== 'undefined') {
+                    document.getElementById('final-aura-score').textContent = Game.score;
+                }
+
+                // Hide game screens
+                document.getElementById('hud').classList.add('hidden');
+                document.getElementById('s-game').classList.add('hidden');
+                document.getElementById('s-game-paradox').classList.add('hidden');
+
+                // Show collapse ending, which will then show game over
                 setTimeout(() => {
                     this.showEnding('collapse');
                 }, 500);
@@ -9413,10 +9427,16 @@
                 document.body.appendChild(overlay);
                 setTimeout(() => overlay.style.opacity = '1', 100);
 
-                // Auto-remove overlay after 3 seconds (DON'T call gameWin - let normal flow continue)
+                // Auto-remove overlay after 3 seconds and show game over screen
                 setTimeout(() => {
                     overlay.style.opacity = '0';
-                    setTimeout(() => overlay.remove(), 800);
+                    setTimeout(() => {
+                        overlay.remove();
+                        // Trigger the game over screen
+                        if (typeof Game !== 'undefined' && typeof Game.runOutroSequence === 'function') {
+                            Game.runOutroSequence();
+                        }
+                    }, 800);
                 }, 3000);
             },
 
