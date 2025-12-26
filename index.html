@@ -14,53 +14,57 @@
         /* ========== CUSTOM FONTS ========== */
         @font-face {
             font-family: 'LigerRegular';
-            src: url('LigerRegular-OGYE4.ttf') format('truetype');
+            src: url('fonts/LigerRegular-OGYE4.ttf') format('truetype');
             font-weight: normal;
             font-style: normal;
         }
 
-        @font-face {
-            font-family: 'Neurobyte';
-            src: url('Neurobyte-drBgX.otf') format('opentype');
-            font-weight: normal;
-            font-style: normal;
-        }
+
 
         @font-face {
             font-family: 'FastlaneThree';
-            src: url('FastlaneThree-gw7D6.ttf') format('truetype');
+            src: url('fonts/FastlaneThree-gw7D6.ttf') format('truetype');
             font-weight: normal;
             font-style: normal;
         }
 
         @font-face {
             font-family: 'BruceforeverRegular';
-            src: url('BruceforeverRegular-5y5zB.otf') format('opentype');
+            src: url('fonts/BruceforeverRegular-5y5zB.otf') format('opentype');
             font-weight: normal;
             font-style: normal;
         }
 
         @font-face {
             font-family: 'QuantroSport';
-            src: url('QuantroSport-0vY5o.ttf') format('truetype');
+            src: url('fonts/QuantroSport-0vY5o.ttf') format('truetype');
             font-weight: normal;
             font-style: normal;
         }
 
         @font-face {
-            font-family: 'Kroegbainder';
-            src: url('Kroegbainder-gw07p.ttf') format('truetype');
+            font-family: 'BlackgothRegular';
+            src: url('fonts/BlackgothRegular-xRg40.otf') format('opentype');
             font-weight: normal;
             font-style: normal;
         }
 
+        @font-face {
+            font-family: 'NeurobyteWeb';
+            src: url('fonts/Neurobyte-drBgX.otf') format('opentype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+
+
         :root {
-            /* EXTREME BLOODY HORROR THEME */
+            /* FIERY RED-BLACK-YELLOW HORROR THEME */
             --bg-color: #050000;
             --bg-dark: #020000;
-            --primary: #8b00ff;
-            --primary-light: #a020f0;
-            --secondary: #6a0dad;
+            --primary: #ff3300;
+            --primary-light: #ff5500;
+            --secondary: #ffaa00;
             --dark-blue: #1a0000;
             --accent: #ffffff;
             --danger: #ff0000;
@@ -70,20 +74,20 @@
             --green: #00ff00;
             --text-main: #ffffff;
             --text-dim: #cccccc;
-            --particle-col: #ff0000;
-            --horror-glow: rgba(255, 0, 0, 0.25);
-            --blood-glow: rgba(139, 0, 0, 0.4);
+            --particle-col: #ff3300;
+            --horror-glow: rgba(255, 51, 0, 0.3);
+            --blood-glow: rgba(255, 100, 0, 0.4);
 
-            /* BLOOD-STAINED GLASS - Less opaque for readability */
-            --glass-bg: rgba(15, 0, 0, 0.9);
-            --glass-border: 1px solid rgba(139, 0, 0, 0.5);
+            /* FIERY GLASS - Red/orange glow */
+            --glass-bg: rgba(20, 5, 0, 0.9);
+            --glass-border: 1px solid rgba(255, 85, 0, 0.5);
             --glass-blur: blur(30px);
-            --glass-shadow: 0 30px 80px rgba(139, 0, 0, 0.4);
+            --glass-shadow: 0 30px 80px rgba(255, 85, 0, 0.4);
 
             /* CUSTOM FONTS */
             --f-title: 'LigerRegular', sans-serif;
             /* Big Titles like NEURO FRIED */
-            --f-button: 'Neurobyte', sans-serif;
+            --f-button: 'NeurobyteWeb', sans-serif;
             /* All Buttons */
             --f-ui: 'FastlaneThree', sans-serif;
             /* Game Over, UI elements */
@@ -145,11 +149,10 @@
             font-family: var(--f-mono) !important;
         }
 
-        /* TIME LOOP MODE - Kroegbainder */
-        body.mode-B *,
-        #s-luck *,
-        .luck-box-container *,
-        .dream-mode-container * {
+        /* TIME LOOP MODE - Kroegbainder (Scoped) */
+        body.mode-timeloop #s-luck *,
+        body.mode-timeloop .luck-box-container *,
+        body.mode-timeloop .dream-mode-container * {
             font-family: 'Kroegbainder', sans-serif !important;
         }
 
@@ -233,11 +236,11 @@
         }
 
         body.t-space {
-            --primary: #9d00ff;
-            --secondary: #e0b0ff;
-            --bg-color: #05000a;
+            --primary: #ff4500;
+            --secondary: #ff8800;
+            --bg-color: #050200;
             --text-main: #fff;
-            --particle-col: #fff;
+            --particle-col: #ff6600;
         }
 
         body.t-social {
@@ -2050,7 +2053,7 @@
             letter-spacing: 3px;
             pointer-events: auto;
             overflow: visible;
-            box-shadow: 0 0 25px rgba(139, 0, 255, 0.3), inset 0 0 15px rgba(0, 0, 0, 0.9);
+            box-shadow: 0 0 25px rgba(255, 85, 0, 0.3), inset 0 0 15px rgba(0, 0, 0, 0.9);
 
             /* COOL ASYMMETRICAL SHAPE */
             clip-path: polygon(4% 0%, 94% 0%, 98% 10%, 100% 30%,
@@ -2064,11 +2067,11 @@
 
             0%,
             100% {
-                box-shadow: 0 0 25px rgba(139, 0, 255, 0.3), inset 0 0 15px rgba(0, 0, 0, 0.9);
+                box-shadow: 0 0 25px rgba(255, 85, 0, 0.3), inset 0 0 15px rgba(0, 0, 0, 0.9);
             }
 
             50% {
-                box-shadow: 0 0 35px rgba(0, 243, 255, 0.4), inset 0 0 20px rgba(139, 0, 255, 0.1);
+                box-shadow: 0 0 35px rgba(255, 170, 0, 0.4), inset 0 0 20px rgba(255, 85, 0, 0.1);
             }
         }
 
@@ -2091,7 +2094,7 @@
         }
 
         .tech-btn:active {
-            box-shadow: 0 0 0 var(--primary-light), 0 0 10px rgba(139, 0, 0, 0.4);
+            box-shadow: 0 0 0 var(--primary-light), 0 0 10px rgba(255, 85, 0, 0.4);
             transform: translateY(4px);
         }
 
@@ -2134,7 +2137,7 @@
         .tech-btn:hover {
             background: var(--primary);
             color: var(--bg-color);
-            box-shadow: 0 0 60px var(--primary), 0 0 100px rgba(79, 70, 229, 0.5);
+            box-shadow: 0 0 60px var(--primary), 0 0 100px rgba(255, 85, 0, 0.5);
             transform: scale(1.05);
             text-shadow: 0 0 10px var(--bg-color);
         }
@@ -2152,6 +2155,17 @@
 
         .tech-btn[style*="danger"]::before {
             background: linear-gradient(transparent, rgba(255, 0, 60, 0.4), transparent);
+        }
+
+        /* FORCE INIT BUTTON ORANGE (User Fix) */
+        #init-btn {
+            box-shadow: 0 0 25px rgba(255, 85, 0, 0.3), inset 0 0 15px rgba(0, 0, 0, 0.9) !important;
+            border-color: var(--primary) !important;
+            color: var(--primary) !important;
+        }
+
+        #init-btn:hover {
+            box-shadow: 0 0 60px var(--primary), 0 0 100px rgba(255, 85, 0, 0.5) !important;
         }
 
         .tech-btn[style*="danger"]::after {
@@ -2305,7 +2319,7 @@
             }
 
             50% {
-                box-shadow: 0 0 30px rgba(139, 0, 255, 0.4);
+                box-shadow: 0 0 30px rgba(255, 140, 0, 0.4);
             }
         }
 
@@ -2317,12 +2331,12 @@
             }
 
             50% {
-                box-shadow: 0 0 30px rgba(139, 0, 255, 0.4);
+                box-shadow: 0 0 30px rgba(255, 140, 0, 0.4);
             }
         }
 
         .opt-btn:hover {
-            background: rgba(139, 0, 255, 0.2);
+            background: rgba(255, 140, 0, 0.2);
             border-color: white;
             transform: scale(1.03);
             box-shadow: 0 0 40px var(--primary);
@@ -3928,9 +3942,9 @@
 
         .share-card-wrapper {
             padding: 4px;
-            background: linear-gradient(135deg, #ff0066, #9933ff, #00ff66);
+            background: linear-gradient(135deg, #ff3300, #ff8800, #ffaa00);
             border-radius: 12px;
-            box-shadow: 0 0 30px rgba(153, 51, 255, 0.4);
+            box-shadow: 0 0 30px rgba(255, 85, 0, 0.4);
         }
 
         .share-card {
@@ -4093,9 +4107,9 @@
         .send-feedback-btn {
             position: relative;
             padding: 16px 28px;
-            background: linear-gradient(135deg, rgba(153, 51, 255, 0.2), rgba(57, 255, 20, 0.2));
+            background: linear-gradient(135deg, rgba(255, 85, 0, 0.2), rgba(57, 255, 20, 0.2));
             border: 2px solid transparent;
-            border-image: linear-gradient(135deg, #9933ff, #39ff14) 1;
+            border-image: linear-gradient(135deg, #ff5500, #39ff14) 1;
             color: white;
             font-family: var(--f-title);
             font-size: 1rem;
@@ -4133,18 +4147,18 @@
 
             0%,
             100% {
-                box-shadow: 0 0 15px rgba(153, 51, 255, 0.4), 0 0 30px rgba(57, 255, 20, 0.2);
+                box-shadow: 0 0 15px rgba(255, 85, 0, 0.4), 0 0 30px rgba(57, 255, 20, 0.2);
             }
 
             50% {
-                box-shadow: 0 0 25px rgba(153, 51, 255, 0.6), 0 0 50px rgba(57, 255, 20, 0.4);
+                box-shadow: 0 0 25px rgba(255, 85, 0, 0.6), 0 0 50px rgba(57, 255, 20, 0.4);
             }
         }
 
         .send-feedback-btn:hover {
             transform: scale(1.05) translateY(-2px);
-            background: linear-gradient(135deg, rgba(153, 51, 255, 0.4), rgba(57, 255, 20, 0.4));
-            box-shadow: 0 0 40px rgba(153, 51, 255, 0.6), 0 0 60px rgba(57, 255, 20, 0.4), 0 10px 30px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(135deg, rgba(255, 85, 0, 0.4), rgba(57, 255, 20, 0.4));
+            box-shadow: 0 0 40px rgba(255, 85, 0, 0.6), 0 0 60px rgba(57, 255, 20, 0.4), 0 10px 30px rgba(0, 0, 0, 0.3);
         }
 
         .send-feedback-btn:active {
@@ -4884,12 +4898,12 @@
 
         .tr {
             position: absolute;
-            border: 4px solid rgba(139, 0, 255, 0.6);
-            /* Brighter, thicker */
+            border: 4px solid rgba(255, 85, 0, 0.6);
+            /* Fiery red-orange border */
             border-radius: 50%;
             box-shadow:
-                0 0 30px rgba(139, 0, 255, 0.4),
-                inset 0 0 30px rgba(139, 0, 255, 0.4);
+                0 0 30px rgba(255, 85, 0, 0.4),
+                inset 0 0 30px rgba(255, 170, 0, 0.4);
             opacity: 0;
             top: 50%;
             left: 50%;
@@ -4957,12 +4971,12 @@
 
         /* ROYAL UPGRADES */
         .bl-text {
-            /* ROYAL UPGRADE */
-            background: linear-gradient(180deg, #fff, #8b00ff, #0ff);
+            /* FIERY RED-ORANGE-YELLOW GRADIENT */
+            background: linear-gradient(180deg, #fff, #ff3300, #ffaa00);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            filter: drop-shadow(0 0 30px rgba(139, 0, 255, 0.8));
+            filter: drop-shadow(0 0 30px rgba(255, 85, 0, 0.8));
             position: relative;
             z-index: 2;
         }
@@ -5014,12 +5028,14 @@
             font-size: 8vw;
             font-weight: 900;
             line-height: 1;
-            /* ROYAL UPGRADE */
-            background: linear-gradient(180deg, #fff, #8b00ff, #0ff);
+            /* FIERY RED-ORANGE-YELLOW GRADIENT */
+            background: linear-gradient(180deg, #fff, #ff3300, #ffaa00);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            filter: drop-shadow(0 0 30px rgba(139, 0, 255, 0.8));
+            filter: drop-shadow(0 0 30px rgba(255, 85, 0, 0.8)) drop-shadow(2px 2px 0 rgba(180, 40, 0, 1)) drop-shadow(4px 4px 0 rgba(150, 30, 0, 0.9)) drop-shadow(6px 6px 0 rgba(120, 20, 0, 0.8)) drop-shadow(8px 8px 0 rgba(90, 15, 0, 0.7)) drop-shadow(10px 10px 2px rgba(0, 0, 0, 0.6));
+            /* 3D perspective for pop-out look */
+            transform: perspective(500px) rotateX(5deg);
             position: relative;
             z-index: 2;
         }
@@ -5039,13 +5055,13 @@
         }
 
         .bl-text::before {
-            color: #0ff;
+            color: #ffaa00;
             animation: glitchLeft 0.5s infinite;
             clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
         }
 
         .bl-text::after {
-            color: #f0f;
+            color: #ff3300;
             animation: glitchRight 0.5s infinite;
             clip-path: polygon(0 55%, 100% 55%, 100% 100%, 0 100%);
         }
@@ -5157,7 +5173,7 @@
             width: 100%;
             height: 100vh;
             z-index: 999999;
-            background: #050005;
+            background: #050200;
             overflow-y: auto;
             overflow-x: hidden;
             scroll-behavior: smooth;
@@ -5169,12 +5185,12 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            border-bottom: 1px solid rgba(139, 0, 255, 0.15);
+            border-bottom: 1px solid rgba(255, 85, 0, 0.15);
         }
 
         .landing-section.hero {
             min-height: 100vh;
-            background: radial-gradient(circle at center, #1a0033 0%, #050000 100%);
+            background: radial-gradient(circle at center, #1a0500 0%, #050000 100%);
             text-align: center;
             position: relative;
         }
@@ -5186,7 +5202,7 @@
             -webkit-background-clip: text;
             background-clip: text;
             -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 0 20px rgba(139, 0, 255, 0.5));
+            filter: drop-shadow(0 0 20px rgba(255, 85, 0, 0.5));
         }
 
         .hero-subtitle {
@@ -5231,7 +5247,7 @@
             background: var(--primary);
             border-color: var(--primary);
             transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(139, 0, 255, 0.3);
+            box-shadow: 0 10px 20px rgba(255, 85, 0, 0.3);
         }
 
         .scroll-indicator {
@@ -5285,6 +5301,19 @@
         }
 
         /* PROTOCOL EXECUTION STEPS */
+        .section-subtext {
+            font-family: 'NeurobyteWeb', var(--f-mono);
+            font-size: 1rem;
+            color: rgba(255, 170, 0, 0.7);
+            letter-spacing: 1px;
+            margin-bottom: 40px;
+            text-align: center;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
+        }
+
         .execution-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -5293,8 +5322,8 @@
         }
 
         .exec-step {
-            background: #0a0015;
-            border: 1px solid #222;
+            background: #0a0200;
+            border: 1px solid rgba(255, 170, 0, 0.3);
             border-radius: 12px;
             overflow: hidden;
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -5303,8 +5332,8 @@
         }
 
         .exec-step:hover {
-            border-color: var(--primary);
-            box-shadow: 0 0 50px rgba(139, 0, 255, 0.6), 0 15px 40px rgba(0, 0, 0, 0.4);
+            border-color: #ffffff;
+            box-shadow: 0 0 30px rgba(255, 200, 0, 0.5), 0 0 60px rgba(255, 100, 0, 0.3), 0 15px 40px rgba(0, 0, 0, 0.4);
             transform: scale(1.08);
             z-index: 100;
         }
@@ -5314,7 +5343,7 @@
             position: relative;
             width: 100%;
             height: 0;
-            background: linear-gradient(135deg, #1a0030 0%, #0a0015 100%);
+            background: linear-gradient(135deg, #1a0500 0%, #0a0200 100%);
             overflow: hidden;
             transition: all 0.4s ease;
             display: flex;
@@ -5352,7 +5381,7 @@
 
         .exec-step:hover .step-info {
             padding: 20px;
-            background: rgba(20, 0, 40, 0.8);
+            background: rgba(40, 10, 0, 0.8);
         }
 
         .step-num {
@@ -5412,8 +5441,8 @@
         }
 
         .mode-box {
-            background: rgba(20, 0, 40, 0.6);
-            border: 1px solid rgba(139, 0, 255, 0.3);
+            background: rgba(40, 10, 0, 0.6);
+            border: 1px solid rgba(255, 170, 0, 0.4);
             border-radius: 12px;
             /* overflow: hidden; REMOVED to allow pop-out */
             display: flex;
@@ -5424,9 +5453,9 @@
         }
 
         .mode-box:hover {
-            border-color: var(--primary);
-            background: rgba(40, 0, 80, 0.95);
-            box-shadow: 0 0 50px rgba(139, 0, 255, 0.6), 0 15px 40px rgba(0, 0, 0, 0.4);
+            border-color: #ffcc00;
+            background: rgba(80, 30, 0, 0.95);
+            box-shadow: 0 0 50px rgba(255, 170, 0, 0.5), 0 0 80px rgba(255, 200, 0, 0.3), 0 15px 40px rgba(0, 0, 0, 0.4);
             transform: scale(1.03);
             z-index: 100;
             min-height: 300px;
@@ -5442,7 +5471,7 @@
             align-items: center;
             justify-content: center;
             padding: 10px;
-            background: linear-gradient(135deg, #1a0030 0%, #0a0015 100%);
+            background: linear-gradient(135deg, #1a0500 0%, #0a0200 100%);
         }
 
         .mode-box:hover .mode-thumb {
@@ -5623,7 +5652,7 @@
         }
 
         .faq-item:hover {
-            background: rgba(139, 0, 255, 0.1);
+            background: rgba(255, 85, 0, 0.1);
         }
 
         .faq-item:hover .faq-content {
@@ -5636,7 +5665,7 @@
             object-fit: cover;
             margin-top: 10px;
             border-radius: 4px;
-            border: 1px solid rgba(139, 0, 255, 0.2);
+            border: 1px solid rgba(255, 85, 0, 0.2);
         }
 
         /* COMMAND INTERFACE - CIRCULAR BUTTONS */
@@ -5652,8 +5681,8 @@
             width: 280px;
             height: 280px;
             border-radius: 50%;
-            background: radial-gradient(circle at center, rgba(30, 0, 60, 0.9) 0%, rgba(10, 0, 20, 0.95) 70%);
-            border: 3px solid var(--primary);
+            background: radial-gradient(circle at center, rgba(60, 15, 0, 0.9) 0%, rgba(20, 5, 0, 0.95) 70%);
+            border: 3px solid #ffaa00;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -5670,17 +5699,17 @@
             position: absolute;
             inset: 0;
             border-radius: 50%;
-            background: radial-gradient(circle, transparent 50%, rgba(139, 0, 255, 0.2) 100%);
+            background: radial-gradient(circle, transparent 50%, rgba(255, 170, 0, 0.2) 100%);
             opacity: 0;
             transition: opacity 0.4s;
         }
 
         .cmd-circle:hover {
             transform: scale(1.1);
-            border-color: #fff;
-            box-shadow: 0 0 50px rgba(139, 0, 255, 0.6),
-                0 0 100px rgba(139, 0, 255, 0.3),
-                inset 0 0 30px rgba(139, 0, 255, 0.2);
+            border-color: #ffffff;
+            box-shadow: 0 0 50px rgba(255, 200, 0, 0.6),
+                0 0 100px rgba(255, 255, 200, 0.3),
+                inset 0 0 30px rgba(255, 170, 0, 0.2);
         }
 
         .cmd-circle:hover::before {
@@ -5702,7 +5731,7 @@
             /* Made larger */
             background: #000;
             border: 2px solid var(--primary);
-            box-shadow: 0 0 20px rgba(139, 0, 255, 0.5);
+            box-shadow: 0 0 20px rgba(255, 85, 0, 0.5);
             border-radius: 8px;
             overflow: hidden;
             opacity: 0;
@@ -5801,8 +5830,8 @@
         }
 
         .env-item {
-            background: rgba(20, 0, 40, 0.6);
-            border: 1px solid rgba(139, 0, 255, 0.3);
+            background: rgba(40, 10, 0, 0.6);
+            border: 1px solid rgba(255, 140, 0, 0.4);
             border-radius: 12px;
             overflow: hidden;
             display: flex;
@@ -5812,9 +5841,9 @@
         }
 
         .env-item:hover {
-            border-color: var(--primary);
-            background: rgba(40, 0, 80, 0.95);
-            box-shadow: 0 0 50px rgba(139, 0, 255, 0.6), 0 15px 40px rgba(0, 0, 0, 0.4);
+            border-color: #ffcc00;
+            background: rgba(80, 30, 0, 0.95);
+            box-shadow: 0 0 40px rgba(255, 170, 0, 0.5), 0 0 70px rgba(255, 220, 0, 0.3), 0 15px 40px rgba(0, 0, 0, 0.4);
             transform: scale(1.02);
             z-index: 100;
             min-height: 280px;
@@ -5823,7 +5852,7 @@
         .env-preview {
             width: 0;
             min-height: 0;
-            background: linear-gradient(135deg, #1a0030 0%, #0a0015 100%);
+            background: linear-gradient(135deg, #1a0500 0%, #0a0200 100%);
             flex-shrink: 0;
             display: flex;
             align-items: center;
@@ -5908,18 +5937,20 @@
 
         .archive-tag {
             padding: 10px 20px;
-            border: 1px solid rgba(139, 0, 255, 0.4);
+            border: 1px solid rgba(255, 170, 0, 0.5);
             font-family: var(--f-mono);
-            color: var(--primary);
+            color: #ffcc00;
             font-size: 0.8rem;
-            background: rgba(139, 0, 255, 0.05);
+            background: rgba(255, 140, 0, 0.08);
             border-radius: 4px;
             transition: 0.3s;
         }
 
         .archive-tag:hover {
-            background: var(--primary);
+            background: linear-gradient(135deg, #ffaa00, #ff6600);
+            border-color: #ffffff;
             color: #000;
+            box-shadow: 0 0 20px rgba(255, 170, 0, 0.6);
         }
 
         /* FOOTER */
@@ -5979,7 +6010,7 @@
             font-family: var(--f-title);
             font-size: 1.2rem;
             transition: 0.4s;
-            box-shadow: 0 0 10px rgba(139, 0, 255, 0.3);
+            box-shadow: 0 0 10px rgba(255, 85, 0, 0.3);
             overflow: hidden;
             letter-spacing: 2px;
         }
@@ -5987,7 +6018,7 @@
         .floating-start:hover {
             transform: translateX(-50%) scale(1.05);
             box-shadow: 0 0 25px var(--primary);
-            background: rgba(139, 0, 255, 0.2);
+            background: rgba(255, 85, 0, 0.2);
             color: #fff;
         }
 
@@ -6140,6 +6171,8 @@
             left: 0;
             position: fixed;
             /* Ensure fixed positioning */
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.8);
         }
 
         #neural-wrapper.game-split-mode {
@@ -6279,6 +6312,8 @@
 
         <section class="landing-section docs">
             <h2 class="section-title">PROTOCOL EXECUTION</h2>
+            <p class="section-subtext">Follow the neural initialization sequence. Each step prepares your mind for the
+                temporal challenge ahead.</p>
             <div class="execution-grid">
                 <div class="exec-step">
                     <div class="step-preview"><img src="assets/1.png" alt="Neural Link"></div>
@@ -6349,6 +6384,8 @@
 
         <section class="landing-section modes">
             <h2 class="section-title">SYSTEM VARIATIONS</h2>
+            <p class="section-subtext">Three paths through the corrupted timeline. Each mode offers a unique survival
+                experience.</p>
             <div class="modes-row">
                 <div class="mode-box">
                     <div class="mode-thumb"><img src="assets/ownluck mode.png" alt="Own Luck"></div>
@@ -6391,6 +6428,8 @@
 
         <section class="landing-section tutorials">
             <h2 class="section-title">COMMAND INTERFACE</h2>
+            <p class="section-subtext">Master these temporal abilities to manipulate time itself. Your survival depends
+                on them.</p>
             <div class="command-buttons">
                 <div class="cmd-circle">
                     <div class="cmd-icon">❄️</div>
@@ -6427,6 +6466,8 @@
 
         <section class="landing-section environment" id="env-section">
             <h2 class="section-title">ENVIRONMENT CHECKS</h2>
+            <p class="section-subtext">Understand the anomalies within the neural matrix. Hover to learn about each
+                phenomenon.</p>
 
             <div class="env-master-container"
                 style="display: flex; gap: 40px; align-items: flex-start; flex-wrap: wrap;"
@@ -6547,10 +6588,10 @@
                 .env-box:hover {
                     background: rgba(var(--primary-rgb), 0.1);
                     /* fallback if no rgb var, using primary opacity */
-                    background: rgba(139, 0, 255, 0.2);
+                    background: rgba(255, 140, 0, 0.2);
                     border-color: var(--primary);
                     transform: translateX(5px);
-                    box-shadow: 0 0 15px rgba(139, 0, 255, 0.2);
+                    box-shadow: 0 0 15px rgba(255, 140, 0, 0.3);
                 }
 
                 .env-box-icon {
@@ -6609,6 +6650,8 @@
 
         <section class="landing-section archives">
             <h2 class="section-title">CORRUPTED ARCHIVES</h2>
+            <p class="section-subtext">Select your knowledge domain. Each archive contains unique questions from
+                fragmented data streams.</p>
             <div class="archive-tags" id="archive-list"></div>
         </section>
 
@@ -6731,7 +6774,7 @@
             <!-- LUCK RANDOMIZER SCREEN -->
             <div id="s-luck" class="screen hidden">
                 <h2
-                    style="font-family:var(--f-title); color:var(--text-main); margin-bottom:10px; font-size:2rem; margin-top: 15vh;">
+                    style="font-family: var(--f-mono), 'NeurobyteWeb', sans-serif; color:var(--text-main); margin-bottom:10px; font-size:2rem; margin-top: 15vh;">
                     FATE SELECTION
                 </h2>
                 <div class="story-container" id="fate-story-container">
@@ -7042,26 +7085,26 @@
                         <div id="timeline-stats" style="
                             margin-bottom: 20px; 
                             padding: 15px; 
-                            background: rgba(139, 0, 255, 0.1); 
+                            background: rgba(255, 85, 0, 0.1); 
                             border: 2px solid var(--primary); 
                             border-radius: 8px;
                             font-family: var(--f-mono);">
                             <div
-                                style="color: #00f3ff; font-size: 0.9rem; margin-bottom: 10px; text-align: center; letter-spacing: 2px;">
+                                style="color: #ffaa00; font-size: 0.9rem; margin-bottom: 10px; text-align: center; letter-spacing: 2px;">
                                 ⚠️ TIMELINE REPORT ⚠️
                             </div>
                             <div style="display: flex; flex-direction: column; gap: 8px; font-size: 0.85rem;">
                                 <div style="display: flex; justify-content: space-between;">
                                     <span style="color: #aaa;">Timeline Corruption:</span>
-                                    <span id="final-corruption" style="color: #ff00ff; font-weight: bold;">0%</span>
+                                    <span id="final-corruption" style="color: #ff5500; font-weight: bold;">0%</span>
                                 </div>
                                 <div style="display: flex; justify-content: space-between;">
                                     <span style="color: #aaa;">Loops Detected:</span>
-                                    <span id="final-loops" style="color: #00f3ff; font-weight: bold;">0</span>
+                                    <span id="final-loops" style="color: #ffaa00; font-weight: bold;">0</span>
                                 </div>
                                 <div style="display: flex; justify-content: space-between;">
                                     <span style="color: #aaa;">Powers Used:</span>
-                                    <span id="final-powers" style="color: #8b00ff; font-weight: bold;">0</span>
+                                    <span id="final-powers" style="color: #ff3300; font-weight: bold;">0</span>
                                 </div>
                                 <div id="final-ending-badge" style="
                                     margin-top: 10px; 
@@ -9249,10 +9292,12 @@
         const TimePowers = {
             freezeCharges: 1,
             rewindCharges: 3,
+            uses: 0, // Track total power usage
 
             reset() {
                 this.freezeCharges = 1;
                 this.rewindCharges = 3;
+                this.uses = 0;
                 this.updatePowerUI();
             },
 
@@ -9270,6 +9315,7 @@
             useFreeze() {
                 if (this.freezeCharges <= 0 || TimerSystem.frozen || (!Game.active && (typeof ParadoxMode === 'undefined' || !ParadoxMode.active))) return false;
                 this.freezeCharges--;
+                this.uses++;
 
                 // Freeze only the timer (not full screen)
                 TimerSystem.freeze(5);
@@ -9302,6 +9348,7 @@
                 // Special Duel Mode Handling
                 if (typeof DuelMode !== 'undefined' && DuelMode.active) {
                     this.rewindCharges--;
+                    this.uses++;
                     DuelMode.rewindTime(15000); // Add 15s to day cycle
                     AudioSystem.playRewind();
                     this.updatePowerUI();
@@ -9309,6 +9356,7 @@
                 }
 
                 this.rewindCharges--;
+                this.uses++;
                 Game.triggerRewindEffect();
 
                 // GAME JAM: Timeline Corruption
@@ -9841,6 +9889,7 @@
 
                     DifficultySystem.reset();
                     TimePowers.reset();
+                    if (typeof TimelineIntegrity !== 'undefined') TimelineIntegrity.reset();
                     // Ensure Timer is stopped before starting new
                     TimerSystem.stop();
 
@@ -10537,6 +10586,39 @@
                 // Populate Stats
                 document.getElementById('final-aura-score').innerText = this.score;
 
+                // --- REAL STATS INJECTION ---
+                if (typeof TimelineIntegrity !== 'undefined') {
+                    document.getElementById('final-corruption').innerText = TimelineIntegrity.corruption + '%';
+                }
+                if (typeof DreamMode !== 'undefined') {
+                    document.getElementById('final-loops').innerText = DreamMode.loopCount;
+                }
+                if (typeof TimePowers !== 'undefined') {
+                    document.getElementById('final-powers').innerText = TimePowers.uses;
+                }
+
+                // Update Ending Badge
+                const badge = document.getElementById('final-ending-badge');
+                if (badge) {
+                    let ending = "UNKNOWN";
+                    let color = "#888";
+                    const corr = (typeof TimelineIntegrity !== 'undefined' ? TimelineIntegrity.corruption : 0);
+
+                    if (this.isWin) {
+                        ending = "TIMELINE SAVED"; color = "var(--green)";
+                    } else if (corr >= 100) {
+                        ending = "PARADOX COLLAPSE"; color = "var(--danger)";
+                    } else {
+                        ending = "SIGNAL LOST"; color = "var(--danger)";
+                    }
+                    badge.innerText = "ENDING: " + ending;
+                    badge.style.color = color;
+                    badge.style.textShadow = `0 0 10px ${color}`;
+
+                    // Also color the badge border/bg if needed?
+                    // badge.style.borderColor = color;
+                }
+
                 if (typeof achievementStats !== 'undefined') {
                     if (document.getElementById('questions-cleared'))
                         document.getElementById('questions-cleared').innerText = achievementStats.questionsAnsweredSession || 0;
@@ -10615,7 +10697,7 @@
                 this.resize();
                 window.addEventListener('resize', () => this.resize());
                 // Create initial starfield
-                const colors = ['#ff00ff', '#00ffff', '#ffff00', '#ff0000', '#00ff00', '#ffffff', '#9400d3'];
+                const colors = ['#ff5500', '#ffaa00', '#ffff00', '#ff0000', '#ff3300', '#ffffff', '#ffcc00'];
                 for (let i = 0; i < 400; i++) {
                     this.particles.push({
                         x: (Math.random() - 0.5) * window.innerWidth,
@@ -10651,8 +10733,8 @@
                     const y1 = Math.cos(time * 0.8) * this.h * 0.5 + this.cy;
 
                     const grad = this.ctx.createRadialGradient(x1, y1, 0, x1, y1, this.w * 0.8);
-                    grad.addColorStop(0, 'rgba(139, 0, 255, 0.05)'); // Purple core
-                    grad.addColorStop(0.5, 'rgba(0, 255, 255, 0.02)'); // Cyan mid
+                    grad.addColorStop(0, 'rgba(255, 85, 0, 0.05)'); // Orange core
+                    grad.addColorStop(0.5, 'rgba(255, 200, 0, 0.02)'); // Yellow mid
                     grad.addColorStop(1, 'transparent');
 
                     this.ctx.fillStyle = grad;
@@ -12101,6 +12183,19 @@
                 this.updateUI();
             },
 
+            reset() {
+                this.corruption = 0;
+                this.loopCount = 0;
+                this.seenQuestions.clear();
+                this.updateUI();
+                const crackEl = document.getElementById('screen-crack-overlay');
+                if (crackEl) crackEl.classList.remove('cracked');
+            },
+
+            showEnding(type) {
+                if (typeof Game !== 'undefined' && Game.runOutroSequence) Game.runOutroSequence();
+            },
+
             onRewind() {
                 this.corruption += 15; // Rewind costs MORE
                 this.updateUI();
@@ -12137,7 +12232,7 @@
                 const alert = document.createElement('div');
                 alert.className = 'anomaly-alert';
                 alert.innerHTML = `🔁 DEJA VU<br><span style="font-size:0.8em;">Haven't I answered this before...?</span>`;
-                alert.style.background = 'linear-gradient(135deg, #8b00ff, #ff00ff)';
+                alert.style.background = 'linear-gradient(135deg, #ff5500, #ffaa00)';
                 document.body.appendChild(alert);
 
                 // Sound
@@ -12476,17 +12571,17 @@
             opacity: 1;
         }
 
-        /* VIOLET OVERLAYS (User Request) */
+        /* FIERY ORANGE OVERLAYS (Changed from violet) */
         :root {
-            --violet: #bc13fe;
-            --violet-glow: #bd00ff;
-            --violet-dim: #e0b0ff;
+            --violet: #ff5500;
+            --violet-glow: #ff6600;
+            --violet-dim: #ffcc88;
         }
 
         /* Rules Overlay */
         .rules-card {
             border-color: var(--violet) !important;
-            box-shadow: 0 0 50px rgba(188, 19, 254, 0.4) !important;
+            box-shadow: 0 0 50px rgba(255, 85, 0, 0.4) !important;
         }
 
         .rules-title {
@@ -12499,6 +12594,7 @@
         .story-line {
             color: var(--violet-dim) !important;
             text-shadow: 0 0 10px var(--violet) !important;
+            font-family: 'NeurobyteWeb', var(--f-mono) !important;
         }
 
         .protocol-container .protocol-trigger {
