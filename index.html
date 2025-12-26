@@ -1,12 +1,6 @@
 <!-- 
-    PROJECT: NEURO-FRIED
-    AUTHOR: KAUSTAV CHOWDHURY
-    DATE: DECEMBER 2025
-    
-    DEV NOTES:
-    - The physics in the roulette are tuned for drama, don't mess with the drag coefficients.
-    - Glassmorphism is heavy here, might need optimization for mobile later.
-    - "Time is the only currency." - K.C.
+    NEURO-FRIED
+    Author: Kaustav Chowdhury
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -17,11 +11,9 @@
     <title>NEURO-FRIED: FINAL SURVIVAL</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
-        /* =========================================
-           1. CORE CONFIGURATION
-           ========================================= */
+        /* Core Configuration */
         @import url('https://fonts.googleapis.com/css2?family=Courier+Prime:wght@700&family=VT323&display=swap');
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&display=swap');
         @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&display=swap');
 
         :root {
@@ -184,9 +176,7 @@
             transition: background-color 3s ease, color 3s ease;
         }
 
-        /* =========================================
-           TIME LOOP MODE - UNIQUE THEME (Cyan/Teal)
-           ========================================= */
+        /* Time Loop Mode - Unique Theme */
         body.mode-timeloop {
             --bg-color: #000508;
             --primary: #00ffff;
@@ -341,9 +331,7 @@
             }
         }
 
-        /* ================================================
-           TIME LOOP MODE - UNIQUE GAME UI STYLING
-           ================================================ */
+        /* Time Loop Mode - Game UI */
 
         /* Question Card - Hexagonal Border Effect */
         body.mode-timeloop .question-card {
@@ -604,9 +592,7 @@
             }
         }
 
-        /* =============================================
-           EXTREME BLOODY HORROR EFFECTS
-           ============================================= */
+        /* Horror Effects */
 
         /* BLOOD RED AMBIENT - Intense glow from all edges */
         /* BODY BACKGROUND - now static black, visual moved to #tilt-ambient */
@@ -4309,6 +4295,26 @@
             text-shadow: 0 0 10px var(--danger);
         }
 
+        /* OUTRO SEQUENCE */
+        .outro-clean-text {
+            font-family: var(--f-title);
+            font-size: 6rem;
+            font-weight: 900;
+            color: #ffffff;
+            text-shadow: none;
+            text-transform: uppercase;
+            opacity: 0;
+            transition: opacity 0.1s ease-in-out;
+            letter-spacing: 5px;
+            text-align: center;
+        }
+
+        .strikethrough-red {
+            text-decoration: line-through;
+            text-decoration-color: var(--danger);
+            text-decoration-thickness: 8px;
+        }
+
         .paradox-content {
             min-height: 400px;
             display: flex;
@@ -4400,9 +4406,7 @@
             background: repeating-linear-gradient(0deg, transparent, transparent 2px, var(--danger) 2px, var(--danger) 4px);
         }
 
-        /* =========================================
-           NEURAL INTERFACE HUD STYLES
-           ========================================= */
+        /* HUD Styles */
         #neural-wrapper {
             position: fixed;
             inset: 0;
@@ -4660,7 +4664,7 @@
             letter-spacing: 2px;
         }
 
-        /* MISSING GAME END STYLES */
+        /* Game End Styles */
         .outro-text {
             font-family: var(--f-title);
             font-size: 4rem;
@@ -4739,9 +4743,7 @@
             }
         }
 
-        /* =========================================
-           CINEMATIC BOOT SEQUENCE (PREMIUM)
-           ========================================= */
+        /* Cinematic Boot Sequence */
         .boot-sequence {
             position: fixed;
             inset: 0;
@@ -5951,6 +5953,171 @@
                 height: 120px;
             }
         }
+
+        /* =========================================
+           TUTORIAL SIDE-PANEL MODE (1:3 Split)
+           ========================================= */
+        #landing-page.landing-side-panel {
+            position: fixed;
+            top: 20px;
+            /* Gap from top */
+            right: 20px;
+            /* Gap from right */
+            bottom: 20px;
+            /* Gap from bottom */
+            left: auto;
+            /* Reset left */
+            width: calc(50vw - 40px);
+            /* Adjust for margins */
+            /* 50% Screen */
+            z-index: 20000;
+            overflow-y: auto;
+            transform: translateX(0);
+            /* On Screen */
+            opacity: 1 !important;
+            /* Force visible */
+            display: block !important;
+
+            /* DEVICE LOOK */
+            border: 8px solid #ffffff;
+            /* Device Bezel */
+            border-radius: 20px;
+            /* Rounded Device Corners */
+            box-shadow:
+                0 0 0 2px #444,
+                /* Outer Bezel outline */
+                -20px 0 50px rgba(0, 0, 0, 0.8),
+                /* Depth shadow */
+                inset 0 0 20px rgba(0, 0, 0, 0.8);
+            /* Screen inner shadow */
+            background: #000000;
+            font-family: 'Orbitron', sans-serif !important;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            /* Slight opacity for game feel */
+            transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        /* TUTORIAL HEADER */
+        .tutorial-header {
+            display: none;
+            /* Hidden by default */
+        }
+
+        #landing-page.landing-side-panel .tutorial-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #000000;
+            color: #ffffff;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 900;
+            font-size: 2rem;
+            letter-spacing: 4px;
+            padding: 20px 0;
+            border-bottom: 2px solid #ffffff;
+            margin-bottom: 30px;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 1);
+        }
+
+        #landing-page.landing-side-panel::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* GAME SPLIT MODE */
+        #neural-wrapper {
+            transition: width 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+            width: 100vw;
+            left: 0;
+            position: fixed;
+            /* Ensure fixed positioning */
+        }
+
+        #neural-wrapper.game-split-mode {
+            width: 50vw;
+        }
+
+        /* Hide when toggled off in game */
+        #landing-page.landing-side-panel.hidden-panel {
+            transform: translateX(110%);
+        }
+
+        /* Adjust content for narrower view */
+        #landing-page.landing-side-panel .hero-content {
+            padding-top: 50px;
+            zoom: 0.7;
+        }
+
+        #landing-page.landing-side-panel .cmd-preview {
+            width: 100%;
+            height: auto;
+            right: 0 !important;
+            left: 0 !important;
+            top: 100%;
+            transform: translateY(10px);
+        }
+
+        /* TUTORIAL TOGGLE BUTTON - REDESIGN */
+        #tutorial-toggle-btn {
+            position: fixed;
+            top: 20px;
+            right: 200px;
+            /* Left of leaderboards */
+            z-index: 20001;
+            /* Above panel */
+            width: auto;
+            /* Allow expansion for text */
+            height: 50px;
+            /* Bigger */
+            padding: 0 20px;
+            border-radius: 12px;
+            /* Rounded Edges (Square-ish) */
+            border: 2px solid #fff;
+            background: rgba(255, 0, 0, 0.1);
+            /* Red tint */
+            color: #fff;
+            font-family: var(--f-title);
+            font-size: 1rem;
+            letter-spacing: 2px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.3s;
+            box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+            text-shadow: 2px 0 red, -2px 0 blue;
+            /* Glitch text */
+            animation: glitch-border 2s infinite;
+        }
+
+        #tutorial-toggle-btn:hover {
+            background: #fff;
+            color: #ff0000;
+            box-shadow: 0 0 25px #ff0000;
+            text-shadow: none;
+            border-color: #ff0000;
+        }
+
+        @keyframes glitch-border {
+            0% {
+                border-color: #fff;
+                box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+            }
+
+            50% {
+                border-color: #ff0000;
+                box-shadow: 0 0 20px rgba(255, 0, 0, 0.8), inset 0 0 10px rgba(255, 0, 0, 0.2);
+            }
+
+            100% {
+                border-color: #fff;
+                box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+            }
+        }
     </style>
 </head>
 
@@ -5962,6 +6129,8 @@
          ========================================= -->
     <!-- LANDING PAGE -->
     <div id="landing-page">
+        <!-- New Tutorial Header (Only visible in side-panel mode) -->
+        <div class="tutorial-header">TUTORIALS</div>
 
 
 
@@ -8114,8 +8283,7 @@
             }
         };
 
-        // --- TIME LOOP MODE (Mode B) - INVERTED LOGIC ---
-        // Loop on WIN (correct answer), escape on LOSS (timer expire)
+        // Time Loop Mode (Inverted Logic)
         const DreamMode = {
             loopCount: 0,
             active: false,
@@ -8523,7 +8691,7 @@
             }
         };
 
-        // --- PUZZLE SYSTEM (Mode C Finale) ---
+        // Puzzle System
         const PuzzleSystem = {
             puzzles: [
                 { q: 'Complete: 2, 4, 8, 16, ?', a: '32' },
@@ -8621,9 +8789,7 @@
 
         });
 
-        // =============================================
-        // HORROR EFFECTS HELPER SYSTEM
-        // =============================================
+        // Horror Effects Helper
         const HorrorEffects = {
             shake() {
                 document.body.classList.add('horror-shake');
@@ -8651,8 +8817,7 @@
             }
         };
 
-        // --- 2. AUDIO (Safe) ---
-        // --- 2. AUDIO SYSTEM ---
+        // Audio System
         const AudioSystem = {
             ctx: null,
             bgmPlaying: false,
@@ -10134,81 +10299,160 @@
             },
 
             runOutroSequence() {
+                console.log('🎬 Starting ROBUST outro sequence...');
+                const s = document.getElementById('s-outro');
+                if (!s) { this.triggerGameOverScreen(); return; }
+
+                // FORCE VISIBILITY - RESET EVERYTHING
+                s.innerHTML = '';
+                s.classList.remove('hidden');
+
+                // Nuclear Option for CSS
+                s.setAttribute('style', 'display:flex !important; flex-direction:column; justify-content:center; align-items:center; position:fixed; top:0; left:0; width:100vw; height:100vh; background:black !important; z-index:2147483647 !important; opacity:1 !important;');
+
+                // Create Text
+                const textField = document.createElement('div');
+                textField.className = 'outro-clean-text';
+                s.appendChild(textField);
+
+                // Sequence
+                const sequence = [
+                    { text: "THANK YOU", delay: 800 },
+                    { text: "FOR PLAYING", delay: 800 },
+                    { text: "NEURO FRIED", delay: 1000 },
+                    { text: "REWIND", delay: 600, style: "strike" },
+                    { text: "RESTART", delay: 2000 }
+                ];
+                let step = 0;
+
+                const nextStep = () => {
+                    if (step >= sequence.length) {
+                        s.style.opacity = '0';
+                        setTimeout(() => {
+                            s.classList.add('hidden');
+                            s.style.zIndex = '10000';
+                            this.triggerGameOverScreen();
+                        }, 500);
+                        return;
+                    }
+
+                    const data = sequence[step];
+                    textField.style.opacity = '0';
+
+                    setTimeout(() => {
+                        textField.innerText = data.text;
+                        textField.className = 'outro-clean-text';
+
+                        try {
+                            if (typeof AudioSystem !== 'undefined') {
+                                if (data.style === 'strike') {
+                                    textField.classList.add('strikethrough-red');
+                                    if (AudioSystem.playRewind) AudioSystem.playRewind();
+                                } else {
+                                    if (AudioSystem.playRouletteClick) AudioSystem.playRouletteClick();
+                                }
+                            }
+                        } catch (e) { console.warn(e); }
+
+                        textField.style.opacity = '1';
+                        setTimeout(() => { step++; nextStep(); }, data.delay);
+                    }, 150);
+                };
+                nextStep();
+            },
+
+            runOutroSequence_IGNORED() {
                 console.log('🎬 Starting outro sequence...');
 
                 const s = document.getElementById('s-outro');
-                const t1 = document.getElementById('outro-t1');
-                const t2 = document.getElementById('outro-t2');
-                const t3 = document.getElementById('outro-t3');
-                const fin = document.getElementById('outro-final');
-                const wRes = document.getElementById('word-restart');
-                const wRew = document.getElementById('word-rewind');
+                if (!s) { this.triggerGameOverScreen(); return; }
 
-                // CRITICAL FIX: Add null checks and failsafe
-                if (!s || !t1 || !t2 || !t3 || !fin) {
-                    // Failsafe
-                    this.triggerGameOverScreen();
-                    return;
-                }
-
+                // Clear previous content
+                s.innerHTML = '';
                 s.classList.remove('hidden');
 
-                const texts = this.isWin
-                    ? ["TIMELINE", "STABILIZED", "SEQUENCE", "COMPLETE"]
-                    : ["SYSTEM", "CRITICAL", "FAILURE", "DISCONNECTED"];
+                // Create Central Text Element
+                const textField = document.createElement('div');
+                textField.className = 'outro-clean-text';
+                s.appendChild(textField);
 
-                t1.textContent = texts[0];
-                t2.textContent = texts[1];
-                t3.textContent = texts[2];
-                fin.textContent = texts[3];
+                // Sequence Data
+                const sequence = [
+                    { text: "THANK YOU", delay: 800 },
+                    { text: "FOR PLAYING", delay: 800 },
+                    { text: "NEURO FRIED", delay: 1000 },
+                    { text: "REWIND", delay: 600, style: "strike" },
+                    { text: "RESTART", delay: 2000 } // Keep restart visible longer
+                ];
 
-                const els = [t1, t2, t3];
-                els.forEach(el => {
-                    el.style.opacity = '0';
-                    el.style.transform = 'scale(2)';
-                    el.className = 'outro-text'; // reset
-                });
-                fin.classList.add('hidden');
+                let step = 0;
 
-                // Sequence
-                let delay = 0;
+                const nextStep = () => {
+                    if (step >= sequence.length) {
+                        // End Sequence -> Show Game Over Screen
+                        s.classList.add('hidden');
+                        this.triggerGameOverScreen();
+                        return;
+                    }
 
-                els.forEach((el, i) => {
+                    const data = sequence[step];
+
+                    // Reset styling
+                    textField.style.opacity = '0'; // Blink out
+
                     setTimeout(() => {
-                        el.style.opacity = '1';
-                        el.classList.add('text-slam');
-                        if (AudioSystem) AudioSystem.playRouletteClick();
-                        document.body.classList.add('shake-heavy');
-                        setTimeout(() => document.body.classList.remove('shake-heavy'), 200);
-                    }, delay);
+                        // Change text
+                        textField.innerText = data.text;
+                        textField.className = 'outro-clean-text'; // Reset class
 
-                    // Fade out
-                    setTimeout(() => {
-                        el.style.opacity = '0';
-                        el.style.transform = 'scale(0.8)';
-                        el.style.filter = 'blur(10px)';
-                    }, delay + 800);
+                        if (data.style === 'strike') {
+                            textField.classList.add('strikethrough-red');
+                            // Optional: play glitch sound
+                            if (AudioSystem) AudioSystem.playRewind();
+                        } else {
+                            if (AudioSystem) AudioSystem.playRouletteClick();
+                        }
 
-                    delay += 1000;
-                });
+                        textField.style.opacity = '1'; // Blink in
 
-                // Final Word
-                setTimeout(() => {
-                    fin.classList.remove('hidden');
-                    fin.classList.add('text-slam-final');
-                    if (AudioSystem) AudioSystem.playCorrect();
-                }, delay);
+                        // Schedule next
+                        setTimeout(() => {
+                            step++;
+                            nextStep();
+                        }, data.delay);
+                    }, 150); // Short blank gap for flicker effect
+                };
 
-                // Transition to Score Screen
-                setTimeout(() => {
-                    s.classList.add('hidden');
-                    this.triggerGameOverScreen();
-                }, delay + 2500);
+                // Start
+                nextStep();
             },
 
             triggerGameOverScreen() {
+                // Populate Stats
                 document.getElementById('final-aura-score').innerText = this.score;
+
+                if (typeof achievementStats !== 'undefined') {
+                    if (document.getElementById('questions-cleared'))
+                        document.getElementById('questions-cleared').innerText = achievementStats.questionsAnsweredSession || 0;
+                }
+
+                if (document.getElementById('time-survived'))
+                    document.getElementById('time-survived').innerText = TimerSystem.timeSurvived.toFixed(1) + 's';
+
+                if (document.getElementById('max-speed'))
+                    document.getElementById('max-speed').innerText = DifficultySystem.getTickRate().toFixed(2) + 'x';
+
+                // User Picture if available
+                const saved = JSON.parse(localStorage.getItem('neuro_fried_last_user'));
+                if (saved && saved.photo) {
+                    const img = document.getElementById('card-img');
+                    if (img) img.src = saved.photo;
+                    if (document.getElementById('final-name')) document.getElementById('final-name').innerText = saved.name.toUpperCase();
+                }
+
+                // Show screen
                 document.getElementById('s-over').classList.remove('hidden');
+
                 // Ensure text reset
                 const headline = document.getElementById('game-over-headline');
                 if (headline) {
@@ -11359,6 +11603,9 @@
     </script>
     <!-- +1 pop-up container -->
     <div id="score-pop-container"></div>
+
+    <!-- TUTORIAL TOGGLE BUTTON (Hidden initially) -->
+    <button id="tutorial-toggle-btn" class="hidden" onclick="toggleTutorialPanel()">INFO</button>
 
     <script>
         // --- PLAYER PROFILE SYSTEM ---
@@ -12700,7 +12947,6 @@
             <p class="ach-progress-text" id="ach-progress">0 of 17 achievements unlocked</p>
             <div class="ach-grid" id="ach-grid">
                 <!-- Achievements populated by JS -->
-                <!-- Achievements populated by JS -->
             </div>
         </div>
     </div>
@@ -12737,7 +12983,7 @@
         }, { once: true });
     </script>
     <script>
-        // --- NEURAL INTERFACE SMOOTH TILT SYSTEM (LERP PHYSICS) ---
+        // Neural Interface Tilt System
         const TiltSystem = {
             target: { x: 0, y: 0 },
             current: { x: 0, y: 0 },
@@ -12895,7 +13141,7 @@
                 console.log("Share skipped/failed", err);
             }
         }
-        /* QUICK WINS: GRAPHICS & SAFE MODE */
+        /* Graphics Settings */
         let graphicsQuality = 'high';
         function toggleGraphics() {
             graphicsQuality = graphicsQuality === 'high' ? 'low' : 'high';
@@ -12932,7 +13178,7 @@
             }
         }
 
-        /* POLISH: FIRST TIME BOOT TUTORIAL */
+        /* First Time Boot Tutorial */
         if (!localStorage.getItem('neuro-fried-played')) {
             setTimeout(() => {
                 const tutorial = document.createElement('div');
@@ -13310,13 +13556,30 @@
                         MusicSystem.stop();
                     }
 
-                    // Transition Out
+                    // Transition Out: Instead of display:none, just move it away
+                    // So we can bring it back as a side panel
                     landing.style.opacity = '0';
                     landing.style.transform = 'translateY(-100px)';
                     landing.style.transition = '1s cubic-bezier(0.7, 0, 0.3, 1)';
 
                     setTimeout(() => {
-                        landing.style.display = 'none';
+                        // DO NOT set display:none here if we want to reuse it easily without reset
+                        // But to prevent clicks, we might need to.
+                        // Let's us a special class 'game-active' that hides it via CSS if needed, 
+                        // or just rely on 'landing-side-panel' class logic later.
+
+                        // For now, let's hide it but keep it ready
+                        landing.classList.add('hidden-panel'); // We'll define this to hide it offscreen
+                        landing.classList.add('landing-side-panel'); // Prep for side panel mode
+
+                        // Reset styles that were inline
+                        landing.style.opacity = '';
+                        landing.style.transform = '';
+
+                        // Show the toggle button
+                        const tutBtn = document.getElementById('tutorial-toggle-btn');
+                        if (tutBtn) tutBtn.classList.remove('hidden');
+
                         if (gameWrapper) {
                             gameWrapper.style.display = 'block';
                             // Trigger internal click-to-start
@@ -13326,6 +13589,29 @@
                     }, 800);
                 });
             }
+
+            // [NEW] Tutorial Panel Toggle
+            window.toggleTutorialPanel = function () {
+                const landing = document.getElementById('landing-page');
+                const btn = document.getElementById('tutorial-toggle-btn');
+                const game = document.getElementById('neural-wrapper');
+
+                if (landing && landing.classList.contains('landing-side-panel')) {
+                    if (landing.classList.contains('hidden-panel')) {
+                        // OPEN
+                        landing.classList.remove('hidden-panel');
+                        if (game) game.classList.add('game-split-mode'); // Shrink game
+                        if (btn) btn.innerHTML = 'CLOSE'; // Change to close text
+                        if (typeof AudioSystem !== 'undefined') AudioSystem.playHover();
+                    } else {
+                        // CLOSE
+                        landing.classList.add('hidden-panel');
+                        if (game) game.classList.remove('game-split-mode'); // Restore game
+                        if (btn) btn.innerHTML = 'INFO'; // Revert to info text
+                        if (typeof AudioSystem !== 'undefined') AudioSystem.playHover();
+                    }
+                }
+            };
 
             // 3. Intersection Observer for Fade-In Animations
             const obs = new IntersectionObserver((entries) => {
@@ -13354,5 +13640,3 @@
 </body>
 
 </html>
-git commit -m "the latest page tutorial is here"
-git push origin main
