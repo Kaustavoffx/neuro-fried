@@ -13,8 +13,8 @@
     <style>
         /* ========== CUSTOM FONTS ========== */
         @font-face {
-            font-family: 'Valorax';
-            src: url('Valorax-lg25V.otf') format('opentype');
+            font-family: 'LigerRegular';
+            src: url('LigerRegular-OGYE4.ttf') format('truetype');
             font-weight: normal;
             font-style: normal;
         }
@@ -47,6 +47,13 @@
             font-style: normal;
         }
 
+        @font-face {
+            font-family: 'Kroegbainder';
+            src: url('Kroegbainder-gw07p.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
         :root {
             /* EXTREME BLOODY HORROR THEME */
             --bg-color: #050000;
@@ -74,7 +81,7 @@
             --glass-shadow: 0 30px 80px rgba(139, 0, 0, 0.4);
 
             /* CUSTOM FONTS */
-            --f-title: 'Valorax', sans-serif;
+            --f-title: 'LigerRegular', sans-serif;
             /* Big Titles like NEURO FRIED */
             --f-button: 'Neurobyte', sans-serif;
             /* All Buttons */
@@ -136,6 +143,14 @@
         .q-text,
         .era-tag {
             font-family: var(--f-mono) !important;
+        }
+
+        /* TIME LOOP MODE - Kroegbainder */
+        body.mode-B *,
+        #s-luck *,
+        .luck-box-container *,
+        .dream-mode-container * {
+            font-family: 'Kroegbainder', sans-serif !important;
         }
 
         /* ROYAL TEXT SHADERS */
@@ -6983,7 +6998,8 @@
                 </div>
             </div>
 
-            <div id="s-over" class="screen hidden">
+            <div id="s-over" class="screen hidden"
+                style="background: #000000; display: flex; flex-direction: column; justify-content: center; align-items: center;">
                 <h1 id="game-over-headline"
                     style="font-family:var(--f-title); font-size:4rem; color:var(--danger); margin-bottom:10px;">SIGNAL
                     LOST
@@ -10526,11 +10542,17 @@
                         document.getElementById('questions-cleared').innerText = achievementStats.questionsAnsweredSession || 0;
                 }
 
-                if (document.getElementById('time-survived'))
-                    document.getElementById('time-survived').innerText = TimerSystem.timeSurvived.toFixed(1) + 's';
+                if (document.getElementById('time-survived')) {
+                    const time = (typeof TimerSystem !== 'undefined' && TimerSystem.timeSurvived)
+                        ? TimerSystem.timeSurvived.toFixed(1) : '0.0';
+                    document.getElementById('time-survived').innerText = time + 's';
+                }
 
-                if (document.getElementById('max-speed'))
-                    document.getElementById('max-speed').innerText = DifficultySystem.getTickRate().toFixed(2) + 'x';
+                if (document.getElementById('max-speed')) {
+                    const speed = (typeof DifficultySystem !== 'undefined' && DifficultySystem.getTickRate)
+                        ? DifficultySystem.getTickRate().toFixed(2) : '1.00';
+                    document.getElementById('max-speed').innerText = speed + 'x';
+                }
 
                 // User Picture if available
                 const saved = JSON.parse(localStorage.getItem('neuro_fried_last_user'));
@@ -10540,8 +10562,17 @@
                     if (document.getElementById('final-name')) document.getElementById('final-name').innerText = saved.name.toUpperCase();
                 }
 
-                // Show screen
-                document.getElementById('s-over').classList.remove('hidden');
+                // Show screen - FORCE VISIBILITY
+                const overScreen = document.getElementById('s-over');
+                overScreen.classList.remove('hidden');
+                overScreen.style.display = 'flex';
+                overScreen.style.zIndex = '2147483647'; // Max Z-Index
+                overScreen.style.opacity = '1';
+                overScreen.style.position = 'fixed';
+                overScreen.style.top = '0';
+                overScreen.style.left = '0';
+                overScreen.style.width = '100vw';
+                overScreen.style.height = '100vh';
 
                 // Ensure text reset
                 const headline = document.getElementById('game-over-headline');
@@ -13692,13 +13723,13 @@
                         landing.classList.remove('hidden-panel');
                         if (game) game.classList.add('game-split-mode'); // Shrink game
                         if (btn) btn.innerHTML = 'CLOSE'; // Change to close text
-                        if (typeof AudioSystem !== 'undefined') AudioSystem.playHover();
+                        if (typeof AudioSystem !== 'undefined' && AudioSystem.playRouletteClick) AudioSystem.playRouletteClick();
                     } else {
                         // CLOSE
                         landing.classList.add('hidden-panel');
                         if (game) game.classList.remove('game-split-mode'); // Restore game
                         if (btn) btn.innerHTML = 'INFO'; // Revert to info text
-                        if (typeof AudioSystem !== 'undefined') AudioSystem.playHover();
+                        if (typeof AudioSystem !== 'undefined' && AudioSystem.playRouletteClick) AudioSystem.playRouletteClick();
                     }
                 }
             };
