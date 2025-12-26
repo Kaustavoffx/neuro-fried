@@ -11,10 +11,41 @@
     <title>NEURO-FRIED: FINAL SURVIVAL</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
-        /* Core Configuration */
-        @import url('https://fonts.googleapis.com/css2?family=Courier+Prime:wght@700&family=VT323&display=swap');
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&display=swap');
-        @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&display=swap');
+        /* ========== CUSTOM FONTS ========== */
+        @font-face {
+            font-family: 'Valorax';
+            src: url('Valorax-lg25V.otf') format('opentype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'Neurobyte';
+            src: url('Neurobyte-drBgX.otf') format('opentype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'FastlaneThree';
+            src: url('FastlaneThree-gw7D6.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'BruceforeverRegular';
+            src: url('BruceforeverRegular-5y5zB.otf') format('opentype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'QuantroSport';
+            src: url('QuantroSport-0vY5o.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
 
         :root {
             /* EXTREME BLOODY HORROR THEME */
@@ -42,10 +73,69 @@
             --glass-blur: blur(30px);
             --glass-shadow: 0 30px 80px rgba(139, 0, 0, 0.4);
 
-            /* FONTS */
-            --f-title: 'Orbitron', sans-serif;
-            --f-ui: 'Rajdhani', sans-serif;
-            --f-mono: 'VT323', monospace;
+            /* CUSTOM FONTS */
+            --f-title: 'Valorax', sans-serif;
+            /* Big Titles like NEURO FRIED */
+            --f-button: 'Neurobyte', sans-serif;
+            /* All Buttons */
+            --f-ui: 'FastlaneThree', sans-serif;
+            /* Game Over, UI elements */
+            --f-mono: 'BruceforeverRegular', monospace;
+            /* Info, Rules, Typewriting */
+            --f-tutorial: 'QuantroSport', sans-serif;
+            /* Landing/Tutorial Page */
+        }
+
+        /* ========== GLOBAL FONT APPLICATION ========== */
+
+        /* ALL BUTTONS - Neurobyte */
+        button,
+        .btn,
+        .tech-btn,
+        .mega-btn,
+        .cyber-btn,
+        .opt-btn,
+        [class*="button"],
+        input[type="submit"],
+        input[type="button"] {
+            font-family: var(--f-button) !important;
+        }
+
+        /* LANDING & TUTORIAL PAGE - QuantroSport */
+        #landing-page,
+        #landing-page * {
+            font-family: var(--f-tutorial) !important;
+        }
+
+        /* Override for landing page titles to use Valorax */
+        #landing-page .hero-title,
+        #landing-page h1,
+        .hero-title {
+            font-family: var(--f-title) !important;
+        }
+
+        /* GAME OVER SCREEN - FastlaneThree */
+        #s-over,
+        #s-over * {
+            font-family: var(--f-ui) !important;
+        }
+
+        /* Game Over Headline uses title font */
+        #game-over-headline {
+            font-family: var(--f-title) !important;
+        }
+
+        /* INFO / RULES / TYPEWRITING - BruceforeverRegular */
+        .info-text,
+        .rule-text,
+        .typewriter,
+        .tutorial-content,
+        .env-info,
+        .story-text,
+        [class*="description"],
+        .q-text,
+        .era-tag {
+            font-family: var(--f-mono) !important;
         }
 
         /* ROYAL TEXT SHADERS */
