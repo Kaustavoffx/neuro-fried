@@ -7949,6 +7949,10 @@
         ];
 
 
+        // --- SOUND ENABLED FLAG (must be declared before MusicSystem uses it) ---
+        let soundEnabled = true;
+
+
         // --- MULTI-TRACK MUSIC SYSTEM ---
         // aka "The DJ of the Apocalypse"
         // Swaps tracks based on how screwed the player is.
@@ -8096,7 +8100,7 @@
         console.log('✅ UI Systems online. Don\'t break anything.');
 
         // --- SOUND TOGGLE ---
-        let soundEnabled = true;
+        // soundEnabled is declared earlier (before MusicSystem)
         let savedBgmVolume = 0.12; // REDUCED from 0.25 - less intrusive audio
 
         function toggleSound() {
