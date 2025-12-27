@@ -50,11 +50,13 @@
         }
 
         @font-face {
-            font-family: 'NeurobyteWeb';
-            src: url('fonts/Neurobyte-drBgX.otf') format('opentype');
+            font-family: 'Rocketholedemo';
+            src: url('fonts/Rocketholedemo-4n6Jx.ttf') format('truetype');
             font-weight: normal;
             font-style: normal;
         }
+
+
 
 
 
@@ -87,7 +89,7 @@
             /* CUSTOM FONTS */
             --f-title: 'LigerRegular', sans-serif;
             /* Big Titles like NEURO FRIED */
-            --f-button: 'NeurobyteWeb', sans-serif;
+            --f-button: 'BlackgothRegular', serif;
             /* All Buttons */
             --f-ui: 'FastlaneThree', sans-serif;
             /* Game Over, UI elements */
@@ -148,7 +150,7 @@
 
         /* ========== GLOBAL FONT APPLICATION ========== */
 
-        /* ALL BUTTONS - Neurobyte */
+        /* ALL BUTTONS - Luxemourdemo */
         button,
         .btn,
         .tech-btn,
@@ -198,11 +200,13 @@
             font-family: var(--f-mono) !important;
         }
 
-        /* TIME LOOP MODE - Kroegbainder (Scoped) */
-        body.mode-timeloop #s-luck *,
-        body.mode-timeloop .luck-box-container *,
-        body.mode-timeloop .dream-mode-container * {
-            font-family: 'Kroegbainder', sans-serif !important;
+        /* TIME LOOP MODE - UNIVERSAL FONT OVERRIDE */
+        /* Apply BlackgothRegular to ALL elements when in Time Loop mode */
+        body.mode-timeloop,
+        body.mode-timeloop *,
+        body.mode-timeloop *::before,
+        body.mode-timeloop *::after {
+            font-family: 'BlackgothRegular', serif !important;
         }
 
         /* ROYAL TEXT SHADERS */
@@ -5417,7 +5421,7 @@
 
         /* PROTOCOL EXECUTION STEPS */
         .section-subtext {
-            font-family: 'NeurobyteWeb', var(--f-mono);
+            font-family: 'BlackgothRegular', var(--f-mono);
             font-size: 1rem;
             color: rgba(255, 170, 0, 0.7);
             letter-spacing: 1px;
@@ -5787,7 +5791,7 @@
         .command-buttons {
             display: flex;
             justify-content: center;
-            gap: 350px;
+            gap: 60px;
             padding: 40px 0;
             position: relative;
         }
@@ -5837,7 +5841,6 @@
             filter: drop-shadow(0 0 10px var(--primary));
         }
 
-        /* POP-OUT DISPLAY FOR VIDEOS */
         .cmd-preview {
             position: absolute;
             width: 400px;
@@ -5853,8 +5856,11 @@
             pointer-events: none;
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             z-index: 10;
-            top: 50%;
-            transform: translateY(-50%) scale(0.8);
+            /* Changed to show BELOW the button */
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%) scale(0.8);
+            margin-top: 20px;
         }
 
         .cmd-preview video {
@@ -5867,19 +5873,15 @@
 
         .cmd-circle:hover .cmd-preview {
             opacity: 1;
-            transform: translateY(-50%) scale(1);
+            transform: translateX(-50%) scale(1);
         }
 
-        /* FREEZE (First Child) -> Show on LEFT side */
-        .cmd-circle:first-child .cmd-preview {
-            right: 120%;
-            /* Push to left */
-        }
-
-        /* REWIND (Last Child) -> Show on RIGHT side */
+        /* Both FREEZE and REWIND show preview BELOW */
+        .cmd-circle:first-child .cmd-preview,
         .cmd-circle:last-child .cmd-preview {
-            left: 120%;
-            /* Push to right */
+            /* Preview already positioned below via top: 100% */
+            left: 50%;
+            right: auto;
         }
 
         /* New wrapper for text content to ensure z-index layering */
@@ -6371,11 +6373,104 @@
                 box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
             }
         }
+
+        /* =========================================
+           DOUBLE TAP TO START OVERLAY
+           ========================================= */
+        .double-tap-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 99999;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            padding-bottom: 80px;
+            pointer-events: none;
+            opacity: 1;
+            transition: opacity 0.5s ease;
+        }
+
+        .double-tap-overlay.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .double-tap-box {
+            background: rgba(20, 5, 0, 0.85);
+            border: 2px solid rgba(255, 85, 0, 0.7);
+            border-radius: 12px;
+            padding: 25px 60px;
+            text-align: center;
+            box-shadow:
+                0 0 30px rgba(255, 85, 0, 0.5),
+                0 0 60px rgba(255, 51, 0, 0.3),
+                inset 0 0 20px rgba(255, 85, 0, 0.1);
+            animation: doubleTapPulse 2s ease-in-out infinite;
+            pointer-events: auto;
+            cursor: pointer;
+        }
+
+        .double-tap-box:hover {
+            background: rgba(30, 10, 0, 0.9);
+            border-color: rgba(255, 170, 0, 0.9);
+            box-shadow:
+                0 0 40px rgba(255, 85, 0, 0.7),
+                0 0 80px rgba(255, 51, 0, 0.5),
+                inset 0 0 30px rgba(255, 85, 0, 0.2);
+        }
+
+        .double-tap-text {
+            font-family: var(--f-title);
+            font-size: 1.8rem;
+            color: #ffffff;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            text-shadow:
+                0 0 10px rgba(255, 170, 0, 0.8),
+                0 0 20px rgba(255, 85, 0, 0.6),
+                2px 2px 0 #ff3300;
+            margin: 0;
+        }
+
+        .double-tap-icon {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            filter: drop-shadow(0 0 10px rgba(255, 170, 0, 0.8));
+        }
+
+        @keyframes doubleTapPulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+                box-shadow:
+                    0 0 30px rgba(255, 85, 0, 0.5),
+                    0 0 60px rgba(255, 51, 0, 0.3),
+                    inset 0 0 20px rgba(255, 85, 0, 0.1);
+            }
+
+            50% {
+                transform: scale(1.02);
+                box-shadow:
+                    0 0 40px rgba(255, 85, 0, 0.7),
+                    0 0 80px rgba(255, 51, 0, 0.5),
+                    inset 0 0 30px rgba(255, 85, 0, 0.2);
+            }
+        }
     </style>
 </head>
 
 
 <body>
+
+    <!-- DOUBLE TAP TO START OVERLAY -->
+    <div class="double-tap-overlay" id="double-tap-overlay" ondblclick="this.classList.add('hidden')">
+        <div class="double-tap-box">
+            <div class="double-tap-icon">👆</div>
+            <p class="double-tap-text">Double tap to start the game</p>
+        </div>
+    </div>
 
     <!-- =========================================
          GOD-LEVEL LANDING PAGE
@@ -6914,7 +7009,7 @@
                 <div class="game-video-overlay"></div>
 
                 <h2
-                    style="font-family: var(--f-mono), 'NeurobyteWeb', sans-serif; color:var(--text-main); margin-bottom:10px; font-size:2rem; margin-top: 15vh; position: relative; z-index: 2;">
+                    style="font-family: var(--f-mono), 'BlackgothRegular', serif; color:var(--text-main); margin-bottom:10px; font-size:2rem; margin-top: 15vh; position: relative; z-index: 2;">
                     FATE SELECTION
                 </h2>
                 <div class="story-container" id="fate-story-container" style="position: relative; z-index: 2;">
@@ -8512,8 +8607,16 @@
                 // Add spinning class for glow effect
                 slots.forEach(slot => slot.classList.add('spinning'));
 
-                // Decide final result upfront
-                currentGameMode = modes[Math.floor(Math.random() * 3)];
+                // Decide final result with WEIGHTED PROBABILITY
+                // 60% = Own Luck (A), 30% = Paradox (C), 10% = Time Loop (B)
+                const roll = Math.random() * 100;
+                if (roll < 60) {
+                    currentGameMode = 'A'; // Own Luck - 60%
+                } else if (roll < 90) {
+                    currentGameMode = 'C'; // Paradox - 30%
+                } else {
+                    currentGameMode = 'B'; // Time Loop - 10%
+                }
 
                 // Spin each slot independently with staggered stop times
                 const slotStopTimes = [2000, 2500, 3000]; // Each slot stops at different time
@@ -8592,10 +8695,21 @@
                 const result = document.getElementById('luck-result');
                 const mode = GAME_MODES[currentGameMode];
 
+                // Prediction messages based on mode
+                let prediction = '';
+                if (currentGameMode === 'A') {
+                    prediction = 'You are going in a very easy timeline...';
+                } else if (currentGameMode === 'C') {
+                    prediction = 'You will experience the jerk of time...';
+                } else if (currentGameMode === 'B') {
+                    prediction = 'Hell nah! It will be a horrible time!!';
+                }
+
                 result.innerHTML = `
                     <span style="font-size:2.5rem;">${mode.icon}</span>
                     <span>${mode.name}</span>
                     <span class="mode-desc">${mode.desc}</span>
+                    <span class="fate-prediction" style="display:block; margin-top:15px; font-size:1.1rem; color:#ffaa00; font-style:italic; text-shadow: 0 0 10px rgba(255,170,0,0.5);">${prediction}</span>
                 `;
 
                 // Update button
@@ -9485,12 +9599,15 @@
                     return;
                 }
 
-                display.textContent = this.timeLeft.toFixed(1);
+                // Clamp timeLeft to never show negative values
+                const displayTime = Math.max(0, this.timeLeft);
+                display.textContent = displayTime.toFixed(1);
                 // Bar is relative to 60s (Initial Max) visually, or dynamic?
                 // User snippet: (timeRemaining / 60 * 100) + '%'
                 // So bar clamps at 60s full.
-                let percent = (this.timeLeft / 60) * 100;
+                let percent = (displayTime / 60) * 100;
                 if (percent > 100) percent = 100;
+                if (percent < 0) percent = 0;
                 bar.style.width = percent + '%';
 
                 // Danger state when under 15 seconds (User requested < 15)
@@ -12847,9 +12964,23 @@
 
         /* History / Inception Protocol / Story */
         .story-line {
-            color: var(--violet-dim) !important;
-            text-shadow: 0 0 10px var(--violet) !important;
-            font-family: 'NeurobyteWeb', var(--f-mono) !important;
+            color: #ffcc66 !important;
+            text-shadow: none !important;
+            font-family: 'Rocketholedemo', var(--f-mono) !important;
+            line-height: 2.2 !important;
+            margin-bottom: 15px !important;
+            letter-spacing: 0.5px !important;
+        }
+
+        /* Mode Rules - Use Rocketholedemo font */
+        .mode-rules,
+        .mode-rules li,
+        .rules-container,
+        .story-container,
+        .story-container * {
+            font-family: 'Rocketholedemo', var(--f-mono) !important;
+            text-shadow: none !important;
+            line-height: 1.8 !important;
         }
 
         .protocol-container .protocol-trigger {
@@ -14111,4 +14242,4 @@
 
 </body>
 
-</html>
+</html>the sample button of rewind and freeze should show their video on right side and left side respectively
