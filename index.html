@@ -100,6 +100,26 @@
         }
 
         /* =========================================
+           PERFORMANCE OPTIMIZATIONS
+           ========================================= */
+        /* GPU Acceleration for smoother animations */
+        .boot-sequence,
+        .click-to-start,
+        .screen,
+        .cmd-preview,
+        .floating-helper-tip,
+        video {
+            will-change: transform, opacity;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+        }
+
+        /* Reduce paint areas */
+        .game-video-container video {
+            transform: translateZ(0);
+        }
+
+        /* =========================================
            PIXELATED SCROLLBAR (Red/Yellow/Black Vibe)
            ========================================= */
         /* Webkit (Chrome, Edge, Safari) */
@@ -5844,23 +5864,24 @@
         .cmd-preview {
             position: absolute;
             width: 400px;
-            /* Made larger */
             height: 240px;
-            /* Made larger */
             background: #000;
             border: 2px solid var(--primary);
-            box-shadow: 0 0 20px rgba(255, 85, 0, 0.5);
-            border-radius: 8px;
+            box-shadow: 0 0 30px rgba(255, 85, 0, 0.6), 0 0 60px rgba(255, 85, 0, 0.3);
+            border-radius: 12px;
             overflow: hidden;
             opacity: 0;
             pointer-events: none;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             z-index: 10;
-            /* Changed to show BELOW the button */
+            /* Position BELOW the button */
             top: 100%;
             left: 50%;
-            transform: translateX(-50%) scale(0.8);
+            transform: translateX(-50%) scale(0.3) rotateX(20deg);
             margin-top: 20px;
+            /* Enhanced transition - zoom in with bounce */
+            transition:
+                opacity 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+                transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
         .cmd-preview video {
@@ -5868,12 +5889,34 @@
             height: 100%;
             object-fit: cover;
             filter: brightness(1);
-            /* Full brightness */
+            transition: filter 0.3s ease;
         }
 
+        /* Hover state - zoom in with bounce effect */
         .cmd-circle:hover .cmd-preview {
             opacity: 1;
-            transform: translateX(-50%) scale(1);
+            transform: translateX(-50%) scale(1) rotateX(0deg);
+        }
+
+        .cmd-circle:hover .cmd-preview video {
+            filter: brightness(1.1) saturate(1.2);
+        }
+
+        /* Glowing border animation on hover */
+        .cmd-circle:hover .cmd-preview {
+            animation: previewGlow 1.5s ease-in-out infinite;
+        }
+
+        @keyframes previewGlow {
+
+            0%,
+            100% {
+                box-shadow: 0 0 30px rgba(255, 85, 0, 0.6), 0 0 60px rgba(255, 85, 0, 0.3);
+            }
+
+            50% {
+                box-shadow: 0 0 40px rgba(255, 136, 0, 0.8), 0 0 80px rgba(255, 136, 0, 0.4);
+            }
         }
 
         /* Both FREEZE and REWIND show preview BELOW */
@@ -6373,6 +6416,122 @@
                 box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
             }
         }
+
+        /* =========================================
+           VIDEO PREVIEW POSITIONING (Both show BELOW)
+           ========================================= */
+        /* Videos are visible and positioned below via .cmd-preview top:100% */
+
+        /* =========================================
+           FLOATING HELPER TIP BOXES
+           ========================================= */
+        .floating-helper-tip {
+            position: absolute;
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.95) 0%, rgba(40, 20, 0, 0.95) 100%);
+            border: 2px solid var(--primary);
+            border-radius: 12px;
+            padding: 12px 20px;
+            font-family: var(--f-mono);
+            font-size: 1rem;
+            color: #ffee00;
+            z-index: 9999;
+            box-shadow:
+                0 0 20px rgba(255, 136, 0, 0.5),
+                0 0 40px rgba(255, 85, 0, 0.2),
+                inset 0 0 20px rgba(255, 136, 0, 0.1);
+            pointer-events: none;
+            white-space: nowrap;
+            /* Entrance animation - zoom in from small */
+            animation: floatEntrance 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards,
+                floatPulse 2s ease-in-out 0.6s infinite;
+            opacity: 0;
+            transform: scale(0.3);
+        }
+
+        .floating-helper-tip::before {
+            content: '💡';
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+
+        /* Entrance animation - zoom in */
+        @keyframes floatEntrance {
+            0% {
+                opacity: 0;
+                transform: scale(0.3) translateY(20px);
+            }
+
+            100% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        /* Continuous pulse animation */
+        @keyframes floatPulse {
+
+            0%,
+            100% {
+                transform: translateY(0) scale(1);
+                box-shadow:
+                    0 0 20px rgba(255, 136, 0, 0.5),
+                    0 0 40px rgba(255, 85, 0, 0.2);
+            }
+
+            50% {
+                transform: translateY(-8px) scale(1.02);
+                box-shadow:
+                    0 0 30px rgba(255, 200, 0, 0.7),
+                    0 0 60px rgba(255, 136, 0, 0.4);
+            }
+        }
+
+        /* Position for Identity Registration tip */
+        #register-helper-tip {
+            top: 20px;
+            right: 20px;
+        }
+
+        /* Position for Gameplay tip */
+        #gameplay-helper-tip {
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        #gameplay-helper-tip {
+            animation: floatPulseCentered 2s ease-in-out infinite;
+        }
+
+        @keyframes floatPulseCentered {
+
+            0%,
+            100% {
+                transform: translateX(-50%) translateY(0);
+                opacity: 0.85;
+            }
+
+            50% {
+                transform: translateX(-50%) translateY(-5px);
+                opacity: 1;
+            }
+        }
+
+        /* Position for Game Over tip */
+        #gameover-helper-tip {
+            top: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: floatPulseCentered 2s ease-in-out infinite;
+        }
+
+        /* Position for Paradox mode tip */
+        #paradox-helper-tip {
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: floatPulseCentered 2s ease-in-out infinite;
+        }
     </style>
 </head>
 
@@ -6404,7 +6563,7 @@
                     <h1 class="briefing-title" data-text="NEURO-FRIED">NEURO-FRIED</h1>
                 </div>
                 <p class="dev-credit">DEV: Kaustav Chowdhury</p>
-                <p class="hero-subtitle">Class-X4 Temporal Survival Interface</p>
+                <p class="hero-subtitle">Go through the Temporal Survival Interface</p>
                 <div class="hero-links" style="display: flex; justify-content: center; gap: 20px;">
                     <a href="https://github.com/Kaustavoffx/neuro-fried" target="_blank" class="link-btn github">
                         <svg viewBox="0 0 24 24" width="20" height="20">
@@ -6969,6 +7128,9 @@
                 </div>
                 <div class="game-video-overlay"></div>
 
+                <!-- FLOATING HELPER TIP -->
+                <div id="paradox-helper-tip" class="floating-helper-tip">You can drag elements using mouse.</div>
+
                 <div class="paradox-terminal" style="position: relative; z-index: 2;">
                     <div class="paradox-header">
                         <span class="blink">WARNING: REALITY UNSTABLE</span>
@@ -7181,6 +7343,9 @@
                 </div>
                 <div class="game-video-overlay"></div>
 
+                <!-- FLOATING HELPER TIP -->
+                <div id="register-helper-tip" class="floating-helper-tip">Don't use high quality image.</div>
+
                 <div class="register-box" style="position: relative; z-index: 2;">
                     <h2 style="font-family:var(--f-title); color:var(--primary); margin-bottom:10px;">IDENTITY
                         REGISTRATION</h2>
@@ -7224,6 +7389,9 @@
                 </div>
                 <div class="game-video-overlay"></div>
 
+                <!-- FLOATING HELPER TIP -->
+                <div id="gameplay-helper-tip" class="floating-helper-tip">You can drag elements using mouse.</div>
+
                 <div class="game-grid" style="position: relative; z-index: 2;">
                     <div class="timer-rail">
                         <div class="timer-fill" id="timer-bar"></div>
@@ -7245,6 +7413,9 @@
                     </video>
                 </div>
                 <div class="game-video-overlay"></div>
+
+                <!-- FLOATING HELPER TIP -->
+                <div id="gameover-helper-tip" class="floating-helper-tip">Drag cards according to your choice.</div>
 
                 <h1 id="game-over-headline"
                     style="font-family:var(--f-title); font-size:4rem; color:var(--danger); margin-bottom:10px; position: relative; z-index: 2;">
@@ -10745,7 +10916,7 @@
             },
 
             runOutroSequence() {
-                console.log('🎬 Starting ROBUST outro sequence...');
+                console.log('🎬 Starting ANIMATED outro sequence...');
                 const s = document.getElementById('s-outro');
                 if (!s) { this.triggerGameOverScreen(); return; }
 
@@ -10761,50 +10932,65 @@
                 textField.className = 'outro-clean-text';
                 s.appendChild(textField);
 
-                // Sequence
+                // Sequence with animation types
                 const sequence = [
-                    { text: "THANK YOU", delay: 800 },
-                    { text: "FOR PLAYING", delay: 800 },
-                    { text: "NEURO FRIED", delay: 1000 },
-                    { text: "REWIND", delay: 600, style: "strike" },
-                    { text: "RESTART", delay: 2000 }
+                    { text: "THANK YOU", displayTime: 800, style: "normal" },
+                    { text: "FOR PLAYING", displayTime: 800, style: "normal" },
+                    { text: "MY GAME", displayTime: 800, style: "normal" },
+                    { text: "REWIND", displayTime: 800, style: "rewind" },
+                    { text: "RESTART", displayTime: 1500, style: "restart" }
                 ];
                 let step = 0;
 
                 const nextStep = () => {
                     if (step >= sequence.length) {
-                        s.style.opacity = '0';
+                        // Final vanish and transition to game over
+                        textField.classList.remove('zoom-in', 'rewind-glitch');
+                        textField.classList.add('vanish');
                         setTimeout(() => {
-                            s.classList.add('hidden');
-                            s.style.zIndex = '10000';
-                            this.triggerGameOverScreen();
-                        }, 500);
+                            s.style.transition = 'opacity 0.5s ease';
+                            s.style.opacity = '0';
+                            setTimeout(() => {
+                                s.classList.add('hidden');
+                                s.style.zIndex = '10000';
+                                this.triggerGameOverScreen();
+                            }, 500);
+                        }, 400);
                         return;
                     }
 
                     const data = sequence[step];
-                    textField.style.opacity = '0';
 
+                    // Reset classes and prepare for next text
+                    textField.className = 'outro-clean-text';
+                    textField.innerText = data.text;
+
+                    // Apply style-specific classes
+                    if (data.style === 'rewind') {
+                        textField.classList.add('strikethrough-red', 'rewind-glitch');
+                        try { if (typeof AudioSystem !== 'undefined' && AudioSystem.playRewind) AudioSystem.playRewind(); } catch (e) { }
+                    } else if (data.style === 'restart') {
+                        textField.classList.add('restart-text', 'zoom-in');
+                        try { if (typeof AudioSystem !== 'undefined' && AudioSystem.playCorrect) AudioSystem.playCorrect(); } catch (e) { }
+                    } else {
+                        textField.classList.add('zoom-in');
+                        try { if (typeof AudioSystem !== 'undefined' && AudioSystem.playRouletteClick) AudioSystem.playRouletteClick(); } catch (e) { }
+                    }
+
+                    // Wait for display time, then vanish and go to next
                     setTimeout(() => {
-                        textField.innerText = data.text;
-                        textField.className = 'outro-clean-text';
+                        textField.classList.remove('zoom-in', 'rewind-glitch');
+                        textField.classList.add('vanish');
 
-                        try {
-                            if (typeof AudioSystem !== 'undefined') {
-                                if (data.style === 'strike') {
-                                    textField.classList.add('strikethrough-red');
-                                    if (AudioSystem.playRewind) AudioSystem.playRewind();
-                                } else {
-                                    if (AudioSystem.playRouletteClick) AudioSystem.playRouletteClick();
-                                }
-                            }
-                        } catch (e) { console.warn(e); }
-
-                        textField.style.opacity = '1';
-                        setTimeout(() => { step++; nextStep(); }, data.delay);
-                    }, 150);
+                        setTimeout(() => {
+                            step++;
+                            nextStep();
+                        }, 400); // Vanish animation duration
+                    }, data.displayTime);
                 };
-                nextStep();
+
+                // Start the sequence
+                setTimeout(nextStep, 300);
             },
 
             runOutroSequence_IGNORED() {
@@ -11691,11 +11877,11 @@
                 p.style.textShadow = '0 0 5px var(--primary)';
                 term.appendChild(p);
                 // await matrixDecode(term, termLines[i]); // REMOVED
-                await new Promise(r => setTimeout(r, 200)); // Very Short pause
+                await new Promise(r => setTimeout(r, 100)); // Quick pause for smoothness
             }
             // term.textContent = ""; // Keep text visible briefly? or clear?
             // User said "remove matrix effect... put particles" - we have particles.
-            await new Promise(r => setTimeout(r, 500));
+            await new Promise(r => setTimeout(r, 200)); // Brief pause before logo
             term.textContent = "";
 
             // 2. Logo SLAM (Massive & Smooth)
@@ -11705,15 +11891,15 @@
             logo.classList.add('slam');
 
             // 3. Smooth Transition (No Flash)
-            await new Promise(r => setTimeout(r, 2000)); // Hold logo for 2s
+            await new Promise(r => setTimeout(r, 1200)); // Hold logo for 1.2s (reduced)
 
             if (typeof AudioSystem !== 'undefined') AudioSystem.playCorrect();
 
             // Fade out boot visually
-            boot.style.transition = 'opacity 1s ease';
+            boot.style.transition = 'opacity 0.5s ease'; // Faster fade
             boot.style.opacity = '0';
 
-            await new Promise(r => setTimeout(r, 1000));
+            await new Promise(r => setTimeout(r, 500)); // Reduced from 1s
             boot.classList.add('hidden');
             boot.style.opacity = '1'; // Reset for next time
             logo.classList.remove('slam'); // Reset animation
@@ -13433,6 +13619,103 @@
             transform: translateX(-50%);
             z-index: 100;
         }
+
+        /* =========================================
+           OUTRO SEQUENCE ANIMATIONS
+           ========================================= */
+        .outro-clean-text {
+            font-family: var(--f-title);
+            font-size: 5rem;
+            color: #ffffff;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 8px;
+            text-shadow:
+                0 0 30px var(--primary),
+                0 0 60px rgba(255, 85, 0, 0.5);
+            /* Initial state for animation */
+            opacity: 0;
+            transform: scale(0.3) translateY(50px);
+            transition: none;
+        }
+
+        /* Zoom in animation */
+        .outro-clean-text.zoom-in {
+            animation: outroZoomIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        /* Vanish animation */
+        .outro-clean-text.vanish {
+            animation: outroVanish 0.4s ease-out forwards;
+        }
+
+        /* Strikethrough with red color for REWIND */
+        .outro-clean-text.strikethrough-red {
+            color: var(--danger);
+            text-decoration: line-through;
+            text-shadow:
+                0 0 30px var(--danger),
+                0 0 60px rgba(255, 0, 0, 0.5);
+        }
+
+        /* Special style for RESTART */
+        .outro-clean-text.restart-text {
+            color: var(--green);
+            text-shadow:
+                0 0 30px var(--green),
+                0 0 60px rgba(0, 255, 0, 0.5);
+        }
+
+        @keyframes outroZoomIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.3) translateY(50px);
+            }
+
+            60% {
+                opacity: 1;
+                transform: scale(1.1) translateY(-10px);
+            }
+
+            100% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        @keyframes outroVanish {
+            0% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+
+            100% {
+                opacity: 0;
+                transform: scale(1.5) translateY(-30px);
+            }
+        }
+
+        /* Rewind glitch effect for REWIND text */
+        .outro-clean-text.rewind-glitch {
+            animation: outroZoomIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards,
+                rewindGlitch 0.1s ease-in-out 0.5s 3;
+        }
+
+        @keyframes rewindGlitch {
+
+            0%,
+            100% {
+                transform: scale(1) translateX(0);
+            }
+
+            25% {
+                transform: scale(1) translateX(-10px);
+            }
+
+            75% {
+                transform: scale(1) translateX(10px);
+            }
+        }
     </style>
 
     <!-- Achievement Notification Popup -->
@@ -14161,4 +14444,4 @@
 
 </body>
 
-</html>the sample button of rewind and freeze should show their video on right side and left side respectively
+</html>
