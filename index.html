@@ -50,8 +50,8 @@
         }
 
         @font-face {
-            font-family: 'Rocketholedemo';
-            src: url('fonts/Rocketholedemo-4n6Jx.ttf') format('truetype');
+            font-family: 'InfernoRacers';
+            src: url('fonts/InfernoRacers-rvldK.ttf') format('truetype');
             font-weight: normal;
             font-style: normal;
         }
@@ -6373,104 +6373,12 @@
                 box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
             }
         }
-
-        /* =========================================
-           DOUBLE TAP TO START OVERLAY
-           ========================================= */
-        .double-tap-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.6);
-            z-index: 99999;
-            display: flex;
-            justify-content: center;
-            align-items: flex-end;
-            padding-bottom: 80px;
-            pointer-events: none;
-            opacity: 1;
-            transition: opacity 0.5s ease;
-        }
-
-        .double-tap-overlay.hidden {
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        .double-tap-box {
-            background: rgba(20, 5, 0, 0.85);
-            border: 2px solid rgba(255, 85, 0, 0.7);
-            border-radius: 12px;
-            padding: 25px 60px;
-            text-align: center;
-            box-shadow:
-                0 0 30px rgba(255, 85, 0, 0.5),
-                0 0 60px rgba(255, 51, 0, 0.3),
-                inset 0 0 20px rgba(255, 85, 0, 0.1);
-            animation: doubleTapPulse 2s ease-in-out infinite;
-            pointer-events: auto;
-            cursor: pointer;
-        }
-
-        .double-tap-box:hover {
-            background: rgba(30, 10, 0, 0.9);
-            border-color: rgba(255, 170, 0, 0.9);
-            box-shadow:
-                0 0 40px rgba(255, 85, 0, 0.7),
-                0 0 80px rgba(255, 51, 0, 0.5),
-                inset 0 0 30px rgba(255, 85, 0, 0.2);
-        }
-
-        .double-tap-text {
-            font-family: var(--f-title);
-            font-size: 1.8rem;
-            color: #ffffff;
-            text-transform: uppercase;
-            letter-spacing: 4px;
-            text-shadow:
-                0 0 10px rgba(255, 170, 0, 0.8),
-                0 0 20px rgba(255, 85, 0, 0.6),
-                2px 2px 0 #ff3300;
-            margin: 0;
-        }
-
-        .double-tap-icon {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            filter: drop-shadow(0 0 10px rgba(255, 170, 0, 0.8));
-        }
-
-        @keyframes doubleTapPulse {
-
-            0%,
-            100% {
-                transform: scale(1);
-                box-shadow:
-                    0 0 30px rgba(255, 85, 0, 0.5),
-                    0 0 60px rgba(255, 51, 0, 0.3),
-                    inset 0 0 20px rgba(255, 85, 0, 0.1);
-            }
-
-            50% {
-                transform: scale(1.02);
-                box-shadow:
-                    0 0 40px rgba(255, 85, 0, 0.7),
-                    0 0 80px rgba(255, 51, 0, 0.5),
-                    inset 0 0 30px rgba(255, 85, 0, 0.2);
-            }
-        }
     </style>
 </head>
 
 
 <body>
 
-    <!-- DOUBLE TAP TO START OVERLAY -->
-    <div class="double-tap-overlay" id="double-tap-overlay" ondblclick="this.classList.add('hidden')">
-        <div class="double-tap-box">
-            <div class="double-tap-icon">👆</div>
-            <p class="double-tap-text">Double tap to start the game</p>
-        </div>
-    </div>
 
     <!-- =========================================
          GOD-LEVEL LANDING PAGE
@@ -6533,6 +6441,17 @@
             <p class="section-subtext">Follow the neural initialization sequence. Each step prepares your mind for the
                 temporal challenge ahead.</p>
             <div class="execution-grid">
+                <div class="exec-step">
+                    <div class="step-preview"
+                        style="display:flex; align-items:center; justify-content:center; background: linear-gradient(135deg, #1a0500 0%, #0a0200 100%);">
+                        <span style="font-size: 4rem; filter: drop-shadow(0 0 10px rgba(255, 170, 0, 0.8));">👆</span>
+                    </div>
+                    <div class="step-info">
+                        <span class="step-num">00</span>
+                        <h3>DOUBLE TAP TO START</h3>
+                        <p>Double tap anywhere on the screen to begin your neural journey.</p>
+                    </div>
+                </div>
                 <div class="exec-step">
                     <div class="step-preview"><img src="assets/1.png" alt="Neural Link"></div>
                     <div class="step-info">
@@ -7430,7 +7349,7 @@
                     <!-- Share Message -->
                     <div class="share-message-box">
                         <div style="color:var(--green); font-family:var(--f-title); font-size:1rem; line-height:1.4;">
-                            TAKE A SCREENSHOT<br>AND REVIVE YOUR<br>HAPPINESS
+                            DRAG THE CARDS<br>USING MOUSE<br>AND TAKE A SCREENSHOT
                         </div>
                         <div
                             style="color:#888; font-family:var(--f-mono); font-size:0.8rem; margin-top:8px; letter-spacing:1px;">
