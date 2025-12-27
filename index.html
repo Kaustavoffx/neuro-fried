@@ -97,6 +97,55 @@
             /* Landing/Tutorial Page */
         }
 
+        /* =========================================
+           PIXELATED SCROLLBAR (Red/Yellow/Black Vibe)
+           ========================================= */
+        /* Webkit (Chrome, Edge, Safari) */
+        ::-webkit-scrollbar {
+            width: 16px;
+            background: #000;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #050000;
+            border-left: 2px solid #330000;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background-color: #ff3300;
+            border: 2px solid #000;
+            box-shadow: inset 2px 2px 0px #ffaa00, inset -2px -2px 0px #8b0000;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background-color: #ff0000;
+            box-shadow: inset 2px 2px 0px #ffff00, inset -2px -2px 0px #550000;
+        }
+
+        /* Firefox Support */
+        * {
+            scrollbar-width: auto;
+            scrollbar-color: #ff3300 #000;
+        }
+
+        /* =========================================
+           CUSTOM CURSOR (Tech Crosshair)
+           ========================================= */
+        body {
+            cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cdefs%3E%3Cfilter id='shadow' x='-50%25' y='-50%25' width='200%25' height='200%25'%3E%3CfeDropShadow dx='1' dy='1' stdDeviation='1' flood-color='%23000'/%3E%3C/filter%3E%3C/defs%3E%3Cpath fill='%23ff3300' stroke='%23ffaa00' stroke-width='1.5' filter='url(%23shadow)' d='M16 4v8 M16 20v8 M4 16h8 M20 16h8 M16 16l-3-3 M16 16l3-3 M16 16l-3 3 M16 16l3 3'/%3E%3Ccircle cx='16' cy='16' r='2' fill='%23ffff00'/%3E%3C/svg%3E") 16 16, crosshair !important;
+        }
+
+        /* Interactive elements - Star pointer cursor */
+        button,
+        a,
+        .opt-btn,
+        .tech-btn,
+        .cmd-circle,
+        .env-item,
+        .exec-step {
+            cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cdefs%3E%3Cfilter id='g' x='-50%25' y='-50%25' width='200%25' height='200%25'%3E%3CfeDropShadow dx='0' dy='0' stdDeviation='2' flood-color='%23ff0000'/%3E%3C/filter%3E%3C/defs%3E%3Cpath fill='%23ffaa00' stroke='%23000' stroke-width='1' filter='url(%23g)' d='M16 2l-6 10h-8l10 8l-4 12l10-6l10 6l-4-12l10-8h-8z'/%3E%3C/svg%3E") 16 16, pointer !important;
+        }
+
         /* ========== GLOBAL FONT APPLICATION ========== */
 
         /* ALL BUTTONS - Neurobyte */
@@ -8573,7 +8622,8 @@
             }
         };
 
-        // Time Loop Mode (Inverted Logic)
+        // Time Loop Mode (Inverted Logic) - FINITE ENDING UPDATE
+        // Uses TimelineIntegrity system defined later in the file
         const DreamMode = {
             loopCount: 0,
             active: false,
@@ -8588,7 +8638,7 @@
                 document.body.classList.add('mode-timeloop');
                 document.body.setAttribute('data-loop', '0');
 
-                // Switch gameplay video to Time Loop video (hud2.mp4)
+                // Switch gameplay video to Time Loop video
                 const videoSource = document.getElementById('gameplay-video-source');
                 const video = document.getElementById('gameplay-video-bg');
                 if (videoSource && video) {
@@ -8603,27 +8653,71 @@
                     loopCounter.classList.remove('hidden');
                     document.getElementById('loop-num').textContent = '0';
                 }
+
+                // Reset Integrity for fresh start
+                if (typeof TimelineIntegrity !== 'undefined') {
+                    TimelineIntegrity.corruption = 0;
+                    TimelineIntegrity.updateUI();
+                }
             },
 
-            // Called when player answers correctly - TRIGGERS LOOP
+            // Called when player answers correctly - TRIGGERS LOOP & INTEGRITY DAMAGE
             onCorrectAnswer() {
                 if (!this.active) return false;
 
-                // Each correct answer = trigger a loop restart
+                // 1. Increment Loop Count
                 this.loopCount++;
                 this.updateLoopUI();
+
+                // 2. INCREASE CORRUPTION (20% per loop -> Game ends in 5 loops)
+                if (typeof TimelineIntegrity !== 'undefined') {
+                    TimelineIntegrity.corruption = Math.min(100, TimelineIntegrity.corruption + 20);
+                    TimelineIntegrity.updateUI();
+
+                    // 3. CHECK FOR 100% ENDING condition
+                    if (TimelineIntegrity.corruption >= 100) {
+                        this.triggerFinalDefeat();
+                        return true; // Stop the loop, end the game
+                    }
+                }
+
+                // 4. If not 100%, Refresh timer to 60s and continue
                 this.triggerLoopRestart();
-                return true; // Signal that we handled this
+                return true;
             },
 
-            // Called when timer expires - ESCAPE THE LOOP (End Game)
+            // NEW: Specific Defeat Ending at 100% corruption
+            triggerFinalDefeat() {
+                this.active = false;
+                if (typeof TimerSystem !== 'undefined') TimerSystem.stop();
+
+                // Trigger standard Game Over to handle screen transitions
+                if (typeof Game !== 'undefined') Game.gameOver();
+
+                // OVERRIDE the text to your specific message
+                setTimeout(() => {
+                    const headline = document.getElementById('game-over-headline');
+                    const badge = document.getElementById('final-ending-badge');
+
+                    if (headline) {
+                        headline.textContent = "Hell nah you defeated.....";
+                        headline.style.color = "#ff0000";
+                        headline.style.fontSize = "3rem";
+                        headline.style.animation = "glitchText 0.3s infinite";
+                    }
+
+                    if (badge) {
+                        badge.textContent = "ENDING: TOTAL COLLAPSE";
+                        badge.style.color = "#ff0000";
+                    }
+                }, 100);
+            },
+
+            // Called when timer expires - ESCAPE THE LOOP (Standard Win/End)
             onTimerExpire() {
                 if (!this.active) return false;
-
-                // Timer expire = player escapes the loop
                 this.cleanup();
 
-                // Show escape message
                 const overlay = document.getElementById('dream-overlay');
                 const dreamText = document.getElementById('dream-text');
                 const dreamSubtext = document.getElementById('dream-subtext');
@@ -8637,7 +8731,6 @@
                 setTimeout(() => {
                     overlay.classList.remove('active');
                     if (typeof Game !== 'undefined') {
-                        // Update final score
                         Game.score = this.totalScore;
                         Game.gameOver();
                     }
@@ -8647,11 +8740,9 @@
             },
 
             updateLoopUI() {
-                // Update loop counter
                 const loopNum = document.getElementById('loop-num');
                 if (loopNum) loopNum.textContent = this.loopCount;
-
-                // Update glitch intensity (max 5)
+                // Update visuals based on loop count
                 const intensity = Math.min(this.loopCount, 5);
                 document.body.setAttribute('data-loop', intensity.toString());
             },
@@ -8671,59 +8762,53 @@
                 // Play sound
                 if (typeof AudioSystem !== 'undefined') AudioSystem.playRewind();
 
-                // Accumulate score before reset
+                // Accumulate score
                 if (typeof Game !== 'undefined') {
                     this.totalScore += Game.score;
                 }
 
-                // Show loop message briefly
+                // Show loop message
                 const overlay = document.getElementById('dream-overlay');
                 const dreamText = document.getElementById('dream-text');
                 const dreamSubtext = document.getElementById('dream-subtext');
 
                 dreamText.textContent = `LOOP ${this.loopCount}`;
                 dreamText.style.color = '#00ffff';
-                dreamSubtext.textContent = 'Timeline fracturing...';
+                // Show Integrity percentage
+                const currentCorruption = typeof TimelineIntegrity !== 'undefined' ? TimelineIntegrity.corruption : 0;
+                dreamSubtext.textContent = `Timeline Integrity: ${100 - currentCorruption}%`;
 
                 overlay.classList.add('active');
 
                 setTimeout(() => {
                     overlay.classList.remove('active');
 
-                    // Restart the game round with MORE glitch
+                    // REFRESH TIMER to 60s (Infinite Gameplay feel until 100%)
                     if (typeof Game !== 'undefined') {
                         Game.round = 0;
-                        Game.score = 0; // Score accumulates in totalScore
-                        Game.streak = 0; // Reset streak
-                        Game.active = true; // RE-ENABLE INPUT - This was the bug!
+                        Game.score = 0;
+                        Game.streak = 0;
+                        Game.active = true;
                         document.getElementById('hud-score').innerText = this.totalScore;
                         document.getElementById('hud-streak').innerText = '';
+
                         if (typeof TimerSystem !== 'undefined') {
-                            // Timer gets shorter each loop (min 30 seconds)
-                            const newTime = Math.max(30, 60 - (this.loopCount * 5));
-                            TimerSystem.start(newTime);
+                            // Reset to full 60 seconds every loop
+                            TimerSystem.start(60);
                         }
                         Game.nextRound();
                     }
                 }, 1500);
             },
 
-            // Legacy method for compatibility - now does nothing
-            onQuestionAnswered() {
-                return false;
-            },
-
-            // Legacy method for compatibility
-            triggerDreamSequence(isWin) {
-                // Not used in new logic
-            },
+            // Legacy/Unused stub
+            onQuestionAnswered() { return false; },
+            triggerDreamSequence(isWin) { },
 
             cleanup() {
                 this.active = false;
                 document.body.classList.remove('mode-timeloop');
                 document.body.removeAttribute('data-loop');
-
-                // Hide loop counter
                 const loopCounter = document.getElementById('loop-counter');
                 if (loopCounter) loopCounter.classList.add('hidden');
             }
@@ -10581,6 +10666,22 @@
                 // Cleanup any active modes
                 if (currentGameMode === 'B') DreamMode.cleanup();
                 if (currentGameMode === 'C') DuelMode.cleanup();
+
+                // --- RESET DRAGGABLE POSITIONS ---
+                // Clear inline styles set by drag system, snapping elements back to CSS defaults
+                const draggables = document.querySelectorAll('.share-card-wrapper, .controls-panel, .share-message-box, .game-over-controls');
+                draggables.forEach(el => {
+                    if (el) {
+                        el.style.left = '';
+                        el.style.top = '';
+                        el.style.right = '';
+                        el.style.bottom = '';
+                        el.style.transform = '';
+                        el.style.position = '';
+                        if (el.dataset) el.dataset.fixedInit = 'false'; // Reset draggable initialization flag
+                    }
+                });
+                // ---------------------------------
 
                 // Reset headline to SIGNAL LOST for game over
                 this.isWin = false;
