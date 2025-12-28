@@ -13,8 +13,9 @@ A **horror-themed survival trivia game** where time is your health. Built with p
 
 ## 🎮 PLAY NOW
 
-🔗 **[Live Demo](https://kaustavoffx.github.io/neuro-fried/)**  
-📹 **[Video Overview](https://www.youtube.com/watch?v=2fnb_pqz9tg)**
+🔗 **[Play Live](https://neuro-fried.vercel.app)**  
+📹 **[Video Summary](https://youtu.be/2fnb_pqz9tg?si=mQmNC4BfxeFqS-Om)**  
+🏆 **[Codédex Submission](https://www.codedex.io/community/monthly-challenge/submission/ey67zVFIYoP3H2AcAeWK)**
 
 ---
 
@@ -118,18 +119,19 @@ A **horror-themed survival trivia game** where time is your health. Built with p
 
 ---
 
-## 🚀 HOW TO RUN
+## 🚀 HOW TO PLAY
 
+### 🌐 Play Online (Recommended)
+**👉 [neuro-fried.vercel.app](https://neuro-fried.vercel.app)**
+
+Just click and play. No installation required.
+
+### 💻 Run Locally
 ```bash
-# Clone the repository
 git clone https://github.com/Kaustavoffx/neuro-fried.git
-
-# Open in browser
-open index.html
-# or just double-click index.html
+cd neuro-fried
+# Open index.html in any browser
 ```
-
-**No build process. No dependencies. No waiting.**
 
 > 🎧 **Recommended:** Use headphones for full horror experience
 
@@ -198,9 +200,17 @@ Every interaction has feedback:
 
 ---
 
-## 📜 CREDITS
+## 📜 CREDITS & LINKS
 
-**Design, Code & Obsessive Polish:** [Kaustav Chowdhury](https://github.com/Kaustavoffx)
+**Design, Code & Obsessive Polish:** Kaustav Chowdhury
+
+| Platform | Link |
+|----------|------|
+| 🎮 **Play Game** | [neuro-fried.vercel.app](https://neuro-fried.vercel.app) |
+| 📹 **Video Summary** | [YouTube](https://youtu.be/2fnb_pqz9tg?si=mQmNC4BfxeFqS-Om) |
+| 🏆 **Codédex Submission** | [View Entry](https://www.codedex.io/community/monthly-challenge/submission/ey67zVFIYoP3H2AcAeWK) |
+| 💼 **LinkedIn** | [Kaustav Chowdhury](https://www.linkedin.com/in/kaustav-chowdhury-771164397) |
+| 🐙 **GitHub** | [Kaustavoffx](https://github.com/Kaustavoffx) |
 
 Made with ❤️ and dangerous amounts of caffeine.
 

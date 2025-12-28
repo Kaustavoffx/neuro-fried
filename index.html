@@ -6426,26 +6426,27 @@
            FLOATING HELPER TIP BOXES
            ========================================= */
         .floating-helper-tip {
-            position: absolute;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
             background: linear-gradient(135deg, rgba(0, 0, 0, 0.95) 0%, rgba(40, 20, 0, 0.95) 100%);
             border: 2px solid var(--primary);
             border-radius: 12px;
-            padding: 12px 20px;
+            padding: 15px 25px;
             font-family: var(--f-mono);
-            font-size: 1rem;
+            font-size: 1.1rem;
             color: #ffee00;
-            z-index: 9999;
+            z-index: 99999;
             box-shadow:
                 0 0 20px rgba(255, 136, 0, 0.5),
                 0 0 40px rgba(255, 85, 0, 0.2),
                 inset 0 0 20px rgba(255, 136, 0, 0.1);
             pointer-events: none;
             white-space: nowrap;
-            /* Entrance animation - zoom in from small */
-            animation: floatEntrance 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards,
-                floatPulse 2s ease-in-out 0.6s infinite;
+            /* Animation: appear, pulse briefly, then fade out after 3 seconds */
+            animation: helperAppearAndVanish 3s ease-in-out forwards;
             opacity: 0;
-            transform: scale(0.3);
         }
 
         .floating-helper-tip::before {
@@ -6454,83 +6455,31 @@
             font-size: 1.2rem;
         }
 
-        /* Entrance animation - zoom in */
-        @keyframes floatEntrance {
+        /* Combined animation: entrance -> pulse -> fade out */
+        @keyframes helperAppearAndVanish {
             0% {
                 opacity: 0;
-                transform: scale(0.3) translateY(20px);
+                transform: translate(-50%, -50%) scale(0.3);
             }
 
-            100% {
+            15% {
                 opacity: 1;
-                transform: scale(1) translateY(0);
-            }
-        }
-
-        /* Continuous pulse animation */
-        @keyframes floatPulse {
-
-            0%,
-            100% {
-                transform: translateY(0) scale(1);
-                box-shadow:
-                    0 0 20px rgba(255, 136, 0, 0.5),
-                    0 0 40px rgba(255, 85, 0, 0.2);
+                transform: translate(-50%, -50%) scale(1.05);
             }
 
-            50% {
-                transform: translateY(-8px) scale(1.02);
-                box-shadow:
-                    0 0 30px rgba(255, 200, 0, 0.7),
-                    0 0 60px rgba(255, 136, 0, 0.4);
-            }
-        }
-
-        /* Position for Identity Registration tip */
-        #register-helper-tip {
-            top: 20px;
-            right: 20px;
-        }
-
-        /* Position for Gameplay tip */
-        #gameplay-helper-tip {
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-        }
-
-        #gameplay-helper-tip {
-            animation: floatPulseCentered 2s ease-in-out infinite;
-        }
-
-        @keyframes floatPulseCentered {
-
-            0%,
-            100% {
-                transform: translateX(-50%) translateY(0);
-                opacity: 0.85;
+            25% {
+                transform: translate(-50%, -50%) scale(1);
             }
 
-            50% {
-                transform: translateX(-50%) translateY(-5px);
+            75% {
                 opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
             }
-        }
 
-        /* Position for Game Over tip */
-        #gameover-helper-tip {
-            top: 50px;
-            left: 50%;
-            transform: translateX(-50%);
-            animation: floatPulseCentered 2s ease-in-out infinite;
-        }
-
-        /* Position for Paradox mode tip */
-        #paradox-helper-tip {
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            animation: floatPulseCentered 2s ease-in-out infinite;
+            100% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.9);
+            }
         }
     </style>
 </head>
